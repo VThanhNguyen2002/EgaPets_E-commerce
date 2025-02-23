@@ -1,6 +1,6 @@
 # EgaPets - Website Thương Mại Điện Tử Bán Đồ Dùng Cho Chó & Mèo
 
-## Giới Thiệu (Tiếng Việt)
+## Giới Thiệu
 EgaPets là một trang web thương mại điện tử chuyên cung cấp các sản phẩm dành cho thú cưng, đặc biệt là chó và mèo. Chúng tôi cung cấp đa dạng các mặt hàng như thức ăn, phụ kiện, dụng cụ chăm sóc sức khỏe và các sản phẩm khác nhằm mang đến trải nghiệm tốt nhất cho "Boss" của bạn!
 
 ## Tính Năng
@@ -32,7 +32,7 @@ EgaPets là một trang web thương mại điện tử chuyên cung cấp các 
 
 # EgaPets - E-commerce Website for Pet Supplies
 
-## Introduction (English)
+## Introduction
 EgaPets is an e-commerce website specializing in pet products, especially for dogs and cats. We offer a wide variety of products including food, accessories, healthcare items, and more to ensure the best experience for your furry friends!
 
 ## Features
