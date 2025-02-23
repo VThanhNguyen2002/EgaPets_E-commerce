@@ -15,4 +15,4 @@ COPY . .
 EXPOSE 5000
 
 # Chạy server
-CMD ["node", "server.js"]
+CMD ["npm", "run", "dev"]
