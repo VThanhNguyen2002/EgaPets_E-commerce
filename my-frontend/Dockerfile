@@ -5,7 +5,7 @@ FROM node:18-alpine
 WORKDIR /app
 
 # Sao chép và cài đặt dependencies
-COPY package.json package-lock.json ./
+COPY package.json ./
 RUN npm install
 
 # Sao chép toàn bộ code
