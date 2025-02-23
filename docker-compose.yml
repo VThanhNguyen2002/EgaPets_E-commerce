@@ -3,17 +3,29 @@ services:
     build: ./my-backend
     ports:
       - "5000:5000"
-    env_file:
-      - ./my-backend/.env
+    volumes:
+      - ./my-backend:/app
+      - /app/node_modules  # Tránh lỗi node_modules
+    environment:
+      - NODE_ENV=development
+    command: ["npm", "run", "dev"]  # Dùng Nodemon thay vì Node.js thuần
     depends_on:
       - sqlserver
+
 
   frontend:
     build: ./my-frontend
     ports:
-      - "3000:80"
+      - "5173:5173"
+    volumes:
+      - ./my-frontend:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+    command: ["npm", "run", "dev"]  # Chạy Vite
     depends_on:
       - backend
+
 
   sqlserver:
     image: mcr.microsoft.com/mssql/server:2019-latest
