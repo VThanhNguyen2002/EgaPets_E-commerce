@@ -1,0 +1,43 @@
+.floatingIcons {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    z-index: 1000;
+}
+  
+.icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 100%;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+  
+.iconSvg {
+    font-size: 30px;
+    color: white;
+}
+  
+.call {
+    background-color: #ff5722;
+}
+  
+.zalo {
+    background-color: #0084ff;
+}
+  
+.messenger {
+    background-color: #00b2ff;
+}
+  
+.icon:hover {
+    transform: scale(1.2);
+    opacity: 0.9;
+}
