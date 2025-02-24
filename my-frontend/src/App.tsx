@@ -2,7 +2,7 @@ import "./App.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import ErrorBoundary from "./layouts/ErrorBoundary";
 import { LoadingSpinner } from "./components/LoadingSpinner";
-import HomePage from "./pages/HomePage";
+import HomePage from "./pages/HomePage/HomePage";
 import NotFoundPage from "./pages/NotFoundPage";
 import { ErrorProvider } from "./context/ErrorContext";
 
