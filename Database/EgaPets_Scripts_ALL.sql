@@ -41,6 +41,13 @@ CREATE TABLE HoaDon (
 );
 GO
 
+ALTER TABLE HoaDon ADD 
+    nhan_vien_id INT NULL, 
+    trang_thai NVARCHAR(50) NOT NULL DEFAULT N'Chờ xác nhận',
+    CONSTRAINT FK_HoaDon_NhanVien FOREIGN KEY (nhan_vien_id) REFERENCES NhanVien(id) ON DELETE SET NULL;
+GO
+
+
 CREATE TABLE ChiTietHoaDon (
     id INT IDENTITY(1,1) PRIMARY KEY,
     hoa_don_id INT NOT NULL,
@@ -54,3 +61,45 @@ CREATE TABLE ChiTietHoaDon (
     CONSTRAINT FK_SanPham FOREIGN KEY (san_pham_id) REFERENCES SanPham(id) ON DELETE CASCADE
 );
 GO
+
+CREATE TABLE LichSuSanPham (
+    id INT IDENTITY(1,1) PRIMARY KEY,
+    san_pham_id INT NOT NULL,
+    hanh_dong NVARCHAR(50) NOT NULL, -- 'INSERT', 'UPDATE', 'DELETE'
+    thoi_gian DATETIME NOT NULL DEFAULT GETDATE(),
+    nhan_vien_login NVARCHAR(255) NOT NULL, -- Lưu tài khoản nhân viên
+    noi_dung_thay_doi NVARCHAR(MAX) NULL, -- Mô tả sự thay đổi
+    CONSTRAINT FK_LichSuSanPham FOREIGN KEY (san_pham_id) REFERENCES SanPham(id) ON DELETE CASCADE
+);
+GO
+
+ALTER TABLE LichSuSanPham ADD 
+    nhan_vien_id INT NULL,
+    CONSTRAINT FK_LichSuSanPham_NhanVien FOREIGN KEY (nhan_vien_id) REFERENCES NhanVien(id) ON DELETE SET NULL;
+GO
+
+
+CREATE TABLE NhanVien (
+    id INT IDENTITY(1,1) PRIMARY KEY,
+    ho_ten NVARCHAR(255) NOT NULL,
+    email NVARCHAR(255) NOT NULL UNIQUE,
+    so_dien_thoai NVARCHAR(15) NOT NULL UNIQUE,
+    ngay_sinh DATE NULL,
+    dia_chi NVARCHAR(255) NULL,
+    ngay_vao_lam DATE NOT NULL DEFAULT GETDATE(),
+    chuc_vu NVARCHAR(100) NOT NULL CHECK (chuc_vu IN (N'Nhân viên bán hàng', N'Quản lý kho', N'Admin')),
+    luong DECIMAL(18,2) CHECK (luong >= 0)
+);
+GO
+
+SELECT * FROM NhanVien
+
+SELECT * FROM ChiTietHoaDon
+
+SELECT * FROM HoaDon
+
+SELECT * FROM GioHang
+
+SELECT * FROM LichSuSanPham
+
+SELECT * FROM SanPham
