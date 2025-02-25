@@ -1,9 +1,10 @@
 import FloatingIcons from "../../components/FloatingIcons/FloatingIcons";
+import Header from "../../layouts/Header/Header";
 
 const HomePage = () => {
   return (
     <div>
-      <h1>Trang Chủ</h1>
+      <Header />
       <FloatingIcons />
     </div>
   );

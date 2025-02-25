@@ -1,0 +1,50 @@
+.dropdown {
+    position: relative;
+}
+
+.dropdownButton {
+    background-color: white;
+    color: #8B0000;
+    padding: 8px 14px;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    border-radius: 6px;
+    transition: all 0.3s ease-in-out;
+}
+
+.dropdownButton:hover {
+    background-color: #a30c0c;
+    color: white;
+}
+
+.dropdownMenu {
+    position: absolute;
+    background: white;
+    list-style: none;
+    padding: 10px;
+    width: 200px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 6px;
+    left: 0;
+    top: 40px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease-in-out, transform 0.2s ease-in-out;
+    transform: translateY(-10px);
+}
+
+.dropdown:hover .dropdownMenu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.dropdownItem {
+    padding: 10px;
+    cursor: pointer;
+}
+
+.dropdownItem:hover {
+    background-color: #f0f0f0;
+}
