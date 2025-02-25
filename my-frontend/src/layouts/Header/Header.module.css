@@ -1,0 +1,42 @@
+/* Header tổng */
+.header {
+    display: flex;
+    align-items: normal;
+    justify-content: flex-start; /* Canh từ trái qua */
+    background-color: #000; /* Header đen */
+    color: white;
+    width: 100%;
+    padding: 20px 20px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+  
+  .logoWrapper {
+    display: flex;
+    align-items: center;
+    margin-right: 100px;
+    
+  }
+  
+  .logoImg {
+    height: 50px;
+    object-fit: contain;
+  }
+  
+  /* Khu vực SearchBar */
+  .searchArea {
+    display: flex;
+    align-items: center;
+    margin-right: 200px; /* Đẩy actions qua bên phải */
+  }
+  
+  /* Khu vực Language, Cart, Auth */
+  .actions {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  

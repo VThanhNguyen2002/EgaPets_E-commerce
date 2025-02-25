@@ -1,0 +1,38 @@
+.languageSwitcher {
+    position: relative;
+    cursor: pointer;
+  }
+  
+  .langButton {
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .flagIcon {
+    width: 25px;
+    height: 17px;
+  }
+  
+  .dropdown {
+    position: absolute;
+    top: 40px;
+    left: 0;
+    background: white;
+    list-style: none;
+    padding: 10px;
+    width: 150px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 6px;
+    z-index: 999;
+  }
+  
+  .dropdown li {
+    padding: 8px;
+    cursor: pointer;
+  }
+  
+  .dropdown li:hover {
+    background-color: #f0f0f0;
+  }
+  

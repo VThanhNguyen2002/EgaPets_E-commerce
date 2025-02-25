@@ -1,0 +1,36 @@
+.authButton {
+    background: none;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: color 0.2s ease;
+  }
+  
+  .authButton:hover {
+    color: #ddd;
+  }
+  
+  .userIcon {
+    font-size: 20px;
+  }
+  
+  .authInfo {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .smallText {
+    font-size: 12px;
+    line-height: 1;
+    color: #aaa;
+  }
+  
+  .bigText {
+    font-size: 14px;
+    font-weight: bold;
+  }
+  
