@@ -1,0 +1,90 @@
+.dogFoodSection {
+    margin: 40px auto;
+    max-width: 1200px;
+    padding: 0 16px;
+  }
+  
+  .sectionTitle {
+    font-size: 2.2rem;   /* Tăng size lớn hơn */
+    font-weight: 700;    /* Đậm hơn */
+    color: #fff;         /* Hoặc #eee, #f1f1f1, vv... */
+    margin-bottom: 24px;
+    text-align: center;  /* Canh giữa tiêu đề */
+  }
+  
+  .tabButtons {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+    justify-content: center;
+  }
+  
+  .tabButtons button {
+    padding: 8px 16px;
+    cursor: pointer;
+    border: 1px solid #ccc;
+    background-color: #eee;
+    font-weight: 500;
+    border-radius: 4px;
+  }
+  
+  .activeTab {
+    background-color: #00b43b;
+    color: #fff;
+  }
+  
+  .productGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 16px;
+  }
+  
+  .productCard {
+    background: #222;
+    padding: 16px;
+    border-radius: 8px;
+    text-align: center;
+    color: #fff;
+  }
+  
+  .productImage {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    margin-bottom: 8px;
+  }
+  
+  .productName {
+    font-size: 1rem;
+    margin: 8px 0;
+  }
+  
+  .priceWrapper {
+    margin-bottom: 8px;
+  }
+  
+  .price {
+    font-size: 1.1rem;
+    color: #ffa500;
+    margin-right: 8px;
+  }
+  
+  .oldPrice {
+    text-decoration: line-through;
+    color: #aaa;
+    margin-right: 8px;
+  }
+  
+  .discount {
+    background-color: #ff3333;
+    color: #fff;
+    padding: 2px 4px;
+    border-radius: 4px;
+    font-size: 0.9rem;
+  }
+  
+  .rating {
+    font-size: 1rem;
+    color: #ffdd00;
+  }
+  
