@@ -1,0 +1,103 @@
+.navbar {
+    position: fixed;
+    top: 60px; /* Dưới headerTop */
+    left: 0;
+    width: 100%;
+    background-color: #a02800; /* Màu đỏ */
+    height: 50px;
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  }
+  
+  .navList {
+    display: flex;
+    flex: 1;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    /* Cách đều hai đầu */
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 40px;
+  }
+  
+  .navItem {
+    position: relative;
+    display: flex;
+    align-items: center;
+    height: 50px;
+  }
+  
+  .navLink {
+    color: white;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: bold;
+    height: 100%;
+    padding: 0 10px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  
+  .navLink:hover {
+    background-color: #ffd700; /* Hover vàng */
+    color: #000;
+  }
+  
+  .icon {
+    margin-right: 5px;
+  }
+  
+  /* Dành cho "Danh mục sản phẩm" */
+  .catButton {
+    background-color: #a02800;
+    border: none;
+  }
+  
+  /* Icon Hệ thống cửa hàng, Hotline */
+  .linkIcon {
+    margin-right: 5px;
+    font-size: 16px;
+  }
+  
+  /* MegaMenu dropdown tràn toàn chiều ngang */
+  .megaMenu {
+    position: absolute;
+    left: 0;
+    top: 50px; /* Xuống dưới thanh .navItem */
+    width: 100vw; /* Tràn cả màn hình */
+    background-color: #a02800; /* Cùng màu đỏ */
+    padding: 20px 40px;
+    z-index: 9999;
+    color: white;
+  }
+  
+  .megaMenuContent {
+    display: flex;
+    gap: 40px;
+  }
+  
+  .megaMenuColumn h4 {
+    margin: 0 0 10px;
+    font-size: 16px;
+  }
+  
+  .megaMenuColumn ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .megaMenuColumn li {
+    margin: 5px 0;
+    cursor: pointer;
+  }
+  
+  .megaMenuColumn li:hover {
+    text-decoration: underline;
+  }
+  

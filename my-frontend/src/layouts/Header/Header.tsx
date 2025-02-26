@@ -4,26 +4,30 @@ import CartIcon from "../../components/CartIcon/CartIcon";
 import SearchBar from "../../components/SearchBar/SearchBar";
 import AuthButton from "../../components/AuthButton/AuthButton";
 import logo from "../../assets/Logo.jpg";
+import NavBar from "../../components/NavBar/NavBar";
 
 const Header = () => {
   return (
-    <header className={styles.header}>
-      {/* Logo */}
-      <div className={styles.logoWrapper}>
-        <img src={logo} alt="EGA PETS" className={styles.logoImg} />
+    <header>
+      {/* Thanh trên cùng (đen) */}
+      <div className={styles.headerTop}>
+        <div className={styles.logoWrapper}>
+          <img src={logo} alt="EGA PETS" className={styles.logoImg} />
+        </div>
+
+        <div className={styles.searchArea}>
+          <SearchBar />
+        </div>
+
+        <div className={styles.actions}>
+          <LanguageSwitcher />
+          <AuthButton />
+          <CartIcon />
+        </div>
       </div>
 
-      {/* SearchBar */}
-      <div className={styles.searchArea}>
-        <SearchBar />
-      </div>
-
-      {/* Language, Cart, AuthButton */}
-      <div className={styles.actions}>
-        <LanguageSwitcher />
-        <AuthButton />
-        <CartIcon />
-      </div>
+      {/* NavBar bên dưới (đỏ) */}
+      <NavBar />
     </header>
   );
 };

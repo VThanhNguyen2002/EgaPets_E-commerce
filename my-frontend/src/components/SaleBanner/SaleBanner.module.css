@@ -1,0 +1,33 @@
+.saleBanner {
+    background-color: #a02800;
+    color: #fff;
+    text-align: center;
+    padding: 20px 10px;
+    margin: 20px 0;
+    border-radius: 8px;
+    width: 1265px;
+  }
+  
+  .saleBanner h3 {
+    margin: 0 0 10px;
+  }
+  
+  .saleActions {
+    display: inline-flex;
+    gap: 10px;
+  }
+  
+  .saleActions button {
+    background: #fff;
+    color: #a02800;
+    border: none;
+    padding: 8px 12px;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 6px;
+  }
+  .saleActions button:hover {
+    background: #ffd700;
+    color: #000;
+  }
+  
