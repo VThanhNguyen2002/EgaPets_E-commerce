@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styles from "./IntroCarousel.module.css";
 import ImgIntro from "../../assets/IntroImg.jpg";
 
@@ -11,6 +11,16 @@ const banners = [
 const IntroCarousel = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isHover, setIsHover] = useState(false);
+
+  // Tự động chuyển slide sau 5 giây
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      handleNext();
+    }, 5000);
+
+    return () => clearTimeout(timer);
+  }, [currentIndex]); 
+  // Mỗi lần currentIndex thay đổi thì set lại timer
 
   const handleNext = () => {
     setCurrentIndex((prev) => (prev + 1) % banners.length);

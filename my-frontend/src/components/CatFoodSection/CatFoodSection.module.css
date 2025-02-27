@@ -1,92 +1,153 @@
 .catFoodSection {
-    margin: 40px auto;
-    max-width: 1200px;
-    padding: 0 16px;
-  }
-  
-  .sectionTitle {
-    font-size: 2.2rem;   /* Tăng size lớn hơn */
-    font-weight: 700;    /* Đậm hơn */
-    color: #fff;         /* Hoặc #eee, #f1f1f1, vv... */
-    margin-bottom: 24px;
-    text-align: center;  /* Canh giữa tiêu đề */
-  }
-  
-  
-  .tabButtons {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 16px;
-    justify-content: center;
-  }
-  
-  
-  .tabButtons button {
-    padding: 8px 16px;
-    cursor: pointer;
-    border: 1px solid #ccc;
-    background-color: #eee;
-    font-weight: 500;
-    border-radius: 4px;
-  }
-  
-  .activeTab {
-    background-color: #ff7750;
-    color: #fff;
-  }
-  
-  .productGrid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: 16px;
-  }
-  
-  .productCard {
-    background: #222;
-    padding: 16px;
-    border-radius: 8px;
-    text-align: center;
-    color: #fff;
-  }
-  
-  .productImage {
-    width: 100%;
-    height: 150px;
-    object-fit: cover;
-    margin-bottom: 8px;
-  }
-  
-  .productName {
-    font-size: 1rem;
-    margin: 8px 0;
-  }
-  
-  .priceWrapper {
-    margin-bottom: 8px;
-  }
-  
-  .price {
-    font-size: 1.1rem;
-    color: #ffa500;
-    margin-right: 8px;
-  }
-  
-  .oldPrice {
-    text-decoration: line-through;
-    color: #aaa;
-    margin-right: 8px;
-  }
-  
-  .discount {
-    background-color: #ff3333;
-    color: #fff;
-    padding: 2px 4px;
-    border-radius: 4px;
-    font-size: 0.9rem;
-  }
-  
-  .rating {
-    font-size: 1rem;
-    color: #ffdd00;
-  }
-  
+  margin: 40px auto;
+  max-width: 1200px;
+  padding: 0 16px;
+}
+
+.sectionTitle {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.tabButtons {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  justify-content: center;
+}
+
+.tabButtons button {
+  padding: 8px 16px;
+  cursor: pointer;
+  border: 1px solid #ccc;
+  background-color: #eee;
+  font-weight: 500;
+  border-radius: 4px;
+}
+
+.activeTab {
+  background-color: #ff7750;
+  color: #fff;
+}
+
+.productGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 16px;
+}
+
+.productCard {
+  background: #222;
+  padding: 16px;
+  border-radius: 8px;
+  text-align: center;
+  color: #fff;
+  position: relative;
+}
+
+/* Bọc ảnh để xử lý hover */
+.imageContainer {
+  position: relative;
+  width: 100%;
+  height: 150px;
+  margin-bottom: 8px;
+  overflow: hidden; /* Nếu ảnh tràn */
+}
+
+/* Ảnh mặc định */
+.defaultImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Ảnh hover (ẩn mặc định) */
+.hoverImage {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+/* Hiện ảnh hover khi rê chuột */
+.imageContainer:hover .hoverImage {
+  opacity: 1;
+}
+
+/* Icon ẩn mặc định */
+.hoverIcons {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  gap: 8px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+/* Khi hover vào imageContainer, hiện icon */
+.imageContainer:hover .hoverIcons {
+  opacity: 1;
+}
+
+/* Style của icon */
+.iconItem {
+  width: 36px;
+  height: 36px;
+  background: rgba(0,0,0,0.6);
+  color: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1.2rem;
+}
+.iconItem:hover {
+  background: rgba(255,255,255,0.8);
+  color: #000;
+}
+
+/* Tiêu đề, giá */
+.productName {
+  font-size: 1rem;
+  margin: 8px 0;
+}
+
+.priceWrapper {
+  margin-bottom: 8px;
+}
+
+.price {
+  font-size: 1.1rem;
+  color: #ffa500;
+  margin-right: 8px;
+}
+
+.oldPrice {
+  text-decoration: line-through;
+  color: #aaa;
+  margin-right: 8px;
+}
+
+.discount {
+  background-color: #ff3333;
+  color: #fff;
+  padding: 2px 4px;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+.rating {
+  font-size: 1rem;
+  color: #ffdd00;
+}

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import styles from "./CatFoodSection.module.css";
 
+// Thêm type Product => hoverImage?: string;
 interface Product {
   id: number;
   name: string;
@@ -8,10 +9,10 @@ interface Product {
   oldPrice?: number;
   discount?: number;
   image: string;
+  hoverImage?: string; // ảnh thay thế khi hover
   rating: number;
 }
 
-// Data ảo cho 3 tab: "Thức ăn cho mèo", "Thức ăn ướt", "Snack cho mèo"
 const catFoodData = {
   dry: [
     {
@@ -20,14 +21,16 @@ const catFoodData = {
       price: 85000,
       oldPrice: 90000,
       discount: 6,
-      image: "/src/assets/cat1.jpg", // Bạn thay bằng ảnh thật trong folder assets
+      image: "/src/assets/SanPham1.jpg",
+      hoverImage: "/src/assets/SanPham.jpg",
       rating: 5,
     },
     {
       id: 2,
       name: "Hạt Cho Mèo Snappy Tom",
       price: 70000,
-      image: "/src/assets/cat2.jpg",
+      image: "/src/assets/SanPham1.jpg",
+      hoverImage: "/src/assets/SanPham.jpg",
       rating: 4,
     },
   ],
@@ -38,7 +41,8 @@ const catFoodData = {
       price: 15000,
       oldPrice: 20000,
       discount: 25,
-      image: "/src/assets/cat3.jpg",
+      image: "/src/assets/SanPham1.jpg",
+      hoverImage: "/src/assets/SanPham.jpg",
       rating: 5,
     },
     {
@@ -47,7 +51,8 @@ const catFoodData = {
       price: 14500,
       oldPrice: 17000,
       discount: 15,
-      image: "/src/assets/cat4.jpg",
+      image: "/src/assets/SanPham1.jpg",
+      hoverImage: "/src/assets/SanPham.jpg",
       rating: 5,
     },
   ],
@@ -56,55 +61,11 @@ const catFoodData = {
       id: 5,
       name: "Bánh Thưởng Cho Mèo Catnip Biscuits",
       price: 64000,
-      image: "/src/assets/cat5.jpg",
+      image: "/src/assets/SanPham1.jpg",
+      hoverImage: "/src/assets/SanPham.jpg",
       rating: 5,
     },
-    {
-      id: 6,
-      name: "Cỏ Mèo Bạc Hà Catnip Cho Mèo",
-      price: 50000,
-      oldPrice: 60000,
-      discount: 17,
-      image: "/src/assets/cat6.jpg",
-      rating: 5,
-    },
-    {
-        id: 7,
-        name: "Cỏ Mèo Bạc Hà Catnip Cho Mèo",
-        price: 50000,
-        oldPrice: 60000,
-        discount: 17,
-        image: "/src/assets/cat6.jpg",
-        rating: 5,
-    },
-    {
-        id: 7,
-        name: "Cỏ Mèo Bạc Hà Catnip Cho Mèo",
-        price: 50000,
-        oldPrice: 60000,
-        discount: 17,
-        image: "/src/assets/cat6.jpg",
-        rating: 5,
-    },
-    {
-        id: 7,
-        name: "Cỏ Mèo Bạc Hà Catnip Cho Mèo",
-        price: 50000,
-        oldPrice: 60000,
-        discount: 17,
-        image: "/src/assets/cat6.jpg",
-        rating: 5,
-    },
-    {
-        id: 7,
-        name: "Cỏ Mèo Bạc Hà Catnip Cho Mèo",
-        price: 50000,
-        oldPrice: 60000,
-        discount: 17,
-        image: "/src/assets/cat6.jpg",
-        rating: 5,
-    },
-    
+    // ... Tiếp tục
   ],
 };
 
@@ -114,7 +75,28 @@ const CatFoodSection: React.FC = () => {
   const renderProducts = (products: Product[]) => {
     return products.map((p) => (
       <div className={styles.productCard} key={p.id}>
-        <img src={p.image} alt={p.name} className={styles.productImage} />
+        {/* Bọc ảnh trong 1 div để dễ xử lý hover */}
+        <div className={styles.imageContainer}>
+          <img
+            src={p.image}
+            alt={p.name}
+            className={`${styles.productImage} ${styles.defaultImage}`}
+          />
+          {/* Ảnh hover (ẩn mặc định) */}
+          {p.hoverImage && (
+            <img
+              src={p.hoverImage}
+              alt={p.name}
+              className={`${styles.productImage} ${styles.hoverImage}`}
+            />
+          )}
+          {/* Khối icon (ẩn mặc định, hiện khi hover) */}
+          <div className={styles.hoverIcons}>
+            <div className={styles.iconItem} title="xem nhanh">👁</div>
+            <div className={styles.iconItem} title="so sánh">⇄</div>
+          </div>
+        </div>
+
         <h3 className={styles.productName}>{p.name}</h3>
         <div className={styles.priceWrapper}>
           <span className={styles.price}>{p.price.toLocaleString()}đ</span>

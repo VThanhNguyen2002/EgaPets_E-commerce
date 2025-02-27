@@ -1,43 +1,47 @@
 .petProductSection {
-    margin: 40px auto;
-    max-width: 1200px;
-    padding: 0 16px;
-    text-align: center;
-  }
-  
-  .sectionTitle {
-    font-size: 2.2rem;   /* Tăng size lớn hơn */
-    font-weight: 700;    /* Đậm hơn */
-    color: #fff;         /* Hoặc #eee, #f1f1f1, vv... */
-    margin-bottom: 24px;
-    text-align: center;  /* Canh giữa tiêu đề */
-  }
-  
-  
-  .circleContainer {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 24px;
-  }
-  
-  .circleItem {
-    width: 180px; 
-    height: 250px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-  }
-  
-  .circleImage {
-    width: 100%;
-    height: 200px;
-    background-color: #fff;
-    border-radius: 50%;
-    object-fit: cover;
-    margin-bottom: 8px;
-  }
-  
-  
+  margin: 40px auto;
+  max-width: 1200px;
+  padding: 0 16px;
+  text-align: center;
+}
+
+.sectionTitle {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.circleContainer {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 24px;
+}
+
+.circleItem {
+  width: 180px;
+  height: 250px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+/* Khi hover, scale to + tăng độ sáng. Tuỳ ý */
+.circleItem:hover {
+  transform: scale(1.05);
+  opacity: 1; /* Hoặc filter: brightness(1.1) */
+}
+
+.circleImage {
+  width: 100%;
+  height: 200px;
+  background-color: #fff;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 8px;
+}
