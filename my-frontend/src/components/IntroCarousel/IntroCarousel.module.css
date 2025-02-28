@@ -1,0 +1,56 @@
+.carouselWrapper {
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+    /* Đảm bảo ảnh full ngang */
+    margin: 0 auto;
+  }
+  
+  .slideContainer {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+  }
+  
+  /* Mỗi slide chiếm 100% chiều ngang */
+  .slide {
+    min-width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .carouselImg {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+  }
+  
+  /* Nút mũi tên */
+  .arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 30px;
+    background: rgba(0,0,0,0.3);
+    color: #fff;
+    border: none;
+    padding: 8px 12px;
+    cursor: pointer;
+    z-index: 10;
+    border-radius: 5px;
+  }
+  
+  /* Arrow trái */
+  .leftArrow {
+    left: 20px;
+  }
+  
+  /* Arrow phải */
+  .rightArrow {
+    right: 20px;
+  }
+  
+  .arrow:hover {
+    background: rgba(0,0,0,0.6);
+  }
+  
