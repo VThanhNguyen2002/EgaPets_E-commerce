@@ -1,7 +1,9 @@
 import FloatingIcons from "../../components/FloatingIcons/FloatingIcons";
 import Header from "../../layouts/Header/Header";
+import Footer from "../../layouts/Footer/Footer";
 import IntroCarousel from "../../components/IntroCarousel/IntroCarousel";
 import SaleBanner from "../../components/SaleBanner/SaleBanner";
+import SaleCountdownBanner from "../../components/SaleCountdownBanner/SaleCountdownBanner";
 
 import CatFoodSection from "../../components/CatFoodSection/CatFoodSection";
 import DogFoodSection from "../../components/DogFoodSection/DogFoodSection";
@@ -21,6 +23,8 @@ const HomePage = () => {
       {/* Banner "Mua nhiều giảm sâu" */}
       <SaleBanner />
 
+      <SaleCountdownBanner />
+
       {/* Sản phẩm cho thú cưng */}
       <PetProductSection />
 
@@ -30,6 +34,7 @@ const HomePage = () => {
       {/* Thức ăn cho chó */}
       <DogFoodSection />
 
+      <Footer />
     </div>
   );
 };
