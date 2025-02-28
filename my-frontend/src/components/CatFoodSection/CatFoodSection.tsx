@@ -1,15 +1,19 @@
 import React, { useState } from "react";
 import styles from "./CatFoodSection.module.css";
+import QuickViewModal from "../QuickViewModal/QuickViewModal";
+import ProductHoverActions from "../ProductHoverActions/ProductHoverActions";
+import CompareBar from "../CompareBar/CompareBar";
+import sharedStyles from "../common/SharedStyles.module.css";
 
-// Thêm type Product => hoverImage?: string;
-interface Product {
+// Khai báo type Product (có thể tách ra file riêng)
+export interface Product {
   id: number;
   name: string;
   price: number;
   oldPrice?: number;
   discount?: number;
   image: string;
-  hoverImage?: string; // ảnh thay thế khi hover
+  hoverImage?: string; 
   rating: number;
 }
 
@@ -65,24 +69,58 @@ const catFoodData = {
       hoverImage: "/src/assets/SanPham.jpg",
       rating: 5,
     },
-    // ... Tiếp tục
+    // ...
   ],
 };
 
 const CatFoodSection: React.FC = () => {
   const [activeTab, setActiveTab] = useState<"dry" | "wet" | "snack">("dry");
 
+  // State cho popup “xem nhanh”
+  const [isQuickViewOpen, setIsQuickViewOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+
+  // State cho “so sánh”
+  const [compareList, setCompareList] = useState<Product[]>([]);
+
+  const handleQuickView = (product: Product) => {
+    setSelectedProduct(product);
+    setIsQuickViewOpen(true);
+  };
+
+  const handleCloseQuickView = () => {
+    setIsQuickViewOpen(false);
+    setSelectedProduct(null);
+  };
+
+  const handleRemoveItem = (id: number) => {
+    setCompareList((prev) => prev.filter((p) => p.id !== id));
+  };
+
+  // Thêm / gỡ sản phẩm trong compareList
+  const handleCompare = (product: Product) => {
+    setCompareList((prev) => {
+      const isExist = prev.find((p) => p.id === product.id);
+      if (isExist) {
+        // Nếu đã có => gỡ ra
+        return prev.filter((p) => p.id !== product.id);
+      }
+      // Chưa có => thêm
+      return [...prev, product];
+    });
+  };
+
   const renderProducts = (products: Product[]) => {
     return products.map((p) => (
       <div className={styles.productCard} key={p.id}>
-        {/* Bọc ảnh trong 1 div để dễ xử lý hover */}
         <div className={styles.imageContainer}>
+          {/* Ảnh chính */}
           <img
             src={p.image}
             alt={p.name}
             className={`${styles.productImage} ${styles.defaultImage}`}
           />
-          {/* Ảnh hover (ẩn mặc định) */}
+          {/* Ảnh hover */}
           {p.hoverImage && (
             <img
               src={p.hoverImage}
@@ -90,11 +128,12 @@ const CatFoodSection: React.FC = () => {
               className={`${styles.productImage} ${styles.hoverImage}`}
             />
           )}
-          {/* Khối icon (ẩn mặc định, hiện khi hover) */}
-          <div className={styles.hoverIcons}>
-            <div className={styles.iconItem} title="xem nhanh">👁</div>
-            <div className={styles.iconItem} title="so sánh">⇄</div>
-          </div>
+
+          {/* Icons xem nhanh / so sánh */}
+          <ProductHoverActions
+            onQuickView={() => handleQuickView(p)}
+            onCompare={() => handleCompare(p)}
+          />
         </div>
 
         <h3 className={styles.productName}>{p.name}</h3>
@@ -105,6 +144,8 @@ const CatFoodSection: React.FC = () => {
           )}
           {p.discount && <span className={styles.discount}>-{p.discount}%</span>}
         </div>
+
+        {/* Rating */}
         <div className={styles.rating}>
           {Array.from({ length: p.rating }).map((_, i) => (
             <span key={i}>⭐</span>
@@ -116,7 +157,7 @@ const CatFoodSection: React.FC = () => {
 
   return (
     <div className={styles.catFoodSection}>
-      <h2 className={styles.sectionTitle}>Dinh dưỡng cho mèo 🐾</h2>
+      <h2 className={sharedStyles.sectionTitle}>Dinh dưỡng cho mèo 🐾</h2>
       <div className={styles.tabButtons}>
         <button
           className={activeTab === "dry" ? styles.activeTab : ""}
@@ -143,6 +184,21 @@ const CatFoodSection: React.FC = () => {
         {activeTab === "wet" && renderProducts(catFoodData.wet)}
         {activeTab === "snack" && renderProducts(catFoodData.snack)}
       </div>
+
+      {/* Modal “Xem nhanh” */}
+      <QuickViewModal
+        product={selectedProduct}
+        isOpen={isQuickViewOpen}
+        onClose={handleCloseQuickView}
+      />
+
+      {/* CompareBar */}
+      <CompareBar
+        compareList={compareList}
+        onRemoveItem={handleRemoveItem}
+        onClearAll={() => setCompareList([])}
+        onCompareNow={() => alert("So sánh ngay!")}
+      />
     </div>
   );
 };

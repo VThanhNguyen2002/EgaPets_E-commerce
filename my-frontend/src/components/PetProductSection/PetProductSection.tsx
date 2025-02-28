@@ -1,5 +1,6 @@
 import React from "react";
 import styles from "./PetProductSection.module.css";
+import sharedStyles from "../common/SharedStyles.module.css";
 
 // Data giả cho các loại sản phẩm thú cưng
 const petProducts = [
@@ -38,7 +39,7 @@ const petProducts = [
 const PetProductSection: React.FC = () => {
   return (
     <div className={styles.petProductSection}>
-      <h2 className={styles.sectionTitle}>Sản phẩm cho thú cưng 🐾</h2>
+      <h2 className={sharedStyles.sectionTitle}>Sản phẩm cho thú cưng 🐾</h2>
       <div className={styles.circleContainer}>
         {petProducts.map((item) => (
           <div key={item.id} className={styles.circleItem}>
