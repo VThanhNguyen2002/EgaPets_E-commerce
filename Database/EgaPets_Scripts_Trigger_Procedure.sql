@@ -1,9 +1,49 @@
 ﻿USE EgaPets_DB;
 GO
 
-SELECT * FROM sys.triggers;
-SELECT * FROM sys.procedures;
+DISABLE TRIGGER trg_InsertSanPham ON SanPham;
+ENABLE TRIGGER trg_InsertSanPham ON SanPham;
+GO
 
+--  Kiểm tra danh sách Trigger đang tồn tại
+SELECT 
+    t.name AS TriggerName,
+    OBJECT_NAME(t.parent_id) AS TableName,
+    t.type_desc AS TriggerType,
+    t.is_disabled AS IsDisabled
+FROM sys.triggers t;
+GO
+
+-- Kiểm tra danh sách Stored Procedure
+SELECT 
+    name AS ProcedureName,
+    create_date AS CreatedDate,
+    modify_date AS LastModifiedDate
+FROM sys.procedures
+ORDER BY modify_date DESC;
+
+-- Kiểm tra Trigger nào được kích hoạt gần đây
+SELECT 
+    name AS TriggerName,
+    OBJECT_NAME(parent_id) AS TableName,
+    create_date AS CreatedDate,
+    modify_date AS LastModifiedDate,
+    is_disabled AS IsDisabled
+FROM sys.triggers
+ORDER BY modify_date DESC;
+GO
+
+-- Kiểm tra Trigger gắn với bảng nào
+SELECT 
+    t.name AS TriggerName,
+    p.name AS ParentTable,
+    t.type_desc AS TriggerType
+FROM sys.triggers t
+JOIN sys.objects p ON t.parent_id = p.object_id;
+GO
+
+DROP Trigger trg_InsertSanPham
+GO
 
 -- Tạo TRIGGER log thay đổi
 	--  🔹 Khi thêm sản phẩm (INSERT)
@@ -17,6 +57,10 @@ BEGIN
         CONCAT(N'Thêm sản phẩm: ', i.ten_san_pham, N' - Giá: ', i.gia_thanh)
     FROM inserted i;
 END;
+GO
+
+DISABLE TRIGGER trg_InsertSanPham ON SanPham;
+ENABLE TRIGGER trg_InsertSanPham ON SanPham;
 GO
 
 	-- 🔹 Khi cập nhật sản phẩm (UPDATE)
@@ -48,7 +92,7 @@ END;
 GO
 
 -- Stored Procedure: Tạo đơn hàng & Sinh QR Code
-ALTER PROCEDURE TaoDonHang
+CREATE PROCEDURE TaoDonHang
     @ten_khach_hang NVARCHAR(255),
     @email NVARCHAR(255),
     @so_dien_thoai NVARCHAR(15),
@@ -93,8 +137,6 @@ BEGIN
     );
 END;
 GO
-
-
 
 DECLARE @hoa_don_id INT;
 DECLARE @phuong_thuc_id INT;
