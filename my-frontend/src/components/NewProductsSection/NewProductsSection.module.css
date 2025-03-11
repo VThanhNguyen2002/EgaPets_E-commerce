@@ -84,13 +84,18 @@
   font-size: 1rem;
   color: #ffa14a;
   text-align: center;
-  height: 50px;
+  height: 50px; /* Chiều cao cố định phù hợp với số dòng */
   display: -webkit-box;
-  -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2; /* Giới hạn hiển thị tối đa 2 dòng */
   overflow: hidden;
+  text-overflow: ellipsis;
+  word-break: break-word; /* Đảm bảo từ không bị tràn */
+  
+  /* Thêm tiêu chuẩn mới để hỗ trợ tốt hơn */
+  line-clamp: 2;
+  box-orient: vertical;
 }
-
 
 
 .priceWrapper {
