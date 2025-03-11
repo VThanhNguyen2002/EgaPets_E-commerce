@@ -1,0 +1,84 @@
+.loginPage {
+    background-color: #1c1c1c; /* Dark background */
+    color: #fff;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  
+  /* Container chính giữa */
+  .loginContainer {
+    width: 100%;
+    max-width: 400px;
+    margin: 60px auto;
+    background-color: #2a2a2a;
+    padding: 24px;
+    border-radius: 6px;
+  }
+  
+  .loginContainer h2 {
+    text-align: center;
+    margin-bottom: 16px;
+    color: #ffa14a; /* Nhấn màu */
+  }
+  
+  .loginContainer p {
+    text-align: center;
+    margin-bottom: 24px;
+  }
+  
+  /* Form đăng nhập */
+  .form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .form label {
+    font-weight: 500;
+  }
+  
+  .form input {
+    padding: 10px;
+    border: 1px solid #444;
+    border-radius: 4px;
+    background-color: #333;
+    color: #fff;
+  }
+  
+  .errorMsg {
+    color: #ff4c4c;
+    font-size: 0.9rem;
+  }
+  
+  .formActions {
+    text-align: center;
+    margin-top: 12px;
+  }
+  
+  .loginButton {
+    background-color: #ff6600;
+    color: #fff;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 4px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .loginButton:hover {
+    background-color: #e65c00;
+  }
+  
+  /* Quên mật khẩu */
+  .forgotPassword {
+    margin-top: 16px;
+    text-align: center;
+    font-size: 0.9rem;
+  }
+  
+  .forgotPassword a {
+    color: #ffa14a;
+    text-decoration: underline;
+  }
+  

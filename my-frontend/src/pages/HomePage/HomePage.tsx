@@ -8,6 +8,8 @@ import SaleCountdownBanner from "../../components/SaleCountdownBanner/SaleCountd
 import CatFoodSection from "../../components/CatFoodSection/CatFoodSection";
 import DogFoodSection from "../../components/DogFoodSection/DogFoodSection";
 import PetProductSection from "../../components/PetProductSection/PetProductSection";
+import ServiceSection from "../../components/ServiceSection/ServiceSection";
+import NewProductsSection from "../../components/NewProductsSection/NewProductsSection";
 
 import styles from "./HomePage.module.css";
 
@@ -33,6 +35,12 @@ const HomePage = () => {
 
       {/* Thức ăn cho chó */}
       <DogFoodSection />
+
+      {/* Thêm mục Dịch Vụ */}
+      <ServiceSection />
+
+      {/* Section Sản phẩm mới */}
+      <NewProductsSection />
 
       <Footer />
     </div>

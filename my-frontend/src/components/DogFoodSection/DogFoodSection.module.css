@@ -143,3 +143,19 @@
   font-size: 1rem;
   color: #ffdd00;
 }
+
+.wrapperIcon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  gap: 8px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+/* Khi hover vào .imageContainer, mở .wrapperIcon ra */
+.imageContainer:hover .wrapperIcon {
+  opacity: 1;
+}
