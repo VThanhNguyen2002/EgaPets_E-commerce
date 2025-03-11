@@ -56,7 +56,6 @@
   display: block;
 }
 
-
 /* Ảnh hover */
 .hoverImage {
   position: absolute;
@@ -112,4 +111,19 @@
 .rating {
   font-size: 1rem;
   color: #ffdd00;
+}
+
+.wrapperIcon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  gap: 8px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.imageContainer:hover .wrapperIcon {
+  opacity: 1;
 }

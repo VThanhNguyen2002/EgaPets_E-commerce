@@ -1,16 +1,30 @@
 .footer {
-    width: 100vw;
-    margin-left: calc(50% - 50vw);
-    margin-right: calc(50% - 50vw);
-    background-color: #222;
-    color: #ccc;
-    padding: 40px 20px 20px;
-    font-size: 14px;
-    /* Nếu vẫn chưa full hết, thêm: */ 
-    box-sizing: border-box;
-  }
-
+  position: relative;
+  /* Dùng 100vw để full chiều rộng viewport */
+  width: 100vw;
   
+  /*
+    Di chuyển footer ra chính giữa màn hình,
+    rồi trừ nửa chiều rộng viewport -> full bleed
+  */
+  left: 50%;
+  margin-left: calc(-50vw);
+
+  /*
+    Nếu bị xuất hiện thanh cuộn ngang,
+    bạn có thể thử overflow-x: hidden ở body,
+    hoặc cẩn thận fix layout khác.
+  */
+
+  background-color: #222;
+  color: #ccc;
+  padding: 40px 20px 20px;
+  font-size: 14px;
+  box-sizing: border-box;
+  z-index: 1; /* để nổi lên nếu cần */
+  overflow-x: hidden;
+}
+
   .topRow {
     max-width: 1200px;
     margin: 0 auto;
