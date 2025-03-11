@@ -105,19 +105,22 @@
 
 /* Nút X xóa lẻ */
 .removeItemBtn {
-  background: transparent;
-  color: #fff;
-  border: 1px solid #fff;
-  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
   width: 26px;
   height: 26px;
-  line-height: 24px;
-  text-align: center;
+  border-radius: 50%;
+  border: 1px solid #fff;
   cursor: pointer;
-  font-weight: 700;
   font-size: 1rem;
-  margin-left: auto;
+  font-weight: 700;
+  background: transparent;
+  color: #fff;
+  margin-left: auto; /* nếu muốn đẩy nút sát mép phải */
 }
+
 .removeItemBtn:hover {
   background: #ff7750;
   color: #000;

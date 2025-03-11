@@ -100,15 +100,26 @@ const CatFoodSection: React.FC = () => {
   // Thêm / gỡ sản phẩm trong compareList
   const handleCompare = (product: Product) => {
     setCompareList((prev) => {
+      // Kiểm tra xem sản phẩm này đã có trong compareList chưa
       const isExist = prev.find((p) => p.id === product.id);
+  
+      // Nếu đã tồn tại => gỡ ra (remove)
       if (isExist) {
-        // Nếu đã có => gỡ ra
         return prev.filter((p) => p.id !== product.id);
       }
-      // Chưa có => thêm
+  
+      // Nếu chưa tồn tại => chuẩn bị thêm mới
+      // Nhưng trước khi thêm, kiểm tra có >= 3 chưa
+      if (prev.length >= 3) {
+        alert("Bạn chỉ có thể so sánh tối đa 3 sản phẩm. Vui lòng xóa bớt!");
+        return prev; // Không thêm nữa
+      }
+  
+      // Nếu chưa đủ 3 => thêm bình thường
       return [...prev, product];
     });
   };
+  
 
   const renderProducts = (products: Product[]) => {
     return products.map((p) => (
@@ -131,6 +142,7 @@ const CatFoodSection: React.FC = () => {
 
           {/* Icons xem nhanh / so sánh */}
           <ProductHoverActions
+            wrapperClass={styles.wrapperIcon} 
             onQuickView={() => handleQuickView(p)}
             onCompare={() => handleCompare(p)}
           />
