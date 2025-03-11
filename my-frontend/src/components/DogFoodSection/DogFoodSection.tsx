@@ -101,13 +101,26 @@ const DogFoodSection: React.FC = () => {
 
   const handleCompare = (product: Product) => {
     setCompareList((prev) => {
+      // Kiểm tra xem sản phẩm này đã có trong compareList chưa
       const isExist = prev.find((p) => p.id === product.id);
+  
+      // Nếu đã tồn tại => gỡ ra (remove)
       if (isExist) {
         return prev.filter((p) => p.id !== product.id);
       }
+  
+      // Nếu chưa tồn tại => chuẩn bị thêm mới
+      // Nhưng trước khi thêm, kiểm tra có >= 3 chưa
+      if (prev.length >= 3) {
+        alert("Bạn chỉ có thể so sánh tối đa 3 sản phẩm. Vui lòng xóa bớt!");
+        return prev; // Không thêm nữa
+      }
+  
+      // Nếu chưa đủ 3 => thêm bình thường
       return [...prev, product];
     });
   };
+  
 
   const handleRemoveItem = (id: number) => {
     setCompareList((prev) => prev.filter((p) => p.id !== id));
@@ -132,6 +145,7 @@ const DogFoodSection: React.FC = () => {
 
           {/* Xem nhanh / so sánh */}
           <ProductHoverActions
+            wrapperClass={styles.wrapperIcon} 
             onQuickView={() => handleQuickView(p)}
             onCompare={() => handleCompare(p)}
           />
