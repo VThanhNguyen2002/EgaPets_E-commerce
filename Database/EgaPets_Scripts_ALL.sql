@@ -85,6 +85,12 @@ CREATE TABLE SanPham (
     ngay_tao     DATE          NOT NULL DEFAULT GETDATE()
 );
 GO
+ALTER TABLE SanPham
+ADD danh_muc_id INT NULL,
+    CONSTRAINT FK_SanPham_DanhMuc
+    FOREIGN KEY (danh_muc_id) REFERENCES DanhMucSanPham(id) ON DELETE SET NULL;
+GO
+
 
 -- ─────────────────────────────────────────────────────────────────────────
 -- BẢNG Giỏ Hàng (Liên kết với Khách Hàng & Sản Phẩm)
@@ -271,6 +277,16 @@ CREATE TABLE LichHen (
         FOREIGN KEY (dich_vu_chi_tiet_id) REFERENCES DichVuChiTiet(id) ON DELETE NO ACTION
 );
 GO
+
+-- ─────────────────────────────────────────────────────────────────────────
+-- BẢNG Danh mục sản phẩm
+-- ─────────────────────────────────────────────────────────────────────────
+CREATE TABLE DanhMucSanPham (
+    id INT IDENTITY(1,1) PRIMARY KEY,
+    ten_danh_muc NVARCHAR(255) NOT NULL UNIQUE
+);
+GO
+
 
 
 SELECT * FROM Users
@@ -484,4 +500,16 @@ INSERT INTO PhuongThucThanhToan (ten_phuong_thuc)
 VALUES 
 (N'Chuyển khoản Momo'),
 (N'Chuyển khoản Ngân hàng');
+GO
+
+-- ─────────────────────────────────────────────────────────────────────────
+-- Data DanhMucSanPham
+-- ─────────────────────────────────────────────────────────────────────────
+INSERT INTO DanhMucSanPham (ten_danh_muc) VALUES
+(N'Thức ăn cho thú cưng'),
+(N'Đồ dùng tỉa lông'),
+(N'Nhà vệ sinh'),
+(N'Phụ kiện'),
+(N'Đệm - Giường'),
+(N'Dụng cụ chải lông');
 GO

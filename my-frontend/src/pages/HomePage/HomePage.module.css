@@ -1,5 +1,8 @@
 .homeContainer {
-    margin-top: 110px;
-  }
-  
-  
+  flex-direction: column;
+  margin-top: 110px;
+}
+
+.footer {
+  margin-top: auto; /* Đẩy footer xuống dưới nếu nội dung ít */
+}
