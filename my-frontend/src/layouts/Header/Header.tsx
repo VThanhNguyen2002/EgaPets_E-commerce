@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import styles from "./Header.module.css";
 import LanguageSwitcher from "../../components/LanguageSwitcher/LanguageSwitcher";
 import CartIcon from "../../components/CartIcon/CartIcon";
@@ -7,11 +8,13 @@ import logo from "../../assets/Logo.jpg";
 import NavBar from "../../components/NavBar/NavBar";
 
 const Header = () => {
+  const navigate = useNavigate();
+
   return (
     <header>
       {/* Thanh trên cùng (đen) */}
       <div className={styles.headerTop}>
-        <div className={styles.logoWrapper}>
+        <div className={styles.logoWrapper} onClick={() => navigate("/")} style={{ cursor: "pointer" }}>
           <img src={logo} alt="EGA PETS" className={styles.logoImg} />
         </div>
 
