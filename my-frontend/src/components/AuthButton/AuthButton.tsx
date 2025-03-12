@@ -1,10 +1,12 @@
+import { useNavigate } from "react-router-dom";
 import styles from "./AuthButton.module.css";
-// Sử dụng react-icons hoặc bất kỳ icon user nào bạn thích
 import { FaUser } from "react-icons/fa";
 
 const AuthButton = () => {
+  const navigate = useNavigate();
+
   return (
-    <button className={styles.authButton}>
+    <button className={styles.authButton} onClick={() => navigate("/login")}>
       <FaUser className={styles.userIcon} />
       <div className={styles.authInfo}>
         <span className={styles.smallText}>Tài khoản</span>
