@@ -8,11 +8,9 @@ GO
 SELECT name FROM sys.databases;
 GO
 
-
 -- Xóa database
 DROP DATABASE EgaPets_DB;
 GO
-
 
 use EgaPets_DB;
 
@@ -40,5 +38,3 @@ JOIN sys.database_principals dp ON p.grantee_principal_id = dp.principal_id
 JOIN sys.objects o ON p.major_id = o.object_id
 WHERE dp.name IN ('Role_Admin', 'Role_NhanVien', 'Role_KhachHang');
 GO
-
-
