@@ -10,6 +10,7 @@ END
 GO
 
 CREATE DATABASE EgaPets_DB;
+
 USE EgaPets_DB;
 GO
 
@@ -66,6 +67,15 @@ CREATE TABLE KhachHang (
 GO
 
 -- ─────────────────────────────────────────────────────────────────────────
+-- BẢNG Danh mục sản phẩm
+-- ─────────────────────────────────────────────────────────────────────────
+CREATE TABLE DanhMucSanPham (
+    id INT IDENTITY(1,1) PRIMARY KEY,
+    ten_danh_muc NVARCHAR(255) NOT NULL UNIQUE
+);
+GO
+
+-- ─────────────────────────────────────────────────────────────────────────
 -- BẢNG Sản Phẩm
 -- ─────────────────────────────────────────────────────────────────────────
 CREATE TABLE SanPham (
@@ -82,13 +92,11 @@ CREATE TABLE SanPham (
     giam_gia     DECIMAL(5,2)  CHECK (giam_gia >= 0 AND giam_gia <= 100),
     danh_gia     FLOAT         CHECK (danh_gia >= 0 AND danh_gia <= 5),
     thanh_phan   NVARCHAR(MAX) NULL,
-    ngay_tao     DATE          NOT NULL DEFAULT GETDATE()
-);
-GO
-ALTER TABLE SanPham
-ADD danh_muc_id INT NULL,
+    ngay_tao     DATE          NOT NULL DEFAULT GETDATE(),
+    danh_muc_id  INT NULL,
     CONSTRAINT FK_SanPham_DanhMuc
-    FOREIGN KEY (danh_muc_id) REFERENCES DanhMucSanPham(id) ON DELETE SET NULL;
+        FOREIGN KEY (danh_muc_id) REFERENCES DanhMucSanPham(id) ON DELETE SET NULL
+);
 GO
 
 
@@ -114,7 +122,6 @@ ADD session_id NVARCHAR(255) NULL;
 
 ALTER TABLE GioHang
 ALTER COLUMN khach_hang_id INT NULL;
-
 
 
 -- ─────────────────────────────────────────────────────────────────────────
@@ -279,14 +286,37 @@ CREATE TABLE LichHen (
 GO
 
 -- ─────────────────────────────────────────────────────────────────────────
--- BẢNG Danh mục sản phẩm
+-- BẢNG FaceID
 -- ─────────────────────────────────────────────────────────────────────────
-CREATE TABLE DanhMucSanPham (
+CREATE TABLE FaceID (
     id INT IDENTITY(1,1) PRIMARY KEY,
-    ten_danh_muc NVARCHAR(255) NOT NULL UNIQUE
+    user_id INT NOT NULL,
+    face_vector VARBINARY(MAX) NOT NULL, 
+    created_at DATETIME NOT NULL DEFAULT GETDATE(),
+    updated_at DATETIME NULL,
+	pose NVARCHAR(50) NULL,
+
+    CONSTRAINT FK_FaceID_Users
+        FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE
 );
 GO
 
+-- ─────────────────────────────────────────────────────────────────────────
+-- BẢNG FaceIDLogs
+-- ─────────────────────────────────────────────────────────────────────────
+CREATE TABLE FaceIDLogs (
+    id INT IDENTITY(1,1) PRIMARY KEY,
+    user_id INT NOT NULL,
+    action NVARCHAR(50) NOT NULL, -- 'enroll' / 'verify' / 'failed'
+    ip_address NVARCHAR(100) NULL,
+    device_info NVARCHAR(255) NULL,
+    result NVARCHAR(50) NOT NULL, -- 'success' / 'fail'
+    created_at DATETIME DEFAULT GETDATE(),
+
+    CONSTRAINT FK_FaceIDLogs_Users
+        FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE
+);
+GO
 
 
 SELECT * FROM Users
@@ -313,203 +343,3 @@ SELECT * FROM DichVu
 
 SELECT * FROM DichVuChiTiet
 
-
--- ─────────────────────────────────────────────────────────────────────────
--- Data SanPham
--- ─────────────────────────────────────────────────────────────────────────
-INSERT INTO SanPham (ma_san_pham, ten_san_pham, thuong_hieu, so_gram, loai, nguon_goc, han_su_dung, so_luong, gia_thanh, giam_gia, danh_gia, thanh_phan, ngay_tao)
-VALUES
-(N'P001', N'Royal Canin Medium Puppy', N'Royal Canin', 1000, N'Thức ăn cho chó', N'Pháp', '2026-05-15', 50, 350000, 10, 4.8, N'Protein, Vitamin E, DHA, Omega 3', GETDATE()),
-(N'P002', N'Pedigree Adult Beef', N'Pedigree', 1200, N'Thức ăn cho chó', N'Mỹ', '2025-10-20', 30, 290000, 5, 4.5, N'Thịt bò, Canxi, Chất xơ', GETDATE()),
-(N'P003', N'Whiskas Tuna Kitten', N'Whiskas', 500, N'Thức ăn cho mèo', N'Thái Lan', '2025-07-10', 40, 180000, 8, 4.7, N'Cá ngừ, Vitamin A, Taurine', GETDATE()),
-(N'P004', N'Ganador Salmon Adult', N'Ganador', 1500, N'Thức ăn cho chó', N'Tây Ban Nha', '2025-12-12', 60, 420000, 12, 4.6, N'Cá hồi, Omega 6, Chất đạm', GETDATE()),
-(N'P005', N'Me-O Chicken', N'Me-O', 800, N'Thức ăn cho mèo', N'Thái Lan', '2026-02-28', 55, 220000, 6, 4.4, N'Thịt gà, Taurine, Kẽm', GETDATE()),
-(N'P006', N'Cesar Grilled Chicken', N'Cesar', 400, N'Thức ăn ướt cho chó', N'Mỹ', '2025-08-22', 25, 95000, 3, 4.9, N'Thịt gà nướng, Rau củ', GETDATE()),
-(N'P007', N'Friskies Seafood Sensations', N'Friskies', 1000, N'Thức ăn cho mèo', N'Mỹ', '2026-03-30', 20, 270000, 7, 4.5, N'Tôm, Cá, Vitamin D', GETDATE()),
-(N'P008', N'Cat Litter Charcoal', N'PetSafe', 5000, N'Vệ sinh cho mèo', N'Việt Nam', '2027-01-10', 100, 180000, 0, 4.8, N'Than hoạt tính, Đất sét', GETDATE()),
-(N'P009', N'Pet Treats Bacon', N'JerHigh', 150, N'Bánh thưởng cho chó', N'Thái Lan', '2025-11-18', 35, 95000, 4, 4.6, N'Thịt xông khói, Vitamin B1', GETDATE()),
-(N'P010', N'SmartHeart Gold Kitten', N'SmartHeart', 800, N'Thức ăn cho mèo con', N'Thái Lan', '2025-09-25', 45, 250000, 5, 4.9, N'Gà, DHA, Omega 3', GETDATE()),
-(N'P011', N'Purina Pro Plan Puppy', N'Purina', 1200, N'Thức ăn cho chó', N'Mỹ', '2026-06-18', 38, 400000, 9, 4.7, N'Cá hồi, Beta-glucan, Kẽm', GETDATE()),
-(N'P012', N'Vetoquinol Care Shampoo', N'Vetoquinol', 250, N'Sữa tắm cho chó mèo', N'Canada', '2026-04-22', 50, 190000, 10, 4.5, N'Chiết xuất thiên nhiên, Vitamin E', GETDATE()),
-(N'P013', N'Fancy Feast Grilled Salmon', N'Fancy Feast', 85, N'Thức ăn ướt cho mèo', N'Mỹ', '2025-12-01', 70, 75000, 2, 4.9, N'Cá hồi, Gelatin, Vitamin A', GETDATE()),
-(N'P014', N'Pawz Waterproof Boots', N'Pawz', 50, N'Phụ kiện cho chó', N'Mỹ', '2030-01-01', 30, 300000, 0, 4.3, N'Cao su thiên nhiên', GETDATE()),
-(N'P015', N'PetSafe Drinkwell', N'PetSafe', 2000, N'Bình nước cho thú cưng', N'Anh', '2027-02-15', 10, 600000, 0, 4.8, N'Nhựa an toàn, Lọc than', GETDATE()),
-(N'P016', N'Kong Classic Toy', N'Kong', 150, N'Đồ chơi cho chó', N'Mỹ', '2030-01-01', 60, 250000, 0, 4.9, N'Cao su tự nhiên', GETDATE()),
-(N'P017', N'Hills Science Diet', N'Hills', 1200, N'Thức ăn cho chó', N'Mỹ', '2026-07-01', 32, 420000, 5, 4.7, N'Thịt bò, Glucosamine, Omega 6', GETDATE()),
-(N'P018', N'Orijen Cat & Kitten', N'Orijen', 1800, N'Thức ăn cho mèo', N'Canada', '2026-10-12', 18, 690000, 8, 4.9, N'Cá hồi, Gan gà, Chất xơ', GETDATE()),
-(N'P019', N'Pedigree Dentastix', N'Pedigree', 180, N'Bánh thưởng cho chó', N'Mỹ', '2026-03-25', 40, 85000, 5, 4.6, N'Xương sữa, Canxi', GETDATE()),
-(N'P020', N'Sheba Chicken', N'Sheba', 70, N'Thức ăn ướt cho mèo', N'Đức', '2025-08-08', 75, 65000, 2, 4.8, N'Gà, Gelatin, Vitamin B', GETDATE());
-
--- ─────────────────────────────────────────────────────────────────────────
--- Data Users, KhachHang, NhanVien
--- ─────────────────────────────────────────────────────────────────────────
-INSERT INTO Users (username, password_hash, role, email)
-VALUES 
-   (N'adminAccount',
-    HASHBYTES('SHA2_256', 'AdminPassword123'),
-    N'Admin',
-    N'admin@egapets.com'),
-    
-   (N'employeeAccount',
-    HASHBYTES('SHA2_256', 'EmployeePassword456'),
-    N'NhanVien',
-    N'employee@egapets.com'),
-    
-   (N'customerAccount',
-    HASHBYTES('SHA2_256', 'CustomerPassword789'),
-    N'KhachHang',
-    N'customer@egapets.com');
-
-
----------------------------------------------
--- Tạo profile (hồ sơ) cho user NhanVien
----------------------------------------------
-DECLARE @NhanVienUserId INT;
-SET @NhanVienUserId = (SELECT id FROM Users WHERE username = N'employeeAccount');
-
-INSERT INTO NhanVien (
-   user_id,
-   ho_ten,
-   so_dien_thoai,
-   ngay_sinh,
-   dia_chi,
-   chuc_vu,
-   luong
-)
-VALUES
-(
-   @NhanVienUserId,
-   N'Nguyễn Văn A',         -- Họ tên nhân viên
-   N'0123456789',           -- Số điện thoại
-   '1990-01-01',            -- Ngày sinh
-   N'123 Đường ABC, Hà Nội',
-   N'Nhân viên bán hàng',   -- Kiểm tra ràng buộc chuc_vu
-   7000000                  -- Lương
-);
-
-
----------------------------------------------
--- Tạo profile (hồ sơ) cho user Khách Hàng
----------------------------------------------
-DECLARE @KhachHangUserId INT;
-SET @KhachHangUserId = (SELECT id FROM Users WHERE username = N'customerAccount');
-
-INSERT INTO KhachHang (
-   user_id,
-   ho_ten,
-   so_dien_thoai,
-   ngay_sinh,
-   dia_chi,
-   tinh_thanh,
-   quan_huyen,
-   phuong_xa
-)
-VALUES
-(
-   @KhachHangUserId,
-   N'Trần Thị B',            -- Họ tên khách hàng
-   N'0987654321',            -- Số điện thoại
-   '1995-05-10',             -- Ngày sinh
-   N'Số 456, Đường XYZ', 
-   N'Hà Nội', 
-   N'Đống Đa', 
-   N'Láng Hạ'
-);
-
--- ─────────────────────────────────────────────────────────────────────────
--- Data DichVu
--- ─────────────────────────────────────────────────────────────────────────
-INSERT INTO DichVu (ten_dich_vu, mo_ta, gia_mac_dinh) VALUES
-(N'Tắm rửa cho chó', N'Dịch vụ tắm sạch sẽ, khử mùi và dưỡng lông cho chó.', 100000),
-(N'Tắm rửa cho mèo', N'Dịch vụ tắm dành riêng cho mèo, sử dụng dầu tắm chuyên dụng.', 120000),
-(N'Cắt tỉa lông chó', N'Tạo kiểu, cắt lông theo yêu cầu cho thú cưng.', 150000),
-(N'Cắt tỉa lông mèo', N'Tạo kiểu, cắt lông theo yêu cầu dành riêng cho mèo.', 130000),
-(N'Vệ sinh tai', N'Vệ sinh sạch sẽ tai thú cưng, ngăn ngừa nhiễm trùng.', 50000),
-(N'Cắt móng', N'Cắt móng an toàn, tránh thú cưng bị thương do móng dài.', 40000),
-(N'Trọn gói spa chó', N'Tắm rửa, cắt tỉa lông, vệ sinh tai và cắt móng.', 250000),
-(N'Trọn gói spa mèo', N'Tắm rửa, cắt tỉa lông, vệ sinh tai và cắt móng.', 230000);
-GO
--- ─────────────────────────────────────────────────────────────────────────
--- Data DichVuChiTiet
--- ─────────────────────────────────────────────────────────────────────────
-
-INSERT INTO DichVuChiTiet (dich_vu_id, can_nang, loai_long, gia) VALUES
--- Tắm rửa cho chó
-(1, N'<3kg', N'Ngắn', 80000),
-(1, N'<3kg', N'Dài', 90000),
-(1, N'3-5kg', N'Ngắn', 100000),
-(1, N'3-5kg', N'Dài', 110000),
-(1, N'5-10kg', N'Ngắn', 120000),
-(1, N'5-10kg', N'Dài', 130000),
-(1, N'10-20kg', N'Ngắn', 150000),
-(1, N'10-20kg', N'Dài', 170000),
-(1, N'>20kg', N'Ngắn', 200000),
-(1, N'>20kg', N'Dài', 220000),
-
--- Tắm rửa cho mèo
-(2, N'<3kg', N'Ngắn', 100000),
-(2, N'<3kg', N'Dài', 110000),
-(2, N'3-5kg', N'Ngắn', 120000),
-(2, N'3-5kg', N'Dài', 130000),
-(2, N'5-10kg', N'Ngắn', 140000),
-(2, N'5-10kg', N'Dài', 150000),
-
--- Cắt tỉa lông chó
-(3, N'<3kg', N'Ngắn', 120000),
-(3, N'<3kg', N'Dài', 130000),
-(3, N'3-5kg', N'Ngắn', 140000),
-(3, N'3-5kg', N'Dài', 150000),
-(3, N'5-10kg', N'Ngắn', 160000),
-(3, N'5-10kg', N'Dài', 170000),
-
--- Cắt tỉa lông mèo
-(4, N'<3kg', N'Ngắn', 110000),
-(4, N'<3kg', N'Dài', 120000),
-(4, N'3-5kg', N'Ngắn', 130000),
-(4, N'3-5kg', N'Dài', 140000),
-
--- Vệ sinh tai
-(5, N'<3kg', N'Ngắn', 50000),
-(5, N'<3kg', N'Dài', 50000),
-(5, N'3-5kg', N'Ngắn', 60000),
-(5, N'3-5kg', N'Dài', 60000),
-
--- Cắt móng
-(6, N'<3kg', N'Ngắn', 40000),
-(6, N'<3kg', N'Dài', 40000),
-(6, N'3-5kg', N'Ngắn', 50000),
-(6, N'3-5kg', N'Dài', 50000),
-
--- Trọn gói spa chó
-(7, N'<3kg', N'Ngắn', 220000),
-(7, N'<3kg', N'Dài', 230000),
-(7, N'3-5kg', N'Ngắn', 250000),
-(7, N'3-5kg', N'Dài', 260000),
-
--- Trọn gói spa mèo
-(8, N'<3kg', N'Ngắn', 200000),
-(8, N'<3kg', N'Dài', 210000),
-(8, N'3-5kg', N'Ngắn', 220000),
-(8, N'3-5kg', N'Dài', 230000);
-GO
-
--- ─────────────────────────────────────────────────────────────────────────
--- Data PhuongThucThanhToan
--- ─────────────────────────────────────────────────────────────────────────
-INSERT INTO PhuongThucThanhToan (ten_phuong_thuc) 
-VALUES 
-(N'Chuyển khoản Momo'),
-(N'Chuyển khoản Ngân hàng');
-GO
-
--- ─────────────────────────────────────────────────────────────────────────
--- Data DanhMucSanPham
--- ─────────────────────────────────────────────────────────────────────────
-INSERT INTO DanhMucSanPham (ten_danh_muc) VALUES
-(N'Thức ăn cho thú cưng'),
-(N'Đồ dùng tỉa lông'),
-(N'Nhà vệ sinh'),
-(N'Phụ kiện'),
-(N'Đệm - Giường'),
-(N'Dụng cụ chải lông');
-GO
