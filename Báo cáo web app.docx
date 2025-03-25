@@ -2,11 +2,13 @@
 Link thuyết trình ppt : https://www.canva.com/design/DAGJxxD3wxw/rucbwwfjXQN5dVcnNqbXyA/edit?utm_content=DAGJxxD3wxw&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton
 Những công việc đã làm :
 -	Tuần 1: Design UI 
+
 -	Tuần 2:
-•	Thiết kế cơ sở dữ liệu: 
+Thiết kế cơ sở dữ liệu: 
+
 -	Tuần 3:
-•	Thiết kế mô hình cấu trúc MVC và trả về api đầu tiên sau khi cấu hình -> kết nối với database lấy data trả về (cái này chưa làm)
-•	Thiết kế docker cho lần chạy test đầu tiên
+Thiết kế mô hình cấu trúc MVC và trả về api đầu tiên sau khi cấu hình -> kết nối với database lấy data trả về (cái này chưa làm)
+Thiết kế docker cho lần chạy test đầu tiên
 
 -	Tuần 4:
-•	Sau khi có data từ backend -> front end sẽ fetch data qua testing tool là postman và đồng thời cấu hình vào giao diện
+Sau khi có data từ backend -> front end sẽ fetch data qua testing tool là postman và đồng thời cấu hình vào giao diện
