@@ -1,0 +1,29 @@
+.breadcrumbWrapper {
+    padding: 12px 24px;
+    font-size: 14px;
+    color: #f1f1f1;
+    background: transparent;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  
+  .link {
+    text-decoration: none;
+    color: #ddd;
+  }
+  
+  .link:hover {
+    color: #ff7750;
+  }
+  
+  .separator {
+    margin: 0 6px;
+    color: #aaa;
+  }
+  
+  .current {
+    font-weight: 600;
+    color: #fff;
+  }
+  
