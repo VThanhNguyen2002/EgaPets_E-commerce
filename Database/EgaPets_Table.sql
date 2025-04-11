@@ -312,12 +312,15 @@ CREATE TABLE FaceIDLogs (
     device_info NVARCHAR(255) NULL,
     result NVARCHAR(50) NOT NULL, -- 'success' / 'fail'
     created_at DATETIME DEFAULT GETDATE(),
+    distance FLOAT NULL,
 
     CONSTRAINT FK_FaceIDLogs_Users
         FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE
 );
 GO
 
+-- ─────────────────────────────────────────────────────────────────────────
+-- ─────────────────────────────────────────────────────────────────────────
 
 SELECT * FROM Users
 
@@ -343,3 +346,6 @@ SELECT * FROM DichVu
 
 SELECT * FROM DichVuChiTiet
 
+SELECT * FROM FaceID
+
+SELECT * FROM FaceIDLogs
