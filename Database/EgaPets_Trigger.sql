@@ -1,4 +1,4 @@
-﻿USE EgaPets_DB;
+USE EgaPets_DB;
 GO
 
 DISABLE TRIGGER trg_InsertSanPham ON SanPham;
@@ -42,20 +42,28 @@ FROM sys.triggers t
 JOIN sys.objects p ON t.parent_id = p.object_id;
 GO
 
-DROP Trigger trg_InsertSanPham
+DROP Trigger
 GO
 
-CREATE PROCEDURE sp_InsertFaceEmbedding
-    @user_id INT,
-    @face_vector VARBINARY(MAX),
-    @pose NVARCHAR(50)
+-- Ví dụ: Trigger ghi log khi FaceID bị cập nhật.
+CREATE TRIGGER trg_UpdateFaceID_Logs
+ON FaceID
+AFTER UPDATE
 AS
 BEGIN
-    INSERT INTO FaceID (user_id, face_vector, pose, created_at, updated_at)
-    VALUES (@user_id, @face_vector, @pose, GETDATE(), GETDATE());
+    SET NOCOUNT ON;
 
-    INSERT INTO FaceIDLogs (user_id, action, result)
-    VALUES (@user_id, 'enroll', 'success');
+    -- # Mỗi lần update face_vector, ghi 1 record vào FaceIDLogs
+    INSERT INTO FaceIDLogs (user_id, action, result, ip_address, device_info)
+    SELECT 
+        i.user_id,
+        N'update-embedding' AS action,
+        N'success' AS result,
+        'SYSTEM_TRIGGER' AS ip_address,
+        'DB_TRIGGER' AS device_info
+    FROM Inserted i
+    JOIN Deleted d ON i.id = d.id 
+    WHERE i.face_vector != d.face_vector;  -- Chỉ log nếu vector thay đổi
 END;
 GO
 

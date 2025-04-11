@@ -1,40 +1,67 @@
+version: "3.9"
 services:
-  backend:
-    build: ./my-backend
-    ports:
-      - "5000:5000"
-    volumes:
-      - ./my-backend:/app
-      - /app/node_modules  # Tránh lỗi node_modules
-    environment:
-      - NODE_ENV=development
-    command: ["npm", "run", "dev"]  # Dùng Nodemon thay vì Node.js thuần
-    depends_on:
-      - sqlserver
-
-
-  frontend:
-    build: ./my-frontend
-    ports:
-      - "5173:5173"
-    volumes:
-      - ./my-frontend:/app
-      - /app/node_modules
-    environment:
-      - NODE_ENV=development
-    command: ["npm", "run", "dev"]  # Chạy Vite
-    depends_on:
-      - backend
-
-
-  sqlserver:
+  database:
     image: mcr.microsoft.com/mssql/server:2019-latest
-    container_name: egapet-sqlserver
+    container_name: db_mssql
     environment:
-      SA_PASSWORD: "123"
-      ACCEPT_EULA: "Y"
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=YourStrongPassw0rd
     ports:
       - "1433:1433"
+    networks:
+      - mynet
+
+  face-api:
+    build:
+      context: ./my-backend/src/face-api
+      dockerfile: Dockerfile.gpu  # or Dockerfile
+    container_name: face-api
+    # GPU mode: 'runtime: nvidia' or 'deploy: resources: reservations: devices:'
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    ports:
+      - "5000:5000"
+    networks:
+      - mynet
+
+  my-backend:
+    build:
+      context: ./my-backend
+      dockerfile: Dockerfile
+    container_name: node_backend
+    environment:
+      - DB_SERVER=db_mssql
+      - DB_USER=sa
+      - DB_PASSWORD=YourStrongPassw0rd
+      - DB_NAME=EgaPets_DB
+      - PYTHON_SERVICE=http://face-api:5000
+    depends_on:
+      - database
+      - face-api
+    ports:
+      - "3000:3000"
+    networks:
+      - mynet
+
+  nginx:
+    image: nginx:alpine
+    container_name: nginx_proxy
     volumes:
-      - ./Database:/docker-entrypoint-initdb.d  # Gắn thư mục chứa SQL scripts
-    entrypoint: ["/bin/bash", "-c", " /opt/mssql/bin/sqlservr & sleep 30 && /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P '123' -i /docker-entrypoint-initdb.d/EgaPets_Nhom_Quyen.sql && /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P '123' -i /docker-entrypoint-initdb.d/EgaPets_Scripts_ALL.sql && tail -f /dev/null"]
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - my-backend
+      - face-api
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - mynet
+
+networks:
+  mynet:
+    driver: bridge
