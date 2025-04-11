@@ -1,12 +1,14 @@
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
-const { db } = require("./src/config"); // Lấy db từ config/index.js
+const { db } = require("./src/config/index.js"); // Lấy db từ config/index.js
 const { poolPromise } = db; // Giữ poolPromise từ db.js
+
+const faceIDRoutes = require("./src/routes/faceID.routes.js");
 
 const app = express();
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '40mb' }));
 
 app.get("/", async (req, res) => {
   try {
@@ -18,6 +20,8 @@ app.get("/", async (req, res) => {
     res.status(500).send("Lỗi kết nối Database");
   }
 });
+
+app.use('/api/face', faceIDRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

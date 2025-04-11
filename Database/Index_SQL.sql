@@ -32,3 +32,12 @@ CREATE NONCLUSTERED INDEX idx_LichHen_KhachHang ON LichHen(khach_hang_id);
 CREATE NONCLUSTERED INDEX idx_LichHen_NhanVien ON LichHen(nhan_vien_id);
 CREATE NONCLUSTERED INDEX idx_LichHen_TrangThai ON LichHen(trang_thai);
 GO
+
+-- # Tạo index cho FaceIDLogs theo cột user_id
+CREATE INDEX IX_FaceIDLogs_UserId
+    ON FaceIDLogs(user_id);
+GO
+
+DROP INDEX IF EXISTS IX_FaceIDLogs_UserId ON FaceIDLogs;
+GO
+
