@@ -1,9 +1,13 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import styles from "./CatFoodSection.module.css";
+
 import QuickViewModal from "../QuickViewModal/QuickViewModal";
 import ProductHoverActions from "../ProductHoverActions/ProductHoverActions";
 import CompareBar from "../CompareBar/CompareBar";
 import sharedStyles from "../common/SharedStyles.module.css";
+
 
 // Khai báo type Product (có thể tách ra file riêng)
 export interface Product {
@@ -69,7 +73,6 @@ const catFoodData = {
       hoverImage: "/src/assets/SanPham.jpg",
       rating: 5,
     },
-    // ...
   ],
 };
 
@@ -82,6 +85,8 @@ const CatFoodSection: React.FC = () => {
 
   // State cho “so sánh”
   const [compareList, setCompareList] = useState<Product[]>([]);
+
+  const navigate = useNavigate();
 
   const handleQuickView = (product: Product) => {
     setSelectedProduct(product);
@@ -119,19 +124,26 @@ const CatFoodSection: React.FC = () => {
       return [...prev, product];
     });
   };
+
+  const handleNavigateToDetail = (id: number) => {
+    navigate(`/sanpham/${id}`);
+  };
   
 
   const renderProducts = (products: Product[]) => {
     return products.map((p) => (
-      <div className={styles.productCard} key={p.id}>
+      <div
+        className={styles.productCard}
+        key={p.id}
+        onClick={() => handleNavigateToDetail(p.id)}
+        style={{ cursor: "pointer" }}
+      >
         <div className={styles.imageContainer}>
-          {/* Ảnh chính */}
           <img
             src={p.image}
             alt={p.name}
             className={`${styles.productImage} ${styles.defaultImage}`}
           />
-          {/* Ảnh hover */}
           {p.hoverImage && (
             <img
               src={p.hoverImage}
@@ -139,10 +151,8 @@ const CatFoodSection: React.FC = () => {
               className={`${styles.productImage} ${styles.hoverImage}`}
             />
           )}
-
-          {/* Icons xem nhanh / so sánh */}
           <ProductHoverActions
-            wrapperClass={styles.wrapperIcon} 
+            wrapperClass={styles.wrapperIcon}
             onQuickView={() => handleQuickView(p)}
             onCompare={() => handleCompare(p)}
           />
@@ -151,13 +161,10 @@ const CatFoodSection: React.FC = () => {
         <h3 className={styles.productName}>{p.name}</h3>
         <div className={styles.priceWrapper}>
           <span className={styles.price}>{p.price.toLocaleString()}đ</span>
-          {p.oldPrice && (
-            <span className={styles.oldPrice}>{p.oldPrice.toLocaleString()}đ</span>
-          )}
+          {p.oldPrice && <span className={styles.oldPrice}>{p.oldPrice.toLocaleString()}đ</span>}
           {p.discount && <span className={styles.discount}>-{p.discount}%</span>}
         </div>
 
-        {/* Rating */}
         <div className={styles.rating}>
           {Array.from({ length: p.rating }).map((_, i) => (
             <span key={i}>⭐</span>
@@ -197,14 +204,12 @@ const CatFoodSection: React.FC = () => {
         {activeTab === "snack" && renderProducts(catFoodData.snack)}
       </div>
 
-      {/* Modal “Xem nhanh” */}
       <QuickViewModal
         product={selectedProduct}
         isOpen={isQuickViewOpen}
         onClose={handleCloseQuickView}
       />
 
-      {/* CompareBar */}
       <CompareBar
         compareList={compareList}
         onRemoveItem={handleRemoveItem}
