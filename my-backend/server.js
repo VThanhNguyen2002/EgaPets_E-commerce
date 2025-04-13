@@ -5,6 +5,7 @@ const { db } = require("./src/config/index.js"); // Lấy db từ config/index.j
 const { poolPromise } = db; // Giữ poolPromise từ db.js
 
 const faceIDRoutes = require("./src/routes/faceID.routes.js");
+const productRoutes = require('./src/routes/product.routes.js');
 
 const app = express();
 app.use(cors());
@@ -22,6 +23,7 @@ app.get("/", async (req, res) => {
 });
 
 app.use('/api/face', faceIDRoutes);
+app.use('/api/sanpham', productRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
