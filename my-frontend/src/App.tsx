@@ -6,6 +6,8 @@ import { LoadingSpinner } from "./components/LoadingSpinner";
 import HomePage from "./pages/HomePage/HomePage";
 import NotFoundPage from "./pages/NotFoundPage/NotFoundPage";
 import LoginPage from "./pages/LoginPage/LoginPage";
+import ChiTietSanPham from "./pages/ChiTietSanPham/ChiTietSanPham";
+import BoLocSanPham from "./pages/SanPham/BoLocSanPham/BoLocSanPham";
 
 import { ErrorProvider } from "./context/ErrorContext";
 
@@ -19,6 +21,8 @@ function App() {
             <Route path="/" element={<HomePage />} />
             <Route path="*" element={<NotFoundPage />} />
             <Route path="/login" element={<LoginPage />} />
+            <Route path="/sanpham/:id" element={<ChiTietSanPham />} />
+            <Route path="/boloc" element={<BoLocSanPham />} />
           </Routes>
         </ErrorBoundary>
       </ErrorProvider>
