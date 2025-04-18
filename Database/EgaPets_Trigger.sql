@@ -42,9 +42,12 @@ FROM sys.triggers t
 JOIN sys.objects p ON t.parent_id = p.object_id;
 GO
 
-DROP Trigger
+DROP Trigger trg_UpdateFaceID_Logs
 GO
 
+/*──────────────────────────────────────*
+ * Trigger INSERT LOG  / UPDATE FaceID  *
+ *──────────────────────────────────────*/
 -- Ví dụ: Trigger ghi log khi FaceID bị cập nhật.
 CREATE TRIGGER trg_UpdateFaceID_Logs
 ON FaceID
@@ -66,4 +69,48 @@ BEGIN
     WHERE i.face_vector != d.face_vector;  -- Chỉ log nếu vector thay đổi
 END;
 GO
+
+/*───────────────────────────────────*
+ * Trigger INSERT  / UPDATE SANPHAM  *
+ *───────────────────────────────────*/
+CREATE OR ALTER TRIGGER trg_SanPham_InsertUpdate
+ON SanPham
+AFTER INSERT, UPDATE
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    /* INSERT */
+    INSERT LichSuSanPham (san_pham_id, hanh_dong, nhan_vien_login, noi_dung_thay_doi)
+    SELECT  i.id,
+            CASE WHEN d.id IS NULL THEN N'Thêm' ELSE N'Sửa' END,
+            SYSTEM_USER,
+            CASE
+               WHEN d.id IS NULL THEN N'Thêm mới sản phẩm'
+               ELSE CONCAT(
+                    N'Tên: ', d.ten_san_pham, N' ➜ ', i.ten_san_pham, N'; ',
+                    N'Giá: ', d.gia_thanh,    N' ➜ ', i.gia_thanh
+               )
+            END
+    FROM inserted i
+    LEFT JOIN deleted d ON d.id = i.id;   -- deleted NULL → INSERT
+END
+GO
+
+/*───────────────────────────*
+ * Trigger DELETE SANPHAM    *
+ *───────────────────────────*/
+CREATE OR ALTER TRIGGER trg_SanPham_Delete
+ON SanPham
+AFTER DELETE
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    INSERT LichSuSanPham (san_pham_id, hanh_dong, nhan_vien_login, noi_dung_thay_doi)
+    SELECT id, N'Xóa', SYSTEM_USER, N'Đã xóa sản phẩm'
+    FROM deleted;
+END
+GO
+
 
