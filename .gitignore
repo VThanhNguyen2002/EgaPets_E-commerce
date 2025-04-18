@@ -13,6 +13,10 @@ coverage/
 .env
 *.env
 
+# 🔐 Bỏ qua file .env trong face-api
+src/face-api/.env
+
+
 # Logs
 logs/
 *.log
