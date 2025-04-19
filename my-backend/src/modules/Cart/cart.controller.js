@@ -5,15 +5,18 @@ const { v4: uuid }     = require('uuid');          // cho sessionId cookie
 
 /* helper lấy customerId|sessionId */
 function getIdentity(req, res) {
-  if (req.user?.role === 'KhachHang') return { customerId: req.user.id };
-  /* guest: dùng cookie "sid" */
-  let sid = req.cookies?.sid;
+  if (req.user && req.user.role.toLowerCase() === 'khachhang')
+    return { customerId: req.user.id };
+
+  // guest
+  let sid = req.cookies?.sid || req.query.sid || req.headers['x-session-id'];
   if (!sid) {
     sid = uuid();
     res.cookie('sid', sid, { httpOnly: true });
   }
   return { sessionId: sid };
 }
+
 
 /* ---------- CART ---------- */
 exports.add = async (req, res) => {
