@@ -1,8 +1,18 @@
-const { sql, poolPromise } = require('@shared/db/sql');   // SQL Server
+const { sql, poolPromise } = require('@shared/db/sql');
 const TABLE = 'GioHang';
+
+/* --------------------- CUSTOMER --------------------- */
+async function getKhachHangId(userId) {
+  const pool = await poolPromise;
+  const rs = await pool.request()
+  .input('uid', sql.Int, userId)
+  .query('SELECT id FROM KhachHang WHERE user_id = @uid');
+  return rs.recordset[0]?.id || null;
+}
 
 /* --------------------- CART --------------------- */
 async function addItem({ customerId, sessionId, productId, quantity, price, discount }) {
+  if (customerId) customerId = await getKhachHangId(customerId);
   const pool = await poolPromise;
   await pool.request()
     .input('kh',  sql.Int,  customerId   || null)

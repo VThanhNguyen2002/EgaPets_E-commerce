@@ -113,4 +113,24 @@ BEGIN
 END
 GO
 
+/*───────────────────────────*
+ * Trigger ADD Profile User    *
+ *───────────────────────────*/
+CREATE OR ALTER TRIGGER trg_User_AfterInsert
+ON Users
+AFTER INSERT
+AS
+BEGIN
+  SET NOCOUNT ON;
 
+  INSERT KhachHang (user_id, ho_ten, so_dien_thoai)
+  SELECT id, username, ''          -- default
+  FROM inserted
+  WHERE role = N'KhachHang';
+
+  INSERT NhanVien (user_id, ho_ten, so_dien_thoai, chuc_vu, luong)
+  SELECT id, username, '', N'Nhân viên bán hàng', 0
+  FROM inserted
+  WHERE role = N'NhanVien';
+END
+GO

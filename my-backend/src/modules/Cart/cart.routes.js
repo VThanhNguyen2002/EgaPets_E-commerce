@@ -1,12 +1,20 @@
-const r               = require('express').Router();
-const ctl             = require('@modules/Cart/cart.controller');
-const { verifyToken } = require('@middlewares/authMiddleware');
+const router        = require('express').Router();
+const ctl           = require('@modules/Cart/cart.controller');
+const optionalAuth  = require('@middlewares/optionalAuth');
+const guestLimit    = require('@middlewares/guestLimit');
 
-r.post('/',          ctl.add);                 // guest hoặc logged‑in
-r.get('/',           ctl.list);
-r.put('/:id',        ctl.update);
-r.delete('/:id',     ctl.remove);
+router.use(optionalAuth);      // tất cả request đọc token (nếu có)
+router.use(guestLimit);        // áp dụng limit cho guest
 
-r.get('/checkout/summary', verifyToken, ctl.summary);   // cần login trước thanh toán
+router.post('/',    ctl.add);          // token không bắt buộc
+router.get('/',     ctl.list);
+router.put('/:id',  ctl.update);
+router.delete('/:id', ctl.remove);
 
-module.exports = r;
+router.get('/checkout/summary',       // riêng checkout phải login
+  (req, res, next) => req.user ? next()
+                               : res.status(401).json({ error: 'Cần đăng nhập.' }),
+  ctl.summary
+);
+
+module.exports = router;
