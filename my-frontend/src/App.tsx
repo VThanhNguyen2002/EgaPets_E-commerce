@@ -5,6 +5,8 @@ import { ToastContainer } from 'react-toastify';
 import ErrorBoundary from "./layouts/ErrorBoundary";
 import { LoadingSpinner } from "./components/LoadingSpinner";
 
+import CartPage from "./pages/CartPage/CartPage";
+import CheckoutPage from "./pages/CheckoutPage/CheckoutPage";
 import HomePage from "@pages/HomePage/HomePage";
 import NotFoundPage from "@pages/NotFoundPage/NotFoundPage";
 import ChiTietSanPham from "@pages/ChiTietSanPham/ChiTietSanPham";
@@ -35,6 +37,8 @@ function App() {
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password/:token" element={<ResetPassword />} />
             <Route path="/sanpham/:id" element={<ChiTietSanPham />} />
+            <Route path="/cart" element={<CartPage />} />
+            <Route path="/checkout" element={<CheckoutPage />} />
             <Route path="/boloc" element={<BoLocSanPham />} />
           </Routes>
         </ErrorBoundary>

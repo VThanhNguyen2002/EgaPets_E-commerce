@@ -110,6 +110,20 @@ CREATE TABLE SanPham (
 );
 GO
 
+-- ─────────────────────────────────────────────────────────────────────────
+-- BẢNG Danh Sách Yêu Thích của Khách Hàng tới Sản Phẩm đó
+-- ─────────────────────────────────────────────────────────────────────────
+CREATE TABLE DanhSachYeuThich (
+    id INT IDENTITY(1,1) PRIMARY KEY,
+    user_id INT NOT NULL,
+    san_pham_id INT NOT NULL,
+    created_at DATETIME DEFAULT GETDATE(),
+
+    CONSTRAINT FK_YeuThich_Users FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE,
+    CONSTRAINT FK_YeuThich_SanPham FOREIGN KEY (san_pham_id) REFERENCES SanPham(id) ON DELETE CASCADE,
+    CONSTRAINT UQ_User_Product UNIQUE (user_id, san_pham_id)  -- không được yêu thích trùng
+);
+
 
 -- ─────────────────────────────────────────────────────────────────────────
 -- BẢNG Giỏ Hàng (Liên kết với Khách Hàng & Sản Phẩm)

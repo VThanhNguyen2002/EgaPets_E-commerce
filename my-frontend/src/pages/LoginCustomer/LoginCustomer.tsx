@@ -8,6 +8,7 @@ import { usePageTitle } from '@hooks/usePageTitle';
 
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { setCookie } from '@utils/cookie';
 
 import styles from './LoginCustomer.module.css';
 
@@ -34,13 +35,14 @@ const LoginCustomer = () => {
       const { data } = await login(form);
       if (data.role !== 'KhachHang')
         return setError('Tài khoản này không phải khách hàng!');
-
-      localStorage.setItem('token', data.token);
+    
+      setCookie('token', data.token);
+      setCookie('username', data.username);
       toast.success('Đăng nhập thành công!');
       setTimeout(() => navigate('/'), 1500);
     } catch (err: any) {
       setError(err.response?.data?.error || 'Đăng nhập thất bại!');
-    }
+    }    
   };
 
   return (

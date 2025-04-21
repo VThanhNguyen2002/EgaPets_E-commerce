@@ -1,6 +1,6 @@
 // services/auth.ts
 import axios from 'axios';
-const API = import.meta.env.VITE_API_URL;  // ví dụ http://localhost:5000/api
+const API = import.meta.env.VITE_API_URL;
 
 export const login = (data: {username: string; password: string;}) =>
   axios.post(`${API}/auth/login`, data);
