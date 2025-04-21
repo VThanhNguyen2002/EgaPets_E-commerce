@@ -1,15 +1,22 @@
 import "./App.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { ToastContainer } from 'react-toastify';
+
 import ErrorBoundary from "./layouts/ErrorBoundary";
 import { LoadingSpinner } from "./components/LoadingSpinner";
 
-import HomePage from "./pages/HomePage/HomePage";
-import NotFoundPage from "./pages/NotFoundPage/NotFoundPage";
-import LoginPage from "./pages/LoginPage/LoginPage";
-import ChiTietSanPham from "./pages/ChiTietSanPham/ChiTietSanPham";
-import BoLocSanPham from "./pages/SanPham/BoLocSanPham/BoLocSanPham";
+import HomePage from "@pages/HomePage/HomePage";
+import NotFoundPage from "@pages/NotFoundPage/NotFoundPage";
+import ChiTietSanPham from "@pages/ChiTietSanPham/ChiTietSanPham";
+import BoLocSanPham from "@pages/SanPham/BoLocSanPham/BoLocSanPham";
+import LoginCustomer from "@pages/LoginCustomer/LoginCustomer";
+import LoginEmployee from "@pages/LoginEmployee/LoginEmployee";
+import ForgotPassword from "@pages/ForgotPassword/ForgotPassword";
+import ResetPassword from "@pages/ResetPassword/ResetPassword";
 
 import { ErrorProvider } from "./context/ErrorContext";
+import RegisterCustomer from "@pages/RegisterCustomer/RegisterCustomer";
+
 
 function App() {
   return (
@@ -17,10 +24,16 @@ function App() {
       <ErrorProvider>
         <ErrorBoundary>
           <LoadingSpinner />
+          <ToastContainer autoClose={2000} position="top-right" />
+
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="*" element={<NotFoundPage />} />
-            <Route path="/login" element={<LoginPage />} />
+            <Route path="/login" element={<LoginCustomer />} />
+            <Route path="/register" element={<RegisterCustomer />} />
+            <Route path="/employee/login" element={<LoginEmployee />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/reset-password/:token" element={<ResetPassword />} />
             <Route path="/sanpham/:id" element={<ChiTietSanPham />} />
             <Route path="/boloc" element={<BoLocSanPham />} />
           </Routes>
@@ -29,5 +42,6 @@ function App() {
     </Router>
   );
 }
+
 
 export default App;

@@ -22,3 +22,15 @@ exports.registerEmployee = async (req, res) => {
   const result = await authService.register({ ...req.body, role: 'NhanVien' });
   result.code === 201 ? rsp.created(res, result.data) : rsp.error(res, result.code, result.msg);
 };
+
+exports.forgotPassword = async (req, res) => {
+  const result = await authService.forgotPassword(req.body.email);
+  result.code === 200 ? rsp.ok(res, result.data)
+                      : rsp.error(res, result.code, result.msg);
+};
+
+exports.resetPassword = async (req, res) => {
+  const result = await authService.resetPassword(req.body);
+  result.code === 200 ? rsp.ok(res, result.data)
+                      : rsp.error(res, result.code, result.msg);
+};
