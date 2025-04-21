@@ -11,12 +11,14 @@ import PetProductSection from "../../components/PetProductSection/PetProductSect
 import ServiceSection from "../../components/ServiceSection/ServiceSection";
 import NewProductsSection from "../../components/NewProductsSection/NewProductsSection";
 
+
 import styles from "./HomePage.module.css";
 
 const HomePage = () => {
   return (
     <div className={styles.homeContainer}>
       <Header />
+
       <FloatingIcons />
 
       {/* Carousel toàn màn hình */}

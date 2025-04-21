@@ -2,8 +2,8 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import styles from "./ChiTietSanPham.module.css";
-import Header from "../../layouts/Header/Header";
-import Footer from "../../layouts/Footer/Footer";
+import Header from '@/layouts/Header/Header';
+import Footer from '@/layouts/Footer/Footer';
 import { FaCartPlus } from "react-icons/fa";
 import { Product } from "../../types/Product";
 import { fetchProductById } from "../../services/productService";

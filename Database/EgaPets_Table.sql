@@ -29,6 +29,17 @@ CREATE TABLE Users (
 GO
 
 -- ─────────────────────────────────────────────────────────────────────────
+-- BẢNG PasswordResets
+-- ─────────────────────────────────────────────────────────────────────────
+CREATE TABLE PasswordResets (
+    id            INT IDENTITY(1,1) PRIMARY KEY,
+    user_id       INT           NOT NULL REFERENCES Users(id) ON DELETE CASCADE,
+    reset_token   NVARCHAR(100) NOT NULL UNIQUE,
+    expires_at    DATETIME      NOT NULL
+);
+GO
+
+-- ─────────────────────────────────────────────────────────────────────────
 -- BẢNG Nhân Viên (Liên kết với Users)
 -- ─────────────────────────────────────────────────────────────────────────
 CREATE TABLE NhanVien (
