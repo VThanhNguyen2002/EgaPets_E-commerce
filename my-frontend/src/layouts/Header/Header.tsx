@@ -27,10 +27,8 @@ const Header = () => {
           <AuthButton />
           <CartIcon />
         </div>
+        <NavBar />
       </div>
-
-      {/* NavBar bên dưới (đỏ) */}
-      <NavBar />
     </header>
   );
 };
