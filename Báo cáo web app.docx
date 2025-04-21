@@ -1,14 +1,57 @@
 Đây là cuốn báo cáo của website
 Link thuyết trình ppt : https://www.canva.com/design/DAGJxxD3wxw/rucbwwfjXQN5dVcnNqbXyA/edit?utm_content=DAGJxxD3wxw&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton
-Những công việc đã làm :
--	Tuần 1: Design UI 
 
--	Tuần 2:
-Thiết kế cơ sở dữ liệu: 
+Tuần 1–2 (26/02 – 10/03): Phân tích & Thiết kế
+Vẽ sơ đồ Use Case
 
--	Tuần 3:
-Thiết kế mô hình cấu trúc MVC và trả về api đầu tiên sau khi cấu hình -> kết nối với database lấy data trả về (cái này chưa làm)
-Thiết kế docker cho lần chạy test đầu tiên
+Xác định các chức năng chính của hệ thống như: Đăng nhập, Đăng ký, Xem sản phẩm, Mua hàng, Quản lý đơn hàng, Admin quản lý.
 
--	Tuần 4:
-Sau khi có data từ backend -> front end sẽ fetch data qua testing tool là postman và đồng thời cấu hình vào giao diện
+Định nghĩa rõ ràng các tác nhân (user, admin...) và hành động tương ứng.
+
+Tạo các User Story
+
+Viết các mô tả chi tiết theo dạng: “Là [loại người dùng], tôi muốn [hành động] để [mục tiêu].”
+
+Ví dụ: “Là khách hàng, tôi muốn xem chi tiết sản phẩm để có thể quyết định mua hàng.”
+
+Thiết kế UI/UX
+
+Vẽ các bản phác thảo (wireframe) và bố cục giao diện trang chủ, trang sản phẩm, trang giỏ hàng,...
+
+Dùng Figma hoặc các công cụ tương tự để thiết kế UI chuẩn UX.
+
+🔹 Tuần 3–5 (11/03 – 31/03): Xây dựng giao diện Frontend & Cấu trúc dự án
+Xây dựng giao diện trang chủ
+
+Sử dụng React/Vue/HTML-CSS để dựng giao diện hiển thị sản phẩm, banner, thanh tìm kiếm, footer,...
+
+Responsive cho desktop và mobile.
+
+Áp dụng mô hình MVC cho frontend
+
+Tách riêng các phần: view (giao diện), controller (logic xử lý), model (dữ liệu mẫu).
+
+Ví dụ với React: dùng components/, pages/, services/, contexts/...
+
+🔹 Tuần 6–7 (01/04 – 14/04): Backend & Kết nối cơ sở dữ liệu
+Kết nối database cho backend
+
+Tạo bảng: Users, Products, Orders, Cart, v.v. bằng SQL Server / MySQL / MongoDB.
+
+Sử dụng Node.js + Express hoặc Java Spring Boot để xử lý truy vấn.
+
+Thử nghiệm lấy data từ API trên Postman
+
+Tạo các API như: /api/products, /api/users, /api/orders.
+
+Test API Get/Post/Put/Delete trên Postman và xác minh dữ liệu trả về đúng.
+
+🔹 Tuần 8 (15/04 – 20/04): Tổng hợp & Kiểm thử
+✅ Rà soát lại toàn bộ luồng
+
+Kiểm tra luồng dữ liệu frontend → backend → database.
+
+Chạy thử các chức năng cơ bản như: hiển thị sản phẩm từ DB, thêm sản phẩm vào giỏ, v.v.
+
+Ghi chú lại lỗi phát sinh và chuẩn bị báo cáo.
+
