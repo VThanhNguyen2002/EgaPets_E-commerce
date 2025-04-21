@@ -8,6 +8,8 @@ import NotFoundPage from "./pages/NotFoundPage/NotFoundPage";
 import LoginPage from "./pages/LoginPage/LoginPage";
 import ChiTietSanPham from "./pages/ChiTietSanPham/ChiTietSanPham";
 import BoLocSanPham from "./pages/SanPham/BoLocSanPham/BoLocSanPham";
+import CartPage from "./pages/CartPage/CartPage";
+import CheckoutPage from "./pages/CheckoutPage/CheckoutPage";
 
 import { ErrorProvider } from "./context/ErrorContext";
 
@@ -22,6 +24,8 @@ function App() {
             <Route path="*" element={<NotFoundPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/sanpham/:id" element={<ChiTietSanPham />} />
+            <Route path="/cart" element={<CartPage />} />
+            <Route path="/checkout" element={<CheckoutPage />} />
             <Route path="/boloc" element={<BoLocSanPham />} />
           </Routes>
         </ErrorBoundary>
