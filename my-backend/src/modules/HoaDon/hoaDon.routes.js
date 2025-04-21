@@ -1,6 +1,6 @@
 const router = require('express').Router();
-const controller = require('../modules/HoaDon/hoaDon.controller');
-const { verifyToken, requireRoles } = require('../../middlewares/authMiddleware');
+const controller = require('@modules/HoaDon/hoaDon.controller');
+const { verifyToken, requireRoles } = require('@middlewares/authMiddleware');
 
 router.get('/', verifyToken, requireRoles('Admin', 'NhanVien', 'KhachHang'), controller.getAll);
 router.get('/:id', verifyToken, requireRoles('Admin', 'NhanVien', 'KhachHang'), controller.getById);
