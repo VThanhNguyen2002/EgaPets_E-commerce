@@ -8,11 +8,11 @@ const api = axios.create({
 });
 
 export const fetchProductById = async (id: string): Promise<Product> => {
-  const res = await api.get(`/sanpham/${id}`);
+  const res = await api.get(`/product/${id}`);
   return res.data;
 };
 
 export const fetchAllProducts = async (): Promise<Product[]> => {
-  const res = await api.get("/sanpham");
+  const res = await api.get("/product");
   return res.data;
 };

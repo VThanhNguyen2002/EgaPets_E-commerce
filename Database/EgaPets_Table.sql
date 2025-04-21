@@ -29,6 +29,17 @@ CREATE TABLE Users (
 GO
 
 -- ─────────────────────────────────────────────────────────────────────────
+-- BẢNG PasswordResets
+-- ─────────────────────────────────────────────────────────────────────────
+CREATE TABLE PasswordResets (
+    id            INT IDENTITY(1,1) PRIMARY KEY,
+    user_id       INT           NOT NULL REFERENCES Users(id) ON DELETE CASCADE,
+    reset_token   NVARCHAR(100) NOT NULL UNIQUE,
+    expires_at    DATETIME      NOT NULL
+);
+GO
+
+-- ─────────────────────────────────────────────────────────────────────────
 -- BẢNG Nhân Viên (Liên kết với Users)
 -- ─────────────────────────────────────────────────────────────────────────
 CREATE TABLE NhanVien (
@@ -98,6 +109,20 @@ CREATE TABLE SanPham (
         FOREIGN KEY (danh_muc_id) REFERENCES DanhMucSanPham(id) ON DELETE SET NULL
 );
 GO
+
+-- ─────────────────────────────────────────────────────────────────────────
+-- BẢNG Danh Sách Yêu Thích của Khách Hàng tới Sản Phẩm đó
+-- ─────────────────────────────────────────────────────────────────────────
+CREATE TABLE DanhSachYeuThich (
+    id INT IDENTITY(1,1) PRIMARY KEY,
+    user_id INT NOT NULL,
+    san_pham_id INT NOT NULL,
+    created_at DATETIME DEFAULT GETDATE(),
+
+    CONSTRAINT FK_YeuThich_Users FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE,
+    CONSTRAINT FK_YeuThich_SanPham FOREIGN KEY (san_pham_id) REFERENCES SanPham(id) ON DELETE CASCADE,
+    CONSTRAINT UQ_User_Product UNIQUE (user_id, san_pham_id)  -- không được yêu thích trùng
+);
 
 
 -- ─────────────────────────────────────────────────────────────────────────
