@@ -1,36 +1,62 @@
+.authWrapper {
+  position: relative;
+}
+
 .authButton {
-    background: none;
-    color: #fff;
-    border: none;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    transition: color 0.2s ease;
-  }
-  
-  .authButton:hover {
-    color: #ddd;
-  }
-  
-  .userIcon {
-    font-size: 20px;
-  }
-  
-  .authInfo {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  
-  .smallText {
-    font-size: 12px;
-    line-height: 1;
-    color: #aaa;
-  }
-  
-  .bigText {
-    font-size: 14px;
-    font-weight: bold;
-  }
-  
+  display: flex;
+  align-items: center;
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+}
+
+.userIcon {
+  font-size: 18px;
+  margin-right: 6px;
+}
+
+.authInfo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.smallText {
+  font-size: 12px;
+  color: #ccc;
+}
+
+.bigText {
+  font-size: 14px;
+  font-weight: bold;
+  color: #fff;
+}
+
+/* 🆕 Dropdown */
+.dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: #111;
+  border: 1px solid #333;
+  border-radius: 6px;
+  padding: 8px 0;
+  margin-top: 6px;
+  z-index: 9999;
+  width: 160px;
+}
+
+.dropdown button {
+  width: 100%;
+  padding: 10px;
+  background: none;
+  border: none;
+  color: white;
+  text-align: left;
+  cursor: pointer;
+}
+
+.dropdown button:hover {
+  background-color: #222;
+}
