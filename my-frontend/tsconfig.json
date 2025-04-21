@@ -1,16 +1,32 @@
 {
-  
-  "files": [],
-  "references": [
-    { "path": "./tsconfig.app.json" },
-    { "path": "./tsconfig.node.json" }
-  ],
   "compilerOptions": {
-    "baseUrl": ".",
+    /* ------- cần cho React ---------- */
+    "target": "ESNext",
+    "module": "ESNext",
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "jsx": "react-jsx",              // ← quan trọng!
+    "moduleResolution": "Node",
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    /* ------- alias & path ---------- */
+    "baseUrl": "./src",
     "paths": {
-      "@/*": ["src/*"]
+      "@assets/*":     ["assets/*"],
+      "@components/*": ["components/*"],
+      "@context/*":    ["context/*"],
+      "@hooks/*":      ["hooks/*"],
+      "@layouts/*":    ["layouts/*"],
+      "@pages/*":      ["pages/*"],
+      "@routes/*":     ["routes/*"],
+      "@services/*":   ["services/*"],
+      "@store/*":      ["store/*"],
+      "@types/*":      ["types/*"],
+      "@utils/*":      ["utils/*"],
+      "@/*":           ["*"]
     },
     "types": ["node"],
-    "typeRoots": ["./node_modules/@types", "./src/types"]
-  }
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": ["src"]
 }

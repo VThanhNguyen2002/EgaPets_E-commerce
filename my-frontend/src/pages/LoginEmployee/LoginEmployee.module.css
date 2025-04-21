@@ -1,0 +1,5 @@
+@import '../LoginCustomer/LoginCustomer.module.css';
+
+.btn{
+  background:#0d6efd;        /* màu riêng cho nhân viên */
+}
