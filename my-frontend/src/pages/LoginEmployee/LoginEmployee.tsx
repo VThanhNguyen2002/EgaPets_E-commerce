@@ -1,75 +1,86 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { usePageTitle } from '@/hooks/usePageTitle';
-import { login } from '@/services/auth';
-import Header from '@/layouts/Header/Header';
-import Footer from '@/layouts/Footer/Footer';
+import Header        from '@layouts/Header/Header';
+import Footer        from '@layouts/Footer/Footer';
+import Breadcrumbs   from '@components/Breadcrumbs/Breadcrumbs';
+import FacePoseCapture, { Pose } from '@components/FacePoseCapture';
+import { verifyFaceMulti } from '@services/auth';
+import { setCookie } from '@utils/cookie';
+import { dataURLtoBase64 } from '@utils/image';
+import { toast } from 'react-toastify';
+import { usePageTitle } from '@hooks/usePageTitle';
 import styles from './LoginEmployee.module.css';
 
 const LoginEmployee = () => {
   usePageTitle('Đăng nhập nhân viên – EGA Pets');
+  const nav = useNavigate();
 
-  const navigate          = useNavigate();
-  const [form, setForm]   = useState({ username: '', password: '' });
-  const [error, setError] = useState('');
+  const [username, setUsername] = useState('');
+  const [captures, setCap]      = useState<{pose: Pose; base64:string}[]>([]);
+  const [error, setError]       = useState('');
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) =>
-    setForm({ ...form, [e.target.name]: e.target.value });
+  const handleFinishCapture = (caps: typeof captures) => {
+    setCap(caps);
+    toast.success('Đã chụp đủ 3 pose');
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
 
-    if (!form.username || !form.password) {
-      setError('Vui lòng nhập đủ thông tin!');
-      return;
-    }
+    if (!username || captures.length < 3)
+      return setError('Điền mã nhân viên và chụp đủ 3 pose!');
 
     try {
-      const { data } = await login(form);          // POST /auth/login
-      if (data.role !== 'NhanVien')
-        return setError('Bạn không phải nhân viên!');
-
-      localStorage.setItem('token', data.token);
-      navigate('/admin');                          // trang dashboard nhân viên
+      const payload = {
+        userId: Number(username),
+        images: captures.map(c => ({
+          pose: c.pose,
+          base64: dataURLtoBase64(c.base64)
+        }))
+      };
+      const { data } = await verifyFaceMulti(payload);
+      setCookie('token', data.token);
+      setCookie('username', data.username);
+      toast.success('Đăng nhập thành công!');
+      setTimeout(() => nav('/'), 1200);
     } catch (err: any) {
-      setError(err.response?.data?.error || 'Đăng nhập thất bại!');
+      setError(err.response?.data?.error || 'Xác thực thất bại!');
     }
   };
 
   return (
     <>
       <Header />
+      <div className={styles.pageContent}>
+        <Breadcrumbs />
 
-      <div className={styles.wrapper}>
-        <h2>Đăng nhập nhân viên</h2>
-        <form className={styles.form} onSubmit={handleSubmit}>
-          <label>Mã / Email *</label>
-          <input
-            type="text"
-            name="username"
-            placeholder="Mã nhân viên hoặc email"
-            onChange={handleChange}
-          />
+        <div className={styles.wrapper}>
+          <h2>Đăng nhập nhân viên</h2>
 
-          <label>Mật khẩu *</label>
-          <input
-            type="password"
-            name="password"
-            placeholder="Mật khẩu"
-            onChange={handleChange}
-          />
+          <form className={styles.form} onSubmit={handleSubmit}>
+            <label>Mã / Email *</label>
+            <input
+              type="text"
+              value={username}
+              onChange={e => setUsername(e.target.value)}
+              placeholder="Mã nhân viên hoặc email"
+            />
 
-          {error && <div className={styles.error}>{error}</div>}
+            <label>Chụp khuôn mặt *</label>
+            <FacePoseCapture onComplete={handleFinishCapture} />
 
-          <button className={styles.btn}>Đăng nhập</button>
-        </form>
+            {error && <div className={styles.error}>{error}</div>}
 
-        <div className={styles.forgot}>
-          Quên mật khẩu? <a href="/forgot-password">Nhấn vào đây</a>
+            <button
+              className={styles.btn}
+              disabled={captures.length < 3}
+            >
+              Đăng nhập
+            </button>
+          </form>
         </div>
       </div>
-
       <Footer />
     </>
   );

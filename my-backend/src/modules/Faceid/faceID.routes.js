@@ -2,7 +2,8 @@
 const { Router } = require("express");
 const {
   insertFaceIDViaPython,   // <‑‑ mới
-  verifyFace
+  verifyFace,
+  verifyMultiPose
 } = require('@modules/Faceid/faceIDController');
 const { verifyToken, requireRoles } = require('../../middlewares/authMiddleware');
 
@@ -19,16 +20,18 @@ router.post(
 // ② Cửa “public” – chỉ cần đăng nhập (Customer, Admin… đều được)
 router.post(
   '/register-face-public',
-  verifyToken,             // có token nhưng KHÔNG check role
+  verifyToken,
   insertFaceIDViaPython
 );
 
 // Verify chỉ cho Nhân Viên
-router.post(
-  '/verify-face',
-  verifyToken,
-  requireRoles('NhanVien'),
-  verifyFace
-);
+// router.post(
+//   '/verify-face',
+//   verifyToken,
+//   requireRoles('NhanVien'),
+//   verifyFace
+// );
+
+router.post('/verify-face', verifyMultiPose);
 
 module.exports = router;

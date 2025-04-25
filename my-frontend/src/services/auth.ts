@@ -16,3 +16,9 @@ export const forgotPassword = (email: string) =>
 
 export const resetPassword = (token: string, newPassword: string) =>
   axios.post(`${API}/auth/reset-password`, { token, newPassword });
+
+export const verifyFaceMulti = (payload: {
+  userId: number;
+  images: { pose: 'front' | 'left' | 'right'; base64: string }[];
+}) => axios.post(`${API}/face/verify-face`, payload);
+
