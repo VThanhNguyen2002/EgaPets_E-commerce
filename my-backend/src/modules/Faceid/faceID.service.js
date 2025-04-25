@@ -1,10 +1,17 @@
 require('dotenv').config();
 const axios = require('axios');
 const { sql, poolPromise } = require('@shared/db/sql');
+const { sign } = require('@shared/jwt');
 const { computeCosineDistance } = require('@modules/Faceid/faceUtils');
 
 const PY_SERVICE = process.env.PY_SVC_URL;
 const THRESHOLD  = parseFloat(process.env.FACE_THRESHOLD || '0.4');
+
+// Hàm so sánh vector cosine
+function compareEmbeddings(vec1, vec2) {
+  const distance = computeCosineDistance(vec1, vec2);
+  return distance < THRESHOLD;
+}
 
 async function enrollByImage({ userId, imgBase64, pose, authHeader }) {
   // gọi Python
@@ -63,4 +70,50 @@ async function verify({ userId, faceVectorB64, meta }) {
   return { code: matched ? 200 : 401, data: { message: matched ? 'Login success' : 'Login failed', distance: min } };
 }
 
-module.exports = { enrollByImage, enrollRawVector, verify };
+
+async function verifyMulti({ userId, images }) {
+  const pool = await poolPromise;
+
+  // 1. Lấy embedding theo từng pose từ bảng FaceID
+  const rs = await pool.request()
+    .input('user_id', sql.Int, userId)
+    .query(`
+      SELECT pose, face_vector 
+      FROM FaceID 
+      WHERE user_id = @user_id
+    `);
+
+  const refVectors = rs.recordset.reduce((acc, row) => {
+    acc[row.pose] = row.face_vector;
+    return acc;
+  }, {});
+
+  if (Object.keys(refVectors).length === 0) {
+    return { code: 404, msg: 'Không tìm thấy vector khuôn mặt cho user này' };
+  }
+
+  // 2. So khớp từng ảnh với vector tương ứng
+  for (const img of images) {
+    const refVec = refVectors[img.pose];
+    if (!refVec) return { code: 400, msg: `Thiếu vector cho pose ${img.pose} trong cơ sở dữ liệu` };
+
+    const query = Buffer.from(img.base64, 'base64');
+    const ok = await compareEmbeddings(refVec, query);
+    if (!ok) return { code: 401, msg: `Pose ${img.pose} không khớp` };
+  }
+
+  // 3. Phát JWT token nếu tất cả ảnh đều khớp
+  const token = sign({ id: userId, role: 'NhanVien' });
+
+  return {
+    code: 200,
+    data: {
+      token,
+      username: `NV${userId}`,
+      role: 'NhanVien'
+    }
+  };
+}
+
+
+module.exports = { enrollByImage, enrollRawVector, verify, verifyMulti };

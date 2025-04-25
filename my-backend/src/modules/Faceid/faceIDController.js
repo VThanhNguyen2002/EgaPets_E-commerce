@@ -53,3 +53,19 @@ exports.verifyFace = async (req, res) => {
     rsp.error(res, 500, 'Verify failed');
   }
 };
+
+exports.verifyMultiPose = async (req, res) => {
+  try {
+    const { userId, images = [] } = req.body;
+    if (!userId || images.length !== 3)
+      return rsp.error(res, 400, 'Thiếu userId hoặc đủ 3 pose');
+
+    const result = await faceService.verifyMulti({ userId, images });
+    result.code === 200
+      ? rsp.ok(res, result.data)
+      : rsp.error(res, result.code, result.msg);
+  } catch (err) {
+    console.error(err);
+    rsp.error(res, 500, 'Lỗi máy chủ');
+  }
+};

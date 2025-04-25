@@ -7,9 +7,11 @@ export const getCookie = (key: string): string | undefined => {
 };
 
 // Ghi cookie
-export const setCookie = (key: string, value: string, days = 7) => {
-  Cookies.set(key, value, { expires: days, path: '/' });
-};
+export function setCookie(name: string, value: string, days = 7) {
+  const d = new Date();
+  d.setTime(d.getTime() + days * 24 * 60 * 60 * 1000);
+  document.cookie = `${name}=${value};expires=${d.toUTCString()};path=/`;
+}
 
 // Xóa cookie
 export const removeCookie = (key: string) => {
