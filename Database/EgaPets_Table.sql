@@ -146,6 +146,13 @@ ALTER TABLE GioHang
 ADD session_id NVARCHAR(255) NULL;
 
 ALTER TABLE GioHang
+ADD is_guest BIT DEFAULT 0;
+
+-- Thêm cột updated_at để cleanup dễ dàng
+ALTER TABLE GioHang 
+ADD updated_at DATETIME NOT NULL DEFAULT GETDATE();
+
+ALTER TABLE GioHang
 ALTER COLUMN khach_hang_id INT NULL;
 
 

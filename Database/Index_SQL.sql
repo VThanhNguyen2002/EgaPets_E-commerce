@@ -41,3 +41,19 @@ GO
 DROP INDEX IF EXISTS IX_FaceIDLogs_UserId ON FaceIDLogs;
 GO
 
+
+-- ─────────────────────────────────────────────────────────────────────────
+-- Nếu đã có sản phẩm A trong giỏ hàng, 
+-- sau đó người dùng bấm “thêm vào giỏ” sản phẩm A nữa, thì thay vì thêm một dòng mới, 
+-- có thể gộp lại bằng cách tăng so_luong.
+-- ─────────────────────────────────────────────────────────────────────────
+
+-- Đối với Khách đã đăng nhập
+CREATE UNIQUE INDEX UQ_Cart_Customer
+ON GioHang (khach_hang_id, san_pham_id)
+WHERE khach_hang_id IS NOT NULL;
+
+-- Đối với Guest
+CREATE UNIQUE INDEX UQ_Cart_Guest
+ON GioHang (session_id, san_pham_id)
+WHERE session_id IS NOT NULL;
