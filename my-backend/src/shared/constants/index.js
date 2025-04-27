@@ -9,7 +9,9 @@ module.exports = {
       TABLES: {
         USERS:     'Users',
         PRODUCTS:  'SanPham',
-        FACEID:    'FaceID'
+        FACEID:    'FaceID',
+        CART: 'GioHang',
+        BILL:'HoaDon',
       }
     }
   };
