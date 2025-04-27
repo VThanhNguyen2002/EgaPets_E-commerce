@@ -129,8 +129,21 @@ BEGIN
   WHERE role = N'KhachHang';
 
   INSERT NhanVien (user_id, ho_ten, so_dien_thoai, chuc_vu, luong)
-  SELECT id, username, '', N'Nhân viên bán hàng', 0
+  SELECT id, username, '', 0
   FROM inserted
   WHERE role = N'NhanVien';
 END
 GO
+
+-- Tự động chạm updated_at khi UPDATE số lượng
+CREATE OR ALTER TRIGGER trg_GioHang_touch
+ON GioHang
+AFTER UPDATE
+AS
+BEGIN
+    SET NOCOUNT ON;
+    UPDATE g
+      SET updated_at = GETDATE()
+    FROM GioHang g
+    JOIN inserted i ON g.id = i.id;
+END

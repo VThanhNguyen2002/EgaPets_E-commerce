@@ -5,37 +5,35 @@ const { v4: uuid }     = require('uuid');          // cho sessionId cookie
 
 /* helper lấy customerId|sessionId */
 function getIdentity(req, res) {
-  if (req.user && req.user.role.toLowerCase() === 'khachhang')
-    return { customerId: req.user.id };
-
-  // guest
-  let sid = req.cookies?.sid || req.query.sid || req.headers['x-session-id'];
+  const user = req.user;
+  if (user && user.role?.toLowerCase() === 'khachhang') {
+    return { userId: user.id, khachHangId: user.khachHangId };
+  }
+  let sid = req.cookies.sid || req.query.sid || req.headers['x-session-id'];
   if (!sid) {
     sid = uuid();
-    res.cookie('sid', sid, { httpOnly: true });
+    res.cookie('sid', sid, { httpOnly: true, maxAge: 1000*60*60*24*30 });
   }
   return { sessionId: sid };
 }
-
 
 /* ---------- CART ---------- */
 exports.add = async (req, res) => {
   if (!requireFields(res, {
     productId: req.body.productId,
-    quantity : req.body.quantity,
-    price    : req.body.price
+    quantity : req.body.quantity
   })) return;
+
   try {
     await cartSvc.addItem({
       ...getIdentity(req, res),
       productId: req.body.productId,
-      quantity : req.body.quantity,
-      price    : req.body.price,
-      discount : req.body.discount || 0
+      quantity : req.body.quantity
     });
     rsp.created(res, { message: 'Đã thêm vào giỏ' });
-  } catch (e) { console.error(e); rsp.error(res, 500, 'Lỗi thêm giỏ'); }
+  } catch (e) { console.error(e); rsp.error(res, 500, e.message || 'Lỗi thêm giỏ'); }
 };
+
 
 exports.list = async (req, res) => {
   try {

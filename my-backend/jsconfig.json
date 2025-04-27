@@ -4,7 +4,8 @@
       "paths": {
         "@shared/*": ["shared/*"],
         "@modules/*": ["modules/*"],
-        "@middlewares/*": ["middlewares/*"]
+        "@middlewares/*": ["middlewares/*"],
+        "@jobs/*": ["jobs/*"],
       }
     },
     "include": ["src"]

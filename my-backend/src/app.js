@@ -1,4 +1,5 @@
 require('dotenv').config();
+require('@jobs/cleanupCart');
 const express = require('express');
 const cors    = require('cors');
 const { poolPromise } = require('@shared/db/sql');
