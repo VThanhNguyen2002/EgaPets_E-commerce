@@ -34,3 +34,16 @@ exports.resetPassword = async (req, res) => {
   result.code === 200 ? rsp.ok(res, result.data)
                       : rsp.error(res, result.code, result.msg);
 };
+
+exports.sendOtp = async (req, res) => {
+  const { email, purpose } = req.body;           // purpose mặc định 'resetPw'
+  const result = await authService.sendOtp(email, purpose);
+  result.code === 200 ? rsp.ok(res, result.data)
+                      : rsp.error(res, result.code, result.msg);
+};
+
+exports.verifyOtp = async (req, res) => {
+  const result = await authService.verifyOtp(req.body);
+  result.code === 200 ? rsp.ok(res, result.data)
+                      : rsp.error(res, result.code, result.msg);
+};

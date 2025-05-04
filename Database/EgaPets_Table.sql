@@ -39,6 +39,23 @@ CREATE TABLE PasswordResets (
 );
 GO
 
+/* ─────────────────────────────────────────────
+   BẢNG EmailOtp – lưu mã OTP dùng một lần
+   ───────────────────────────────────────────── */
+CREATE TABLE EmailOtp (
+    id           INT IDENTITY(1,1) PRIMARY KEY,
+    user_id      INT           NOT NULL
+                 REFERENCES Users(id) ON DELETE CASCADE,
+    code         NVARCHAR(6)   NOT NULL,          -- 6 ký tự 0‑9
+    purpose      NVARCHAR(30)  NOT NULL,          -- 'resetPw' | 'verifyEmail' ...
+    expires_at   DATETIME      NOT NULL,
+    used_at      DATETIME      NULL,
+
+    CONSTRAINT UQ_EmailOtp UNIQUE (user_id, purpose) -- mỗi mục đích 1 mã còn hiệu lực
+);
+GO
+
+
 -- ─────────────────────────────────────────────────────────────────────────
 -- BẢNG Nhân Viên (Liên kết với Users)
 -- ─────────────────────────────────────────────────────────────────────────
@@ -381,3 +398,7 @@ SELECT * FROM DichVuChiTiet
 SELECT * FROM FaceID
 
 SELECT * FROM FaceIDLogs
+
+SELECT TOP 1 reset_token 
+FROM PasswordResets 
+ORDER BY id DESC;
