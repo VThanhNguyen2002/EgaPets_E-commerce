@@ -21,4 +21,9 @@ router.get('/admin-only', verifyToken, requireRoles('Admin'), (req, res) => {
   res.json({ msg: 'Chỉ Admin mới vào được!' });
 });
 
+// OTP
+router.post('/send-otp',    authController.sendOtp);    // body: { email, purpose? }
+router.post('/verify-otp',  authController.verifyOtp);  // body: { email, code, purpose? }
+
+
 module.exports = router;

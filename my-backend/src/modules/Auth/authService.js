@@ -111,4 +111,76 @@ async function resetPassword({ token, newPassword }) {
   return { code: 200, data: { message: 'Đặt lại mật khẩu thành công!' } };
 }
 
-module.exports = { login, register, forgotPassword, resetPassword };
+/* ---------------- OTP 6 số ---------------- */
+function genOtp() {
+  return Math.floor(100000 + Math.random() * 900000).toString(); // 100 000‑999 999
+}
+
+async function sendOtp(email, purpose = 'resetPw') {
+  const pool = await poolPromise;
+
+  // 1. Tìm user theo email
+  const rs = await pool.request()
+    .input('email', sql.NVarChar, email)
+    .query('SELECT id, username FROM Users WHERE email = @email');
+  const user = rs.recordset[0];
+  if (!user) return { code: 404, msg: 'Email không tồn tại.' };
+
+  // 2. Tạo / cập‑nhật OTP
+  const otp    = genOtp();
+  const expire = dayjs().add(10, 'minutes').toDate();
+
+  await pool.request()
+    .input('user_id',  sql.Int,      user.id)
+    .input('purpose',  sql.NVarChar, purpose)
+    .input('code',     sql.NVarChar, otp)
+    .input('expires',  sql.DateTime, expire)
+    .query(`
+      MERGE EmailOtp AS tgt
+      USING (SELECT @user_id AS user_id, @purpose AS purpose) src
+      ON (tgt.user_id = src.user_id AND tgt.purpose = src.purpose)
+      WHEN MATCHED THEN UPDATE SET code = @code, expires_at = @expires, used_at = NULL
+      WHEN NOT MATCHED THEN INSERT (user_id, purpose, code, expires_at)
+           VALUES (@user_id, @purpose, @code, @expires);
+    `);
+
+  // 3. Gửi mail
+  await sendMail({
+    to: email,
+    subject: 'Mã OTP – EGA Pets',
+    html: `
+      Xin chào ${user.username},<br/>
+      Mã xác thực của bạn là: <b style="font-size:20px">${otp}</b><br/>
+      Mã có hiệu lực 10 phút. Không chia sẻ cho bất kỳ ai!`
+  });
+
+  return { code: 200, data: { message: 'Đã gửi OTP qua email!' } };
+}
+
+async function verifyOtp({ email, code, purpose = 'resetPw' }) {
+  const pool = await poolPromise;
+  const rs = await pool.request()
+    .input('email',   sql.NVarChar, email)
+    .input('purpose', sql.NVarChar, purpose)
+    .query(`
+      SELECT e.id, e.code, e.expires_at, e.used_at, u.id AS user_id
+      FROM EmailOtp e
+      JOIN Users u ON u.id = e.user_id
+      WHERE u.email = @email AND e.purpose = @purpose
+    `);
+  const row = rs.recordset[0];
+  if (!row)                  return { code: 400, msg: 'OTP không tồn tại.' };
+  if (row.used_at)           return { code: 409, msg: 'OTP đã được sử dụng.' };
+  if (dayjs().isAfter(row.expires_at))
+                             return { code: 410, msg: 'OTP đã hết hạn.' };
+  if (row.code !== code)     return { code: 401, msg: 'OTP sai.' };
+
+  // Đánh dấu đã dùng
+  await pool.request()
+    .input('id', sql.Int, row.id)
+    .query('UPDATE EmailOtp SET used_at = GETDATE() WHERE id = @id');
+
+  return { code: 200, data: { userId: row.user_id, message: 'Xác thực OTP thành công!' } };
+}
+
+module.exports = { login, register, forgotPassword, resetPassword, sendOtp, verifyOtp, };
