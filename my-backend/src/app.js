@@ -4,6 +4,7 @@ const express = require('express');
 const cors    = require('cors');
 const { poolPromise } = require('@shared/db/sql');
 const routes  = require('./routes');
+const swaggerRouter = require('./docs/swagger');
 
 const app = express();
 app.use(cors());
@@ -22,6 +23,8 @@ app.get('/health', async (_, res) => {
 
 /* Mount all routes */
 app.use('/api', routes);  // routes/index.js sẽ chứa sub‑router
+
+app.use('/api-docs', swaggerRouter);
 
 /* 404 */
 app.use((req, res) => res.status(404).json({ error: 'Route not found' }));
