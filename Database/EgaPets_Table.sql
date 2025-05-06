@@ -127,6 +127,22 @@ CREATE TABLE SanPham (
 );
 GO
 
+ALTER TABLE SanPham ADD img_url NVARCHAR(MAX);
+
+-- ─────────────────────────────────────────────────────────────────────────
+-- BẢNG Ảnh của Sản Phẩm
+-- ─────────────────────────────────────────────────────────────────────────
+CREATE TABLE SanPhamAnh (
+    id INT IDENTITY(1,1) PRIMARY KEY,
+    san_pham_id INT NOT NULL,
+    image_url NVARCHAR(MAX) NOT NULL,
+    public_id NVARCHAR(255) NOT NULL,
+    uploaded_at DATETIME DEFAULT GETDATE(),
+    CONSTRAINT FK_SanPhamAnh FOREIGN KEY (san_pham_id)
+        REFERENCES SanPham(id) ON DELETE CASCADE
+);
+
+
 -- ─────────────────────────────────────────────────────────────────────────
 -- BẢNG Danh Sách Yêu Thích của Khách Hàng tới Sản Phẩm đó
 -- ─────────────────────────────────────────────────────────────────────────
