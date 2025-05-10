@@ -23,5 +23,15 @@ export default defineConfig({
       '@types':    path.resolve(__dirname, 'src/types'),
       '@utils':    path.resolve(__dirname, 'src/utils')
     }
+  },
+  server:{
+    proxy:{
+      "/api":{
+        target:"http://localhost:5000",
+        changeOrigin:true,
+        secure:false,
+        cookieDomainRewrite: "localhost",
+      }
+    }
   }
 });

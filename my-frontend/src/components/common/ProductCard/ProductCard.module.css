@@ -1,0 +1,140 @@
+.card {
+  background: #222;
+  border-radius: 8px;
+  padding: 12px;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  min-width: 160px;
+}
+
+/* IMG */
+.imgWrap {
+  position: relative;
+  width: 100%;
+  padding-top: 100%;
+  overflow: hidden;
+  border-radius: 8px;
+}
+.img,
+.imgHover {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 8px;
+  transition: opacity 0.25s;
+}
+.img {
+  opacity: 1;
+}
+.imgHover {
+  opacity: 0;
+}
+
+/* Hover ảnh – chỉ khi có .hasHover mới đổi */
+.hasHover:hover .img {
+  opacity: 0;
+}
+.hasHover:hover .imgHover {
+  opacity: 1;
+}
+
+/* icon giữa ảnh */
+.hoverIcons {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  opacity: 0;
+  transition: opacity 0.25s;
+}
+.imgWrap:hover .hoverIcons {
+  opacity: 1;
+}
+.hoverIcons button {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.hoverIcons button:hover {
+  background: #ff7750;
+  color: #fff;
+}
+
+.hoverIcons button svg {
+  width: 24px;
+  height: 24px;
+  color: inherit;       /* kế thừa từ .hoverIcons button */
+  pointer-events: none;  /* để click không bị cản */
+}
+
+/* badge giảm giá */
+.badge {
+  position: absolute;
+  left: 6px;
+  top: 6px;
+  background: #ff4b26;
+  color: #fff;
+  padding: 2px 6px;
+  font-size: 0.7rem;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+/* TEXT */
+.textZone {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.name {
+  margin-top: 8px;
+  font-size: 0.95rem;
+  line-height: 1.3em;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  display: box;
+  box-orient: vertical;
+  line-clamp: 2;
+  min-height: 2.6em;
+}
+.bottomRow {
+  margin-top: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 4px;
+}
+.price {
+  font-weight: 600;
+  color: #ff4b26;
+}
+.oldPrice {
+  font-size: 0.8rem;
+  color: #999;
+  text-decoration: line-through;
+}
+.cartBtn {
+  background: none;
+  border: none;
+  color: #ff4b26;
+  padding: 4px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+.cartBtn:hover {
+  background: #333;
+}

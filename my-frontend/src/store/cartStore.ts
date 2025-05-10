@@ -1,51 +1,105 @@
-// src/store/cartStore.ts
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
-
-interface CartItem {
-  id: string;
-  name: string;
-  price: number;
-  image: string;
-  quantity: number;
-}
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
+import debounce from "lodash.debounce";
+import { getUserFriendlyError } from "@/utils/errorHandler";
+import { toast } from "react-toastify";
+import { CartItem, AddCartDto } from "@/types/Cart";
+import { cartApi } from "@/services/cartApi";
 
 interface CartState {
-  cartItems: CartItem[];
-  addToCart: (item: CartItem) => void;
-  removeFromCart: (id: string) => void;
-  updateQuantity: (id: string, quantity: number) => void;
-  clearCart: () => void;
+  cartItems : CartItem[];
+
+  getCount  : () => number;
+
+  refresh   : () => Promise<void>;
+  add       : (dto: AddCartDto) => Promise<void>;
+  updateQty : (id: number, qty: number) => Promise<void>;
+  remove    : (id: number) => Promise<void>;
+  clearLocal: () => void;
 }
 
 export const useCartStore = create<CartState>()(
   persist(
-    (set, get) => ({
-      cartItems: [],
-      addToCart: (item) => {
-        const existing = get().cartItems.find(i => i.id === item.id);
-        if (existing) {
-          set({
-            cartItems: get().cartItems.map(i =>
-              i.id === item.id ? { ...i, quantity: i.quantity + item.quantity } : i
-            )
-          });
-        } else {
-          set({ cartItems: [...get().cartItems, item] });
+    (set, get) => {
+      const safeSet = (list: unknown) =>
+        set({ cartItems: Array.isArray(list) ? list : [] });
+
+      // ✅ Giới hạn gọi API list mỗi 1 giây
+      const debouncedRefresh = debounce(async () => {
+        try {
+          const res = await cartApi.list();
+          if ((res as any)?.warning) {
+            toast.info((res as any).warning);
+          } else {
+            safeSet(res);
+          }
+        } catch (e) {
+          toast.error(getUserFriendlyError(e));
         }
-      },
-      removeFromCart: (id) =>
-        set({ cartItems: get().cartItems.filter(item => item.id !== id) }),
-      updateQuantity: (id, quantity) =>
-        set({
-          cartItems: get().cartItems.map(item =>
-            item.id === id ? { ...item, quantity } : item
-          )
-        }),
-      clearCart: () => set({ cartItems: [] }),
-    }),
+      }, 1000);
+
+      // ✅ Ngăn spam add cùng 1 SKU
+      const addQueue = new Map<number, ReturnType<typeof setTimeout>>();
+      const enqueueAdd = (dto: AddCartDto) =>
+        new Promise<void>((resolve, reject) => {
+          if (addQueue.has(dto.productId)) return resolve(); // đang đợi
+          addQueue.set(
+            dto.productId,
+            setTimeout(async () => {
+              try {
+                safeSet(await cartApi.add(dto));
+                resolve();
+              } catch (e) {
+                toast.error(getUserFriendlyError(e));
+                reject(e);
+              } finally {
+                addQueue.delete(dto.productId);
+              }
+            }, 250) // ¼ giây đệm
+          );
+        });
+
+      return {
+        cartItems: [],
+
+        getCount: () =>
+          get().cartItems.reduce((n, i) => n + (i.so_luong ?? 0), 0),
+
+        refresh: () =>
+          new Promise<void>((resolve) => {
+            debouncedRefresh();          // vẫn debounce 1 giây
+            resolve();                   // trả Promise để .then/.catch hợp lệ
+          }),
+
+        add: enqueueAdd,
+
+        updateQty: async (id, qty) => {
+          try {
+            safeSet(await cartApi.update(id, qty));
+          } catch (e) {
+            toast.error(getUserFriendlyError(e));
+          }
+        },
+
+        remove: async (id) => {
+          try {
+            safeSet(await cartApi.remove(id));
+          } catch (e) {
+            toast.error(getUserFriendlyError(e));
+          }
+        },
+
+        clearLocal: () => set({ cartItems: [] }),
+      };
+    },
     {
-      name: 'cart-storage', // tên key trong localStorage
+      name: "ega-cart-cache",
+      merge: (persisted, current) => ({
+        ...current,
+        cartItems: Array.isArray((persisted as any)?.state?.cartItems)
+          ? (persisted as any).state.cartItems
+          : [],
+      }),
     }
   )
 );

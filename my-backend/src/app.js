@@ -6,9 +6,15 @@ const { poolPromise } = require('@shared/db/sql');
 const routes  = require('./routes');
 const swaggerRouter = require('./docs/swagger');
 
+const cookieParser = require("cookie-parser");
 const app = express();
+
 app.use(cors());
 app.use(express.json({ limit: '40mb' }));
+
+app.use(cookieParser());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 /* Health‑check */
 app.get('/health', async (_, res) => {

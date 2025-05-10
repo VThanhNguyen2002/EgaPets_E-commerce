@@ -1,26 +1,20 @@
-// src/components/CartIcon/CartIcon.tsx
+// 📁 src/components/CartIcon/CartIcon.tsx
+import { useCartStore } from "@/store/cartStore";
+import { ShoppingCart } from "lucide-react";
 import styles from "./CartIcon.module.css";
-import { FaShoppingCart } from "react-icons/fa";
-import { useCartStore } from "../../store/cartStore";
 
 interface Props {
   onClick?: () => void;
 }
 
-const CartIcon = ({ onClick }: Props) => {
-  const cartItemCount = useCartStore((state) =>
-    state.cartItems.reduce((sum, i) => sum + i.quantity, 0)
-  );
+export default function CartIcon({ onClick }: Props) {
+  const count = useCartStore((s) => s.getCount());
 
   return (
-    <div className={styles.cartContainer} onClick={onClick}>
-      <div className={styles.iconWrapper}>
-        <FaShoppingCart className={styles.cartIcon} />
-        <span className={styles.itemCount}>{cartItemCount}</span>
-      </div>
-      <span className={styles.cartLabel}>Giỏ hàng</span>
+    <div className={styles.cartIcon} onClick={onClick}>
+      {count > 0 && <span className={styles.badge}>{count}</span>}
+      <ShoppingCart size={24} />
+      <span className={styles.label}>Giỏ hàng</span>
     </div>
   );
-};
-
-export default CartIcon;
+}
