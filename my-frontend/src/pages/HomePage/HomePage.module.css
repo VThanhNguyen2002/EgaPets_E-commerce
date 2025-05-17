@@ -1,8 +1,9 @@
-.homeContainer {
-  flex-direction: column;
-  margin-top: 110px;
+.homeContainer{
+  flex-direction:column;margin-top:110px
 }
 
-.footer {
-  margin-top: auto; /* Đẩy footer xuống dưới nếu nội dung ít */
+/* section chung – tránh layout-shift khi tab fetch lại */
+.sectionWrap{
+  min-height:480px;          /* giữ chỗ, không còn “đôn lên” */
+  position:relative
 }

@@ -1,171 +1,23 @@
-.newProductsSection {
-  padding: 40px 20px;
-  background-color: #1c1c1c; /* Dark background */
-  color: #ffffff;
-  margin-bottom: 40px;
-  /* max-width, margin auto tuỳ ý, nếu muốn canh giữa:
-  max-width: 1200px;
-  margin: 40px auto;
-  */
-}
+.section { padding: 40px 20px; background: #1c1c1c; color: #fff; }
 
-.sectionTitle {
-  font-size: 2rem;
-  margin-bottom: 24px;
-  color: #ffa14a;
+.content { display: flex; gap: 20px; align-items: stretch; }
+.left    { flex: 0 0 100; }
+@media (max-width: 1024px) {
+  .left {
+    flex: 0 0 220px;
+  }
 }
+.banner  { width: 100%; height: 100%; object-fit: cover; border-radius: 8px; }
 
-/* Flex chia làm 2 cột: banner trái - sp phải */
-.sectionContent {
-  width: auto;
-  height: 100%;
-  display: flex;
-  gap: 20px;
-  align-items: stretch;
-}
+.right         { display: flex; flex-direction: column; flex: 1; }
+.grid          { display: grid; gap: 20px; grid-template-columns: repeat(3,1fr); }
+@media (max-width:768px){ .grid{ grid-template-columns: repeat(2,1fr);} }
 
-.leftBanner {
-  flex: 0 0 320px; 
-  display: flex;
+.viewAll { margin-top: auto; text-align: center; }
+.viewAll button {
+  background: #ff6600; border: none; color: #fff; padding: 10px 20px;
+  border-radius: 4px; font-weight: 600; cursor: pointer;
 }
-
-/* Tăng chiều cao banner: dùng min-height + object-fit */
-.bannerImage {
-  width: auto;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 8px;
-}
-
-/* Bên phải */
-.rightContent {
-  display: flex;
-  flex-direction: column;
-}
-
-/* 4 cột cố định */
-.productsGrid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px; /* Tăng khoảng cách giữa các card */
-}
-
-.productCard {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between; /* Giúp nội dung trong card luôn trải đều */
-  height: 100%;
-}
-
-.productCard:hover {
-  box-shadow: 0 0 8px rgba(255,255,255,0.2);
-}
-
-/* Ảnh + container cho hover icons */
-.imageContainer {
-  position: relative;
-  overflow: hidden;
-  width: 100%;
-  /* nếu muốn cố định chiều cao, bạn có thể set:
-     height: 180px;
-     .productImage { object-fit: cover; }
-  */
-  margin-bottom: 8px;
-}
-
-.productImage {
-  width: 100%;
-  height: auto;
-  border-radius: 6px;
-}
-
-/* Tên, giá, discount */
-.productName {
-  font-size: 1rem;
-  color: #ffa14a;
-  text-align: center;
-  height: 50px; /* Chiều cao cố định phù hợp với số dòng */
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2; /* Giới hạn hiển thị tối đa 2 dòng */
-  overflow: hidden;
-  text-overflow: ellipsis;
-  word-break: break-word; /* Đảm bảo từ không bị tràn */
-  
-  /* Thêm tiêu chuẩn mới để hỗ trợ tốt hơn */
-  line-clamp: 2;
-  box-orient: vertical;
-}
+.viewAll button:hover { background: #e65c00; }
 
 
-.priceWrapper {
-  margin-bottom: 8px;
-  display: flex;
-  justify-content: center;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.price {
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: #fff;
-}
-
-.oldPrice {
-  text-decoration: line-through;
-  color: #bbb;
-}
-
-.discount {
-  background-color: #ff3333;
-  color: #fff;
-  padding: 2px 4px;
-  border-radius: 4px;
-  font-size: 0.9rem;
-}
-
-/* Nút "Xem tất cả" */
-.viewAllWrapper {
-  margin-top: auto;
-  text-align: center;
-}
-
-.productsWrapper {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-
-.viewAllButton {
-  background-color: #ff6600;
-  border: none;
-  color: #fff;
-  padding: 10px 20px;
-  border-radius: 4px;
-  font-weight: 600;
-  cursor: pointer;
-}
-.viewAllButton:hover {
-  background-color: #e65c00;
-}
-
-/* 
-   Tái sử dụng .hoverIcons => Phải bảo đảm
-   .imageContainer:hover .hoverIcons { opacity: 1; }
-*/
-.wrapperIcon {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  display: flex;
-  gap: 8px;
-  opacity: 0;
-  transition: opacity 0.3s;
-}
-
-/* Khi hover container, show icons */
-.imageContainer:hover .wrapperIcon {
-  opacity: 1;
-}

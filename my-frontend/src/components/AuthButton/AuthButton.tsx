@@ -1,46 +1,34 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import styles from "./AuthButton.module.css";
-import { FaUser } from "react-icons/fa";
-import { useUser } from "@/hooks/useUser";
-import { removeCookie } from "@/utils/cookie";
+import { useState }      from "react";
+import { useNavigate }   from "react-router-dom";
+import { FaUser }        from "react-icons/fa";
+import { useAuthStore }  from "@/store/authStore";
+import styles            from "./AuthButton.module.css";
+import { toast } from "react-toastify";
 
-const AuthButton = () => {
-  const navigate = useNavigate();
-  const { username } = useUser();
-  const [showMenu, setShowMenu] = useState(false);
+export default function AuthButton(){
+  const nav              = useNavigate();
+  const { username,isLoggedIn, logout } = useAuthStore();
+  const [open,setOpen]   = useState(false);
 
-  const handleLogout = () => {
-    removeCookie("token");
-    removeCookie("username");
-    setShowMenu(false);
-    navigate("/login");
+  const onMainClick = () =>{
+    if(!isLoggedIn) nav("/login");
+    else            setOpen(p=>!p);
   };
 
-  return (
-    <div className={styles.authWrapper}>
-      <button
-        className={styles.authButton}
-        onClick={() => {
-          if (!username) navigate("/login");
-          else setShowMenu((prev) => !prev);
-        }}
-      >
-        <FaUser className={styles.userIcon} />
-        <div className={styles.authInfo}>
-          <span className={styles.smallText}>{username ? "Xin chào" : "Tài khoản"}</span>
-          <span className={styles.bigText}>{username || "Đăng nhập"}</span>
-        </div>
+  return(
+    <div className={styles.wrap}>
+      <button className={styles.main} onClick={onMainClick}>
+        <FaUser className={styles.ic}/>
+        <span className={styles.top}>{isLoggedIn?"Xin chào":"Tài khoản"}</span>
+        <span className={styles.bot}>{username||"Đăng nhập"}</span>
       </button>
 
-      {username && showMenu && (
+      {isLoggedIn && open && (
         <div className={styles.dropdown}>
-          <button onClick={() => navigate("/profile")}>Thông tin tài khoản</button>
-          <button onClick={handleLogout}>Đăng xuất</button>
+          <button onClick={()=>nav("/profile")}>Thông tin tài khoản</button>
+          <button onClick={()=>{logout();toast.success("Đăng xuất thành công!",{theme:"colored"});setOpen(false);}}>Đăng xuất</button>
         </div>
       )}
     </div>
   );
-};
-
-export default AuthButton;
+}

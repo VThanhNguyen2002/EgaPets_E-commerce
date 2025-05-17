@@ -1,46 +1,123 @@
-/* src/pages/CartPage/CartPage.module.css */
-.wrapper {
-    padding: 100px 40px 40px;
-    background: #f9f9f9;
-    min-height: 100vh;
+:root { --headerH: 70px }
+
+.breadcrumbsWrapper {
+    padding: 0 14px;
+    justify-content: flex-start;
   }
   
-  .cartList {
-    background: #fff;
-    padding: 20px;
-    border-radius: 8px;
+.page   {width:95%;max-width:1200px;margin:40px auto 60px;min-height:60vh;padding-top: var(--headerH);}
+.title  {font-size:1.8rem;font-weight:700;margin:12px 0 26px;text-align:center}
+.empty  {text-align:center;margin:60px 0;font-size:1.1rem;color:#aaa}
+
+.grid   {display:grid;grid-template-columns:2fr 340px;gap:32px}
+@media (max-width:900px){.grid{grid-template-columns:1fr}}
+
+.table  {width:100%;border-collapse:collapse;background:#141414;border-radius:8px;overflow:hidden}
+.table th,.table td{padding:14px 10px;border-bottom:1px solid #292929}
+.table th{color:#bbb;font-weight:600;text-align:left}
+.table tbody tr:hover{background:#1e1e1e}
+.table img{width:64px;height:64px;object-fit:cover;border-radius:6px}
+
+
+.pName  {font-weight:600}
+.pName small{display:block;font-size:.75rem;font-weight:400;color:#777}
+
+.bold   {font-weight:700;color:#ff7750}
+
+.summary{background:#141414;border:1px solid #292929;border-radius:10px;padding:24px;position:sticky;top:90px;height:fit-content}
+.summary h3{margin:0 0 10px;font-size:1.2rem}
+.money  {font-size:1.5rem;font-weight:700;color:#ff7750;margin:4px 0 18px}
+.btn {
+    width: 100%;
+    display: flex;                   /* <== THÊM */
+    align-items: center;            /* <== THÊM */
+    justify-content: center;        /* <== THÊM */
+    gap: 8px;                       /* <== khoảng cách icon & text */
+    padding: 12px 0;
+    background: #ff4d00;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 1rem;
   }
   
-  .item {
+.btn:hover{opacity:.9}
+
+/* nút xoá + box qty */
+.del        {position:absolute; right:0; top:50%; transform:translateY(-50%);
+    background:none; border:none; color:#888; cursor:pointer;}
+.qtyBox     {display:flex; gap:6px; align-items:center;}
+.qtyBox button{width:22px; height:22px; border:none; background:#333; color:#fff;
+      border-radius:4px; cursor:pointer;}
+
+/* SUGGEST */
+.suggest            {margin-top:60px;}
+.suggest h2         {text-align:center; margin-bottom:28px; color:#ff7750;}
+.gridSuggest        {display:grid;
+            grid-template-columns:repeat(auto-fill,minmax(190px,1fr));
+            gap:26px;}
+
+
+/* ------------- TABLE ------------- */
+.table                   { width:100%; border-collapse:collapse; background:#141414;
+    border-radius:8px; overflow:hidden; table-layout:auto; }
+.table td,
+.table th                { padding:16px 14px; vertical-align:middle; }
+.table td:first-child    { width:70px; }               /* cột ảnh */
+.pName                   { width:100%; position:relative; } /* kéo dài tên SP */
+
+.table td:last-child, .table th:last-child { width:40px; text-align:center; }
+.del {
+    border:none;
+    background:none;
+    color:#999;
+    cursor:pointer;
+    transition:color .15s;
+  }
+  
+  .del:hover { color:#ff4d4d; }
+
+  .qtyBoxModern {
     display: flex;
     align-items: center;
-    gap: 20px;
-    border-bottom: 1px solid #eee;
-    padding: 15px 0;
+    gap: 10px;
+    border: 1px solid #666;
+    overflow: hidden;
+    border-radius: 6px;
+    padding: 5px 10px;
+    background-color: #1c1c1c;
+    min-width: 90px;
+    justify-content: space-between;
+    height: 40px;
   }
-  
-  .item img {
-    width: 80px;
-    height: 80px;
-    object-fit: cover;
-    border-radius: 4px;
-  }
-  
-  .info {
-    flex: 1;
-  }
-  
-  .actions {
-    margin-top: 20px;
-    display: flex;
-    justify-content: flex-end;
-  }
-  
-  .actions button {
-    background: #000;
-    color: white;
-    padding: 10px 20px;
+  .qtyBoxModern button {
+    background: none;
     border: none;
+    color: #fff;
+    font-size: 1rem;
+    width: 35px;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
     cursor: pointer;
   }
+  .qtyBoxModern span {
+    font-weight: 600;
+    width: 40px;
+    text-align: center;
+  }
+
+  .delStandalone {
+    background: none;
+    border: none;
+    color: #888;
+    cursor: pointer;
+    transition: color 0.2s;
+  }
+  .delStandalone:hover {
+    color: #ff4d4d;
+  }
+  
   

@@ -1,197 +1,85 @@
-import React, { useState } from "react";
-import ProductHoverActions from "../ProductHoverActions/ProductHoverActions";
-import CompareBar from "../CompareBar/CompareBar";
-import QuickViewModal from "../QuickViewModal/QuickViewModal";
-
-import styles from "./NewProductsSection.module.css";
+import { useEffect, useState } from "react";
+import styles       from "./NewProductsSection.module.css";
 import sharedStyles from "../common/SharedStyles.module.css";
 
-// Kiểu dữ liệu cho sản phẩm
-export interface Product {
-  id: number;
-  name: string;
-  price: number;
-  oldPrice?: number;
-  discount?: number;
-  image: string;
-  hoverImage?: string; 
-  rating: number;
-}
+import { fetchNewestProducts } from "../../services/productService";
+import { Product }             from "../../types/Product";
+import ProductCard             from "../common/ProductCard/ProductCard";
+import QuickViewModal          from "../QuickViewModal/QuickViewModal";
+import CompareBar              from "../CompareBar/CompareBar";
 
-// Mock data “Sản phẩm mới”
-const newProductsMock: Product[] = [
-  {
-    id: 101,
-    name: "Bàn Cào Móng Giấy Cho Mèo",
-    price: 90000,
-    oldPrice: 120000,
-    discount: 25,
-    image: "/src/assets/SanPham.jpg",
-    hoverImage: "/src/assets/SanPham1.jpg",
-    rating: 5
-  },
-  {
-    id: 102,
-    name: "Bánh Thưởng Cho Mèo Catnip Biscuits",
-    price: 64000,
-    image: "/src/assets/SanPham1.jpg",
-    hoverImage: "/src/assets/SanPham1.jpg",
-    rating: 5
-  },
-  {
-    id: 103,
-    name: "Bánh Thưởng Cho Mèo GimCat Nutri Pockets",
-    price: 148000,
-    image: "/src/assets/SanPham.jpg",
-    hoverImage: "/src/assets/SanPham1.jpg",
-    rating: 5
-  },
-  {
-    id: 104,
-    name: "Cần Câu Mèo Đính Chuông Lông Vũ",
-    price: 60000,
-    image: "/src/assets/SanPham1.jpg",
-    hoverImage: "/src/assets/SanPham1.jpg",
-    rating: 5
-  },
-  {
-    id: 105,
-    name: "Cây Lăn Mát Xa Cho Mèo Thư Giãn",
-    price: 110000,
-    oldPrice: 130000,
-    discount: 15,
-    image: "/src/assets/SanPham.jpg",
-    hoverImage: "/src/assets/SanPham1.jpg",
-    rating: 5
-  },
-  {
-    id: 106,
-    name: "Cỏ Mèo Bạc Hà Catnip Cho Mèo",
-    price: 50000,
-    oldPrice: 60000,
-    discount: 17,
-    image: "/src/assets/SanPham1.jpg",
-    hoverImage: "/src/assets/SanPham1.jpg",
-    rating: 5
-  },
-];
+export default function NewProductsSection() {
+  const [items, setItems]   = useState<Product[]>([]);
+  const [loading, setLoad]  = useState(true);
 
-const NewProductsSection: React.FC = () => {
-  // State cho popup xem nhanh
-  const [isQuickViewOpen, setIsQuickViewOpen] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [quick, setQuick]   = useState(false);
+  const [curr,  setCurr]    = useState<Product | null>(null);
+  const [cmp,   setCmp]     = useState<Product[]>([]);
 
-  // State cho so sánh
-  const [compareList, setCompareList] = useState<Product[]>([]);
+  /* lấy 7 sản phẩm mới nhất */
+  useEffect(() => {
+    fetchNewestProducts(7).then((data) => {
+      setItems(Array.isArray(data) ? data : []);
+      setLoad(false);
+    });    
+  }, []);
 
-  // Mở popup
-  const handleQuickView = (product: Product) => {
-    setSelectedProduct(product);
-    setIsQuickViewOpen(true);
-  };
-
-  // Đóng popup
-  const handleCloseQuickView = () => {
-    setIsQuickViewOpen(false);
-    setSelectedProduct(null);
-  };
-
-  // Thêm / gỡ sản phẩm khỏi compareList
-  const handleCompare = (product: Product) => {
-    setCompareList((prev) => {
-      const isExist = prev.find((p) => p.id === product.id);
-      if (isExist) {
-        // Nếu đã có => xóa
-        return prev.filter((p) => p.id !== product.id);
-      }
-      // Nếu chưa có => thêm, nhưng kiểm tra >=3 thì cảnh báo
-      if (prev.length >= 3) {
-        alert("Bạn chỉ có thể so sánh tối đa 3 sản phẩm. Vui lòng xóa bớt!");
-        return prev;
-      }
-      return [...prev, product];
-    });
-  };
-
-  // Xóa 1 item khỏi CompareBar
-  const handleRemoveItem = (id: number) => {
-    setCompareList((prev) => prev.filter((p) => p.id !== id));
-  };
-
-  // Render 1 product card
-  const renderCard = (item: Product) => {
-    return (
-      <div key={item.id} className={styles.productCard}>
-        <div className={styles.imageContainer}>
-          <img src={item.image} alt={item.name} className={styles.productImage} />
-
-          {/* Hover icons */}
-          <ProductHoverActions
-            wrapperClass={styles.wrapperIcon}
-            onQuickView={() => handleQuickView(item)}
-            onCompare={() => handleCompare(item)}
-          />
-        </div>
-
-        <h3 className={styles.productName}>{item.name}</h3>
-
-        <div className={styles.priceWrapper}>
-          <span className={styles.price}>{item.price.toLocaleString()}đ</span>
-          {item.oldPrice && (
-            <span className={styles.oldPrice}>
-              {item.oldPrice.toLocaleString()}đ
-            </span>
-          )}
-          {item.discount && (
-            <span className={styles.discount}>-{item.discount}%</span>
-          )}
-        </div>
-      </div>
-    );
-  };
+  const renderCard = (p: Product) => (
+    <ProductCard
+      key={p.id}
+      data={p}
+      onQuickView={() => { setCurr(p); setQuick(true); }}
+      onCompare={() => {
+        setCmp((prev) =>
+          prev.find((x) => x.id === p.id)
+            ? prev.filter((x) => x.id !== p.id)
+            : prev.length >= 3
+              ? (alert("Tối đa 3 sản phẩm!"), prev)
+              : [...prev, p]);
+      }}
+    />
+  );
 
   return (
-    <div className={styles.newProductsSection}>
+    <div className={styles.section}>
       <h2 className={sharedStyles.sectionTitle}>Sản phẩm mới</h2>
 
-      {/* Banner trái + Grid sản phẩm phải */}
-      <div className={styles.sectionContent}>
-        <div className={styles.leftBanner}>
+      <div className={styles.content}>
+        {/* banner trái */}
+        <div className={styles.left}>
           <img
             src="/src/assets/IntroSanPhamMoi.jpg"
-            alt="Banner Sản phẩm mới"
-            className={styles.bannerImage}
+            className={styles.banner}
+            alt="Banner sale"
           />
         </div>
 
-        <div className={styles.rightContent}>
-          <div className={styles.productsWrapper}>
-            <div className={styles.productsGrid}>
-              {newProductsMock.map((item) => renderCard(item))}
-            </div>
-            <div className={styles.viewAllWrapper}>
-              <button className={styles.viewAllButton}>Xem tất cả &raquo;</button>
-            </div>
+        {/* grid phải */}
+        <div className={styles.right}>
+          <div className={styles.grid}>
+            {loading
+              ? <p style={{ gridColumn: "1/-1" }}>Đang tải…</p>
+              : items.map(renderCard)}
+          </div>
+
+          <div className={styles.viewAll}>
+            <button>Xem tất cả »</button>
           </div>
         </div>
       </div>
 
-      {/* Modal Xem nhanh */}
       <QuickViewModal
-        product={selectedProduct}
-        isOpen={isQuickViewOpen}
-        onClose={handleCloseQuickView}
+        product={curr}
+        isOpen={quick}
+        onClose={() => setQuick(false)}
       />
 
-      {/* Compare Bar */}
       <CompareBar
-        compareList={compareList}
-        onRemoveItem={handleRemoveItem}
-        onClearAll={() => setCompareList([])}
+        compareList={cmp}
+        onRemoveItem={(id) => setCmp(cmp.filter((x) => x.id !== id))}
+        onClearAll={() => setCmp([])}
         onCompareNow={() => alert("So sánh ngay!")}
       />
     </div>
   );
-};
-
-export default NewProductsSection;
+}

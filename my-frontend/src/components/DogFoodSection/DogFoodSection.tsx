@@ -1,219 +1,90 @@
-import React, { useState } from "react";
-import styles from "./DogFoodSection.module.css";
-import ProductHoverActions from "../ProductHoverActions/ProductHoverActions";
-import QuickViewModal from "../QuickViewModal/QuickViewModal";
-import CompareBar from "../CompareBar/CompareBar";
+import { useState } from "react";
+import styles       from "./DogFoodSection.module.css";
 import sharedStyles from "../common/SharedStyles.module.css";
 
-interface Product {
-  id: number;
-  name: string;
-  price: number;
-  oldPrice?: number;
-  discount?: number;
-  image: string;
-  hoverImage?: string;
-  rating: number;
-}
+import useProducts    from "../../hooks/useProducts";
+import { Product }    from "../../types/Product";
+import ProductCard    from "../common/ProductCard/ProductCard";
+import QuickViewModal from "../QuickViewModal/QuickViewModal";
+import CompareBar     from "../CompareBar/CompareBar";
 
-const dogFoodData = {
-  dry: [
-    {
-      id: 1,
-      name: "Hạt Cho Chó SmartHeart",
-      price: 120000,
-      oldPrice: 150000,
-      discount: 20,
-      image: "/src/assets/SanPham.jpg",
-      hoverImage: "/src/assets/SanPham1.jpg",
-      rating: 5,
-    },
-    {
-      id: 2,
-      name: "Hạt Cho Chó Pedigree",
-      price: 85000,
-      image: "/src/assets/SanPham.jpg",
-      hoverImage: "/src/assets/SanPham1.jpg",
-      rating: 4,
-    },
-  ],
-  wet: [
-    {
-      id: 3,
-      name: "Pate Cho Chó Gan Bò",
-      price: 30000,
-      oldPrice: 35000,
-      discount: 14,
-      image: "/src/assets/SanPham.jpg",
-      hoverImage: "/src/assets/SanPham1.jpg",
-      rating: 5,
-    },
-    {
-      id: 4,
-      name: "Pate Cho Chó Blisk Gà Rau Củ",
-      price: 40000,
-      image: "/src/assets/SanPham.jpg",
-      hoverImage: "/src/assets/SanPham1.jpg",
-      rating: 4,
-    },
-  ],
-  snack: [
-    {
-      id: 5,
-      name: "Snack Xương Gặm Cho Chó",
-      price: 20000,
-      image: "/src/assets/SanPham.jpg",
-      hoverImage: "/src/assets/SanPham1.jpg",
-      rating: 5,
-    },
-    {
-      id: 6,
-      name: "Xúc Xích Thưởng Cho Chó",
-      price: 25000,
-      oldPrice: 30000,
-      discount: 17,
-      image: "/src/assets/SanPham.jpg",
-      hoverImage: "/src/assets/SanPham1.jpg",
-      rating: 5,
-    },
-  ],
-};
+const TABS = [
+  { key: "dry",   label: "Thức ăn khô",  type: "Thức ăn cho chó"        },
+  { key: "snack", label: "Bánh thưởng", type: "Bánh thưởng cho chó"    },
+] as const;
 
-const DogFoodSection: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<"dry" | "wet" | "snack">("dry");
+export default function DogFoodSection() {
+  const [activeTab, setActiveTab] =
+    useState<typeof TABS[number]["key"]>("dry");
 
-  // State popup
-  const [isQuickViewOpen, setIsQuickViewOpen] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const { products, loading } = useProducts(
+    TABS.find((t) => t.key === activeTab)!.type,
+  );
 
-  // State compare
-  const [compareList, setCompareList] = useState<Product[]>([]);
+  const [quick,   setQuick]   = useState(false);
+  const [current, setCurrent] = useState<Product | null>(null);
+  const [compare, setCompare] = useState<Product[]>([]);
 
-  const handleQuickView = (product: Product) => {
-    setSelectedProduct(product);
-    setIsQuickViewOpen(true);
-  };
-
-  const handleCloseQuickView = () => {
-    setIsQuickViewOpen(false);
-    setSelectedProduct(null);
-  };
-
-  const handleCompare = (product: Product) => {
-    setCompareList((prev) => {
-      // Kiểm tra xem sản phẩm này đã có trong compareList chưa
-      const isExist = prev.find((p) => p.id === product.id);
-  
-      // Nếu đã tồn tại => gỡ ra (remove)
-      if (isExist) {
-        return prev.filter((p) => p.id !== product.id);
-      }
-  
-      // Nếu chưa tồn tại => chuẩn bị thêm mới
-      // Nhưng trước khi thêm, kiểm tra có >= 3 chưa
-      if (prev.length >= 3) {
-        alert("Bạn chỉ có thể so sánh tối đa 3 sản phẩm. Vui lòng xóa bớt!");
-        return prev; // Không thêm nữa
-      }
-  
-      // Nếu chưa đủ 3 => thêm bình thường
-      return [...prev, product];
-    });
-  };
-  
-
-  const handleRemoveItem = (id: number) => {
-    setCompareList((prev) => prev.filter((p) => p.id !== id));
-  };
-
-  const renderProducts = (products: Product[]) => {
-    return products.map((p) => (
-      <div className={styles.productCard} key={p.id}>
-        <div className={styles.imageContainer}>
-          <img
-            src={p.image}
-            alt={p.name}
-            className={`${styles.productImage} ${styles.defaultImage}`}
-          />
-          {p.hoverImage && (
-            <img
-              src={p.hoverImage}
-              alt={p.name}
-              className={`${styles.productImage} ${styles.hoverImage}`}
-            />
-          )}
-
-          {/* Xem nhanh / so sánh */}
-          <ProductHoverActions
-            wrapperClass={styles.wrapperIcon} 
-            onQuickView={() => handleQuickView(p)}
-            onCompare={() => handleCompare(p)}
-          />
-        </div>
-
-        <h3 className={styles.productName}>{p.name}</h3>
-        <div className={styles.priceWrapper}>
-          <span className={styles.price}>{p.price.toLocaleString()}đ</span>
-          {p.oldPrice && (
-            <span className={styles.oldPrice}>{p.oldPrice.toLocaleString()}đ</span>
-          )}
-          {p.discount && <span className={styles.discount}>-{p.discount}%</span>}
-        </div>
-        <div className={styles.rating}>
-          {Array.from({ length: p.rating }).map((_, i) => (
-            <span key={i}>⭐</span>
-          ))}
-        </div>
-      </div>
-    ));
-  };
+  const renderCard = (p: Product) => (
+    <ProductCard
+      key={p.id}
+      data={p}
+      onQuickView={() => { setCurrent(p); setQuick(true); }}
+      onCompare={() => {
+        setCompare((prev) =>
+          prev.find((x) => x.id === p.id)
+            ? prev.filter((x) => x.id !== p.id)
+            : prev.length >= 3
+              ? (alert("Chỉ so sánh tối đa 3 sản phẩm!"), prev)
+              : [...prev, p]);
+      }}
+    />
+  );
 
   return (
-    <div className={styles.dogFoodSection}>
-      <h2 className={sharedStyles.sectionTitle}>Dinh dưỡng cho chó 🐶</h2>
+    <section className={styles.sectionWrap}>
+     <div className={styles.section}>
+      <h2 className={sharedStyles.sectionTitle}>
+        Dinh dưỡng cho chó 🐶
+      </h2>
+
       <div className={styles.tabButtons}>
-        <button
-          className={activeTab === "dry" ? styles.activeTab : ""}
-          onClick={() => setActiveTab("dry")}
-        >
-          Thức ăn cho chó
-        </button>
-        <button
-          className={activeTab === "wet" ? styles.activeTab : ""}
-          onClick={() => setActiveTab("wet")}
-        >
-          Thức ăn ướt
-        </button>
-        <button
-          className={activeTab === "snack" ? styles.activeTab : ""}
-          onClick={() => setActiveTab("snack")}
-        >
-          Snack cho chó
-        </button>
+        {TABS.map((t) => (
+          <button
+            key={t.key}
+            className={activeTab === t.key ? styles.activeTab : ""}
+            onClick={() => setActiveTab(t.key)}
+          >
+            {t.label}
+          </button>
+        ))}
       </div>
 
-      <div className={styles.productGrid}>
-        {activeTab === "dry" && renderProducts(dogFoodData.dry)}
-        {activeTab === "wet" && renderProducts(dogFoodData.wet)}
-        {activeTab === "snack" && renderProducts(dogFoodData.snack)}
+      <div className={styles.grid}>
+        {loading ? (
+            <p style={{gridColumn:"1/-1"}}>Đang tải…</p>
+          ) : products.length ? (
+            products.map(renderCard)
+          ) : (
+            <p style={{gridColumn:"1/-1"}}>Chưa có sản phẩm.</p>
+          )
+        }
       </div>
 
-      {/* Modal “Xem nhanh” (nếu cần) */}
+
       <QuickViewModal
-        product={selectedProduct}
-        isOpen={isQuickViewOpen}
-        onClose={handleCloseQuickView}
+        product={current}
+        isOpen={quick}
+        onClose={() => setQuick(false)}
       />
 
-      {/* CompareBar */}
       <CompareBar
-        compareList={compareList}
-        onRemoveItem={handleRemoveItem}
-        onClearAll={() => setCompareList([])}
+        compareList={compare}
+        onRemoveItem={(id) => setCompare(compare.filter((x) => x.id !== id))}
+        onClearAll={() => setCompare([])}
         onCompareNow={() => alert("So sánh ngay!")}
       />
     </div>
+    </section>
   );
-};
-
-export default DogFoodSection;
+}

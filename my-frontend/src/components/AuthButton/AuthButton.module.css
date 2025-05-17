@@ -1,62 +1,12 @@
-.authWrapper {
-  position: relative;
+.wrap{position:relative}
+.main{
+  display:flex;flex-direction:column;align-items:center;
+  background:none;border:none;color:#fff;cursor:pointer;padding:0 10px
 }
-
-.authButton {
-  display: flex;
-  align-items: center;
-  background: none;
-  border: none;
-  color: white;
-  cursor: pointer;
-}
-
-.userIcon {
-  font-size: 18px;
-  margin-right: 6px;
-}
-
-.authInfo {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-}
-
-.smallText {
-  font-size: 12px;
-  color: #ccc;
-}
-
-.bigText {
-  font-size: 14px;
-  font-weight: bold;
-  color: #fff;
-}
-
-/* 🆕 Dropdown */
-.dropdown {
-  position: absolute;
-  top: 100%;
-  right: 0;
-  background-color: #111;
-  border: 1px solid #333;
-  border-radius: 6px;
-  padding: 8px 0;
-  margin-top: 6px;
-  z-index: 9999;
-  width: 160px;
-}
-
-.dropdown button {
-  width: 100%;
-  padding: 10px;
-  background: none;
-  border: none;
-  color: white;
-  text-align: left;
-  cursor: pointer;
-}
-
-.dropdown button:hover {
-  background-color: #222;
-}
+.ic{font-size:20px;margin-bottom:2px}
+.top{font-size:12px;color:#bbb;line-height:1}
+.bot{font-size:14px;font-weight:700;line-height:1}
+.dropdown{position:absolute;top:100%;right:0;width:165px;
+  background:#111;border:1px solid #333;border-radius:6px;padding:6px 0;z-index:9999}
+.dropdown button{width:100%;padding:10px 12px;background:none;border:none;color:#fff;text-align:left}
+.dropdown button:hover{background:#222}

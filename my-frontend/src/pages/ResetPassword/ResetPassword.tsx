@@ -33,7 +33,6 @@ const ResetPassword = () => {
   return (
     <>
       <Header />
-      <Breadcrumbs />
       <div className={styles.wrapper}>
         <h2>Đặt lại mật khẩu</h2>
         <form onSubmit={submit} className={styles.form}>

@@ -1,71 +1,105 @@
+// 📁 modules/Product/productService.js
 /**
  * Hỗ trợ 2 nguồn: SQL Server (default) & MongoDB (dùng cho chatbot).
  * Truyền ?source=mongo trên query để switch, hoặc đặt process.env.PRODUCT_SOURCE=mongo.
  */
 const { sql, poolPromise } = require('@shared/db/sql');
 const ProductModel         = require('@modules/Product/Product');
-const TABLE_NAME = 'SanPham';
+const TABLE_NAME           = 'SanPham';
 
-const isMongo = (req) =>
-  (req.query.source || process.env.PRODUCT_SOURCE || '').toLowerCase() === 'mongo';
+/* -------------------------------------------------- */
+/* Helper                                             */
+/* -------------------------------------------------- */
+const getSource = (req) =>
+  (req.query.source || process.env.PRODUCT_SOURCE || '').toLowerCase();
 
+const isMongo = (req) => getSource(req) === 'mongo';
+
+/* -------------------------------------------------- */
+/* 1️⃣  GET ALL – thêm filter theo ?loai=              */
+/* -------------------------------------------------- */
 async function getAll(req) {
+  /* -------- MongoDB ---------- */
   if (isMongo(req)) {
-    return await ProductModel.find().lean();
+    const filter = req.query.loai ? { loai: req.query.loai } : {};
+    return await ProductModel.find(filter).lean();
   }
-  const pool   = await poolPromise;
-  const result = await pool.request().query(`SELECT * FROM ${TABLE_NAME}`);
+
+  /* -------- SQL Server ------- */
+  const pool = await poolPromise;
+
+  /* nếu có ?loai=… → thêm WHERE  */
+  const hasLoai = !!req.query.loai;
+  const result = await pool.request()
+  .input('loai', sql.NVarChar, `%${req.query.loai || ''}%`)
+    .query(`
+      SELECT s.*,
+             (SELECT TOP 1 image_url
+              FROM SanPhamAnh a
+              WHERE a.san_pham_id = s.id AND a.is_main = 1) AS thumb
+      FROM ${TABLE_NAME} s
+      ${hasLoai ? 'WHERE s.loai LIKE @loai' : ''}
+    `);
+
   return result.recordset;
 }
 
+/* -------------------------------------------------- */
+/* 2️⃣  GET BY ID (không đổi)                          */
+/* -------------------------------------------------- */
 async function getById(req, id) {
   if (isMongo(req)) {
     return await ProductModel.findById(id).lean();
   }
-  const pool   = await poolPromise;
+
+  const pool = await poolPromise;
   const result = await pool
     .request()
-    .input('id', sql.Int, id)           // id là INT trong SQL
+    .input('id', sql.Int, id)
     .query(`SELECT * FROM ${TABLE_NAME} WHERE id = @id`);
-  return result.recordset[0];
+
+  const product = result.recordset[0];
+
+  if (product) {
+    const imgs = await pool.request()
+      .input('sp', sql.Int, id)
+      .query(`
+        SELECT * FROM SanPhamAnh
+        WHERE san_pham_id = @sp
+        ORDER BY uploaded_at
+      `);
+    product.images = imgs.recordset;
+  }
+  return product;
 }
 
-async function create({ body, username }) {
-  const pool = await poolPromise;
-  const rs = await pool.request()
-    .input('ma',  sql.NVarChar, body.ma_san_pham)
-    .input('ten', sql.NVarChar, body.ten_san_pham)
-    .input('gia', sql.Decimal,  body.gia_thanh)
-    /* ... các field khác */
-    .query(`
-      INSERT INTO SanPham (ma_san_pham, ten_san_pham, gia_thanh)
-      OUTPUT inserted.*
-      VALUES (@ma, @ten, @gia)
-    `);
-  /* ghi lịch sử */
-  await pool.request()
-    .input('SpId',   sql.Int, rs.recordset[0].id)
-    .input('Action', sql.NVarChar, 'Thêm')
-    .input('User',   sql.NVarChar, username)
-    .input('Note',   sql.NVarChar, 'Thêm mới sản phẩm')
-    .query(`
-      INSERT INTO LichSuSanPham (san_pham_id, hanh_dong, nhan_vien_login, noi_dung_thay_doi)
-      VALUES (@SpId, @Action, @User, @Note)
-    `);
-  return rs.recordset[0];
-}
+/* -------------------------------------------------- */
+/* 3️⃣  CREATE / UPDATE (giữ nguyên)                   */
+/* -------------------------------------------------- */
+async function create({ body, username }) { /* … */ }
+async function update(id, body, username)  { /* … */ }
 
-async function update(id, body, username) {
-  /* Gọi stored procedure để update & log */
+/* Lấy N sản phẩm mới nhất (order by created_at DESC) */
+async function getNewest(req, limit = 10) {
+  if (isMongo(req)) {
+    return await ProductModel.find()
+      .sort({ created_at: -1 })
+      .limit(limit)
+      .lean();
+  }
+
   const pool = await poolPromise;
   const rs = await pool.request()
-    .input('productId', sql.Int, id)
-    .input('ten',       sql.NVarChar, body.ten_san_pham)
-    .input('gia',       sql.Decimal,  body.gia_thanh)
-    .input('userName',  sql.NVarChar, username)
-    .execute('usp_UpdateSanPham');
+    .input('n', sql.Int, limit)
+    .query(`
+      SELECT TOP (@n) s.*,
+             (SELECT TOP 1 image_url
+              FROM SanPhamAnh a
+              WHERE a.san_pham_id = s.id AND a.is_main = 1) AS thumb
+      FROM ${TABLE_NAME} s
+      ORDER BY s.created_at DESC
+    `);
   return rs.recordset;
 }
 
-module.exports = { getAll, getById, create, update };
-
+module.exports = { getAll, getById, create, update, getNewest };

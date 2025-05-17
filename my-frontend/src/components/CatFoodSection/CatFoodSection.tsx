@@ -1,223 +1,102 @@
-import React, { useState } from "react";
+// src/pages/CatFoodSection/CatFoodSection.tsx
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import styles from "./CatFoodSection.module.css";
-
-import QuickViewModal from "../QuickViewModal/QuickViewModal";
-import ProductHoverActions from "../ProductHoverActions/ProductHoverActions";
-import CompareBar from "../CompareBar/CompareBar";
+import styles       from "./CatFoodSection.module.css";
 import sharedStyles from "../common/SharedStyles.module.css";
 
+import useProducts          from "../../hooks/useProducts";
+import { Product }          from "../../types/Product";
+import ProductCard          from "../common/ProductCard/ProductCard";
+import QuickViewModal       from "../QuickViewModal/QuickViewModal";
+import CompareBar           from "../CompareBar/CompareBar";
 
-// Khai báo type Product (có thể tách ra file riêng)
-export interface Product {
-  id: number;
-  name: string;
-  price: number;
-  oldPrice?: number;
-  discount?: number;
-  image: string;
-  hoverImage?: string; 
-  rating: number;
-}
+const TABS = [
+  { key: "dry",   label: "Thức ăn khô",  type: "Thức ăn cho mèo"        },
+  { key: "snack", label: "Bánh thưởng", type: "Bánh thưởng cho mèo"    },
+] as const;
 
-const catFoodData = {
-  dry: [
-    {
-      id: 1,
-      name: "Hạt Cho Mèo Catsrang",
-      price: 85000,
-      oldPrice: 90000,
-      discount: 6,
-      image: "/src/assets/SanPham1.jpg",
-      hoverImage: "/src/assets/SanPham.jpg",
-      rating: 5,
-    },
-    {
-      id: 2,
-      name: "Hạt Cho Mèo Snappy Tom",
-      price: 70000,
-      image: "/src/assets/SanPham1.jpg",
-      hoverImage: "/src/assets/SanPham.jpg",
-      rating: 4,
-    },
-  ],
-  wet: [
-    {
-      id: 3,
-      name: "Pate Mèo Nekko Jelly 70g",
-      price: 15000,
-      oldPrice: 20000,
-      discount: 25,
-      image: "/src/assets/SanPham1.jpg",
-      hoverImage: "/src/assets/SanPham.jpg",
-      rating: 5,
-    },
-    {
-      id: 4,
-      name: "Pate Mèo Snappy Tom Cá Ngừ",
-      price: 14500,
-      oldPrice: 17000,
-      discount: 15,
-      image: "/src/assets/SanPham1.jpg",
-      hoverImage: "/src/assets/SanPham.jpg",
-      rating: 5,
-    },
-  ],
-  snack: [
-    {
-      id: 5,
-      name: "Bánh Thưởng Cho Mèo Catnip Biscuits",
-      price: 64000,
-      image: "/src/assets/SanPham1.jpg",
-      hoverImage: "/src/assets/SanPham.jpg",
-      rating: 5,
-    },
-  ],
-};
+export default function CatFoodSection() {
+  const [activeTab, setActiveTab] = useState<typeof TABS[number]["key"]>("dry");
 
-const CatFoodSection: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<"dry" | "wet" | "snack">("dry");
+  const { products, loading } = useProducts(
+    TABS.find((t) => t.key === activeTab)!.type
+  );
 
-  // State cho popup “xem nhanh”
-  const [isQuickViewOpen, setIsQuickViewOpen] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-
-  // State cho “so sánh”
-  const [compareList, setCompareList] = useState<Product[]>([]);
+  const [isQuick,  setIsQuick]  = useState(false);
+  const [current,  setCurrent]  = useState<Product | null>(null);
+  const [compare,  setCompare]  = useState<Product[]>([]);
 
   const navigate = useNavigate();
 
-  const handleQuickView = (product: Product) => {
-    setSelectedProduct(product);
-    setIsQuickViewOpen(true);
+  const openQuick = (p: Product) => {
+    setCurrent(p);
+    setIsQuick(true);
   };
 
-  const handleCloseQuickView = () => {
-    setIsQuickViewOpen(false);
-    setSelectedProduct(null);
+  const toggleCompare = (p: Product) => {
+    setCompare((prev) =>
+      prev.find((x) => x.id === p.id)
+        ? prev.filter((x) => x.id !== p.id)
+        : prev.length >= 3
+          ? (alert("Chỉ so sánh tối đa 3 sản phẩm!"), prev)
+          : [...prev, p]
+    );
   };
 
-  const handleRemoveItem = (id: number) => {
-    setCompareList((prev) => prev.filter((p) => p.id !== id));
-  };
-
-  // Thêm / gỡ sản phẩm trong compareList
-  const handleCompare = (product: Product) => {
-    setCompareList((prev) => {
-      // Kiểm tra xem sản phẩm này đã có trong compareList chưa
-      const isExist = prev.find((p) => p.id === product.id);
-  
-      // Nếu đã tồn tại => gỡ ra (remove)
-      if (isExist) {
-        return prev.filter((p) => p.id !== product.id);
-      }
-  
-      // Nếu chưa tồn tại => chuẩn bị thêm mới
-      // Nhưng trước khi thêm, kiểm tra có >= 3 chưa
-      if (prev.length >= 3) {
-        alert("Bạn chỉ có thể so sánh tối đa 3 sản phẩm. Vui lòng xóa bớt!");
-        return prev; // Không thêm nữa
-      }
-  
-      // Nếu chưa đủ 3 => thêm bình thường
-      return [...prev, product];
-    });
-  };
-
-  const handleNavigateToDetail = (id: number) => {
-    navigate(`/sanpham/${id}`);
-  };
-  
-
-  const renderProducts = (products: Product[]) => {
-    return products.map((p) => (
-      <div
-        className={styles.productCard}
-        key={p.id}
-        onClick={() => handleNavigateToDetail(p.id)}
-        style={{ cursor: "pointer" }}
-      >
-        <div className={styles.imageContainer}>
-          <img
-            src={p.image}
-            alt={p.name}
-            className={`${styles.productImage} ${styles.defaultImage}`}
-          />
-          {p.hoverImage && (
-            <img
-              src={p.hoverImage}
-              alt={p.name}
-              className={`${styles.productImage} ${styles.hoverImage}`}
-            />
-          )}
-          <ProductHoverActions
-            wrapperClass={styles.wrapperIcon}
-            onQuickView={() => handleQuickView(p)}
-            onCompare={() => handleCompare(p)}
-          />
-        </div>
-
-        <h3 className={styles.productName}>{p.name}</h3>
-        <div className={styles.priceWrapper}>
-          <span className={styles.price}>{p.price.toLocaleString()}đ</span>
-          {p.oldPrice && <span className={styles.oldPrice}>{p.oldPrice.toLocaleString()}đ</span>}
-          {p.discount && <span className={styles.discount}>-{p.discount}%</span>}
-        </div>
-
-        <div className={styles.rating}>
-          {Array.from({ length: p.rating }).map((_, i) => (
-            <span key={i}>⭐</span>
-          ))}
-        </div>
-      </div>
-    ));
-  };
+  const renderCard = (p: Product) => (
+    <ProductCard
+      key={p.id}
+      data={p}
+      onQuickView={() => openQuick(p)}
+      onCompare={() => toggleCompare(p)}
+    />
+  );
 
   return (
-    <div className={styles.catFoodSection}>
-      <h2 className={sharedStyles.sectionTitle}>Dinh dưỡng cho mèo 🐾</h2>
+    <section className={styles.sectionWrap}>
+     <div className={styles.section}>
+      <h2 className={sharedStyles.sectionTitle}>
+        Dinh dưỡng cho mèo 🐾
+      </h2>
+
       <div className={styles.tabButtons}>
-        <button
-          className={activeTab === "dry" ? styles.activeTab : ""}
-          onClick={() => setActiveTab("dry")}
-        >
-          Thức ăn cho mèo
-        </button>
-        <button
-          className={activeTab === "wet" ? styles.activeTab : ""}
-          onClick={() => setActiveTab("wet")}
-        >
-          Thức ăn ướt
-        </button>
-        <button
-          className={activeTab === "snack" ? styles.activeTab : ""}
-          onClick={() => setActiveTab("snack")}
-        >
-          Snack cho mèo
-        </button>
+        {TABS.map((t) => (
+          <button
+            key={t.key}
+            className={activeTab === t.key ? styles.activeTab : ""}
+            onClick={() => setActiveTab(t.key)}
+          >
+            {t.label}
+          </button>
+        ))}
       </div>
 
-      <div className={styles.productGrid}>
-        {activeTab === "dry" && renderProducts(catFoodData.dry)}
-        {activeTab === "wet" && renderProducts(catFoodData.wet)}
-        {activeTab === "snack" && renderProducts(catFoodData.snack)}
-      </div>
+      <div className={styles.grid}>
+      {loading ? (
+          <p style={{gridColumn:"1/-1"}}>Đang tải…</p>
+        ) : products.length ? (
+          products.map(renderCard)
+        ) : (
+          <p style={{gridColumn:"1/-1"}}>Chưa có sản phẩm.</p>
+        )
+      }
+    </div>
+
 
       <QuickViewModal
-        product={selectedProduct}
-        isOpen={isQuickViewOpen}
-        onClose={handleCloseQuickView}
+        product={current}
+        isOpen={isQuick}
+        onClose={() => setIsQuick(false)}
       />
 
       <CompareBar
-        compareList={compareList}
-        onRemoveItem={handleRemoveItem}
-        onClearAll={() => setCompareList([])}
+        compareList={compare}
+        onRemoveItem={(id) => setCompare(compare.filter((x) => x.id !== id))}
+        onClearAll={() => setCompare([])}
         onCompareNow={() => alert("So sánh ngay!")}
       />
     </div>
+  </section>
   );
-};
-
-export default CatFoodSection;
+}

@@ -46,3 +46,15 @@ exports.update = async (req, res) => {
   }
 };
 
+// GET /api/product/newest?limit=7
+exports.getNewest = async (req, res) => {
+  const limit = parseInt(req.query.limit, 10) || 10;
+  try {
+    const data = await productService.getNewest(req, limit);
+    res.json({ success: true, data });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ success: false, message: "Lỗi lấy sản phẩm mới" });
+  }
+};
+

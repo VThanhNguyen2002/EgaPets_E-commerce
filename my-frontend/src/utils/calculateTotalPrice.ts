@@ -1,13 +1,7 @@
 // src/utils/calculateTotalPrice.ts
+export const calculateTotalPrice = (base: number, qty: number): number =>
+  !base || !qty || base < 0 || qty < 0 ? 0 : base * qty;
 
-/**
- * Tính tổng giá từ API trả về
- * @param basePrice Giá gốc một sản phẩm
- * @param quantity Số lượng
- * @returns Tổng giá (đã nhân)
- */
-export const calculateTotalPrice = (basePrice: number, quantity: number): number => {
-    if (!basePrice || !quantity || basePrice < 0 || quantity < 0) return 0;
-    return basePrice * quantity;
-  };
-  
+// src/utils/formatCurrency.ts
+export const formatCurrency = (v: number, l = "vi-VN", c = "VND") =>
+  new Intl.NumberFormat(l, { style: "currency", currency: c }).format(v);

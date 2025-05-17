@@ -120,12 +120,38 @@ CREATE TABLE SanPham (
     giam_gia     DECIMAL(5,2)  CHECK (giam_gia >= 0 AND giam_gia <= 100),
     danh_gia     FLOAT         CHECK (danh_gia >= 0 AND danh_gia <= 5),
     thanh_phan   NVARCHAR(MAX) NULL,
-    ngay_tao     DATE          NOT NULL DEFAULT GETDATE(),
+    created_at     DATE          NOT NULL DEFAULT GETDATE(),
     danh_muc_id  INT NULL,
     CONSTRAINT FK_SanPham_DanhMuc
         FOREIGN KEY (danh_muc_id) REFERENCES DanhMucSanPham(id) ON DELETE SET NULL
 );
 GO
+
+ALTER TABLE SanPham ADD img_url NVARCHAR(MAX);
+
+/* ─────────────────────────────────────────────
+   BẢNG Ảnh Sản Phẩm – Cloudinary
+   ───────────────────────────────────────────── */
+CREATE TABLE SanPhamAnh (
+    id            INT IDENTITY(1,1) PRIMARY KEY,     -- khoá chính
+    san_pham_id   INT           NOT NULL,            -- FK ⇒ SanPham.id
+    image_url     NVARCHAR(MAX) NOT NULL,            -- URL đầy đủ https://res.cloudinary.com/...
+    public_id     NVARCHAR(255) NOT NULL,            -- egapets/products/P001/abc123
+    format        NVARCHAR(20)  NULL,                -- jpg / png / webp ...
+    width         INT           NULL,
+    height        INT           NULL,
+    bytes         INT           NULL,                -- kích thước file
+    is_main       BIT           NOT NULL DEFAULT 0,  -- 1 = ảnh đại diện
+    uploaded_at   DATETIME      NOT NULL DEFAULT GETDATE(),
+
+    CONSTRAINT FK_SanPhamAnh_SanPham
+        FOREIGN KEY (san_pham_id) REFERENCES SanPham(id) ON DELETE CASCADE
+);
+
+CREATE UNIQUE INDEX UQ_SanPhamAnh_Main
+ON SanPhamAnh(san_pham_id)
+WHERE is_main = 1;
+
 
 -- ─────────────────────────────────────────────────────────────────────────
 -- BẢNG Danh Sách Yêu Thích của Khách Hàng tới Sản Phẩm đó
@@ -379,6 +405,10 @@ SELECT * FROM KhachHang
 
 SELECT * FROM SanPham
 
+SELECT * FROM DanhMucSanPham
+
+SELECT * FROM SanPhamAnh
+
 SELECT * FROM GioHang
 
 SELECT * FROM PhuongThucThanhToan
@@ -395,10 +425,13 @@ SELECT * FROM DichVu
 
 SELECT * FROM DichVuChiTiet
 
-SELECT * FROM FaceID
+SELECT * FROM LichHen;
 
-SELECT * FROM FaceIDLogs
+SELECT * FROM FaceID;
+
+SELECT * FROM FaceIDLogs;
 
 SELECT TOP 1 reset_token 
 FROM PasswordResets 
 ORDER BY id DESC;
+
