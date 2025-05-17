@@ -1,51 +1,21 @@
-.pageContent {
-  padding-top: 80px;
+.pageContent{padding-top:80px}
+.wrapper{
+  max-width:420px;margin:40px auto 60px;
+  background:#131313;border-radius:12px;
+  padding:28px 30px;text-align:center;color:#fff;
+  box-shadow:0 6px 18px rgba(0,0,0,.45)
 }
-
-.wrapper {
-  max-width: 420px;
-  margin: 40px auto 60px auto;
-  text-align: center;
-  color: #fff;
+.form{margin-top:20px;text-align:left}
+.form label{display:block;margin:14px 0 6px 2px;font-weight:600}
+.form input,.btn{
+  width:100%;padding:10px;border-radius:6px;font-size:16px;
+  border:1px solid #444;box-sizing:border-box
 }
-
-.form {
-  margin-top: 20px;
+.form input{background:#111;color:#fff}
+.btn{
+  margin-top:8px;background:#ab2200;color:#fff;font-weight:600;
+  border:none;cursor:pointer;transition:opacity .15s
 }
-
-.form input,
-.btn {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 16px;
-  border: 1px solid #444;
-  border-radius: 6px;
-  box-sizing: border-box; /* ✅ đảm bảo width tính cả padding & border */
-  font-size: 16px;
-}
-
-.form input {
-  background: #111;
-  color: #fff;
-}
-
-.btn {
-  background: #ab2200;
-  color: #fff;
-  font-weight: 600;
-  border: none;               /* override lại border cũ nếu cần */
-  cursor: pointer;
-}
-
-.btn:hover {
-  opacity: 0.95;
-}
-
-.error {
-  color: #ff5252;
-  margin-bottom: 12px;
-}
-
-.forgot {
-  margin-top: 14px;
-}
+.btn:hover{opacity:.95}
+.error{color:#ff5252;margin-top:10px}
+.forgot{margin-top:14px;font-size:.9rem}

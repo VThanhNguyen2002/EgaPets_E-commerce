@@ -1,0 +1,5 @@
+/* PromoInput.module.css */
+.box{display:flex;gap:8px;margin:12px 0}
+.box input{flex:1;padding:8px 10px;border:none;border-radius:6px;background:#2a2a2a;color:#fff}
+.box button{padding:8px 14px;border:none;border-radius:6px;background:#ff7750;color:#fff;font-weight:600;cursor:pointer}
+.msg{color:#41d89b;font-size:.85rem;margin-bottom:6px}

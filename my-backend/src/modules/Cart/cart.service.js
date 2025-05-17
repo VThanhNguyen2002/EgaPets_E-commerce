@@ -55,30 +55,46 @@ async function addItem({ userId, khachHangId, sessionId, productId, quantity }) 
     `);
 }
 
+/* --------------------- LIST ITEMS --------------------- */
 async function listItems({ userId, khachHangId, sessionId }) {
   const pool = await poolPromise;
   khachHangId = await ensureKhachHangId(khachHangId, userId);
 
   const rs = await pool.request()
-    .input('kh',  sql.Int,        khachHangId || null)
-    .input('sid', sql.NVarChar,   sessionId   || null)
+    .input('kh',  sql.Int,      khachHangId || null)
+    .input('sid', sql.NVarChar, sessionId   || null)
     .query(`
-      SELECT g.*, s.ten_san_pham
-      FROM ${TABLE} g
-      JOIN SanPham s ON s.id = g.san_pham_id
-      WHERE ( (@kh IS NOT NULL AND g.khach_hang_id = @kh)
-           OR (@sid IS NOT NULL AND g.session_id = @sid) )
+      SELECT g.*,
+             s.ten_san_pham,
+             s.loai,
+             ISNULL(a.image_url, '') AS thumb,
+             CAST(g.gia / g.so_luong AS DECIMAL(18,0)) AS don_gia
+      FROM   ${TABLE} g
+      JOIN   SanPham s      ON s.id = g.san_pham_id
+      LEFT JOIN SanPhamAnh a ON a.san_pham_id = s.id AND a.is_main = 1
+      WHERE  ( (@kh  IS NOT NULL AND g.khach_hang_id = @kh)
+            OR (@sid IS NOT NULL AND g.session_id    = @sid) )
     `);
+
   return rs.recordset;
 }
 
-async function updateQty(id, qty) {
+
+// src/modules/Cart/cart.service.js
+async function updateQty(id, qty){
   const pool = await poolPromise;
   await pool.request()
     .input('id', sql.Int, id)
     .input('q',  sql.Int, qty)
-    .query(`UPDATE ${TABLE} SET so_luong = @q WHERE id = @id`);
+    // 👉  tính lại total theo đơn-giá gốc
+    .query(`
+      UPDATE GioHang
+      SET so_luong = @q,
+          gia      = CAST(gia / NULLIF(so_luong,0) AS DECIMAL(18,2)) * @q
+      WHERE id = @id
+    `);
 }
+
 
 async function remove(id) {
   const pool = await poolPromise;

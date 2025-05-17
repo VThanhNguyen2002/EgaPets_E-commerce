@@ -1,3 +1,7 @@
+.sectionWrap{
+    min-height:480px;          /* giữ chỗ, không còn “đôn lên” */
+    position:relative
+  }
 .section    { margin: 40px auto; max-width: 1200px; padding: 0 16px; }
 
 .tabButtons { display: flex; gap: 8px; justify-content: center; margin-bottom: 16px; }

@@ -1,6 +1,6 @@
-import { getCookie } from '@/utils/cookie';
+import { useAuthStore } from "@/store/authStore";
 
 export const useUser = () => {
-  const username = getCookie('username');
-  return { username };
+  const { username, isLoggedIn } = useAuthStore();
+  return { username, isLoggedIn };
 };

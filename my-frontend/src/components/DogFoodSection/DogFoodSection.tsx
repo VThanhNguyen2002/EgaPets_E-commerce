@@ -42,7 +42,8 @@ export default function DogFoodSection() {
   );
 
   return (
-    <div className={styles.section}>
+    <section className={styles.sectionWrap}>
+     <div className={styles.section}>
       <h2 className={sharedStyles.sectionTitle}>
         Dinh dưỡng cho chó 🐶
       </h2>
@@ -84,5 +85,6 @@ export default function DogFoodSection() {
         onCompareNow={() => alert("So sánh ngay!")}
       />
     </div>
+    </section>
   );
 }
