@@ -6,6 +6,18 @@ const Breadcrumbs = () => {
   const location = useLocation();
   const pathnames = location.pathname.split("/").filter((x) => x);
 
+  // Custom breadcrumb cho checkout
+  if (location.pathname === "/checkout") {
+    return (
+      <nav className={styles.breadcrumbWrapper}>
+        <Link to="/cart" className={styles.link}>Giỏ hàng</Link>
+        <span className={styles.separator}>/</span>
+        <span className={styles.current}>Thông tin giao hàng</span>
+      </nav>
+    );
+  }
+
+  // Mặc định
   return (
     <nav className={styles.breadcrumbWrapper}>
       <Link to="/" className={styles.link}>Trang chủ</Link>
