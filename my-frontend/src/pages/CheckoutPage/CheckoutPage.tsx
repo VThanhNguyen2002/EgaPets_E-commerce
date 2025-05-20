@@ -46,13 +46,15 @@ export default function CheckoutPage() {
     await submit({
       customerId: khachHangId ?? null,
       guestInfo : { hoTen: form.name, phone: form.phone, email: form.email },
-      items     : cartItems.map(i=>({
-        id:i.san_pham_id, qty:i.so_luong,
-        price:i.don_gia,  discount:i.giam_gia ?? 0
+      items     : cartItems.map(i => ({
+        id: i.san_pham_id, qty: i.so_luong,
+        price: i.don_gia,  discount: i.giam_gia ?? 0
       })),
       discount  : promoApplied ? 50 : 0,
-      payMethod : Number(form.pay)
+      payMethod : Number(form.pay),
+      payMethodLabel: methods.find(m => String(m.id) === form.pay)!.ten_phuong_thuc
     });
+
 
     clearLocal();            // dọn giỏ sau khi submit
   }
@@ -113,14 +115,23 @@ export default function CheckoutPage() {
           {/* Phương thức */}
           <h3 className={styles.subHeading}>Phương thức thanh toán</h3>
           <div className={styles.paymentMethod}>
-            {methods.map(pm=>
-              <label key={pm.id} className={styles.paymentOption}>
-                <input type="radio" name="pay" value={pm.id}
-                       checked={form.pay===pm.id}
-                       onChange={()=>setForm({...form,pay:pm.id})}/>
-                {icon(pm.ten_phuong_thuc)}
-                <span>{pm.ten_phuong_thuc}</span>
-              </label>)}
+            {methods.map(pm => {
+              const idStr = String(pm.id); // 👈 ép kiểu thành chuỗi
+              return (
+                <label key={pm.id} className={styles.paymentOption}>
+                  <input
+                    type="radio"
+                    name="pay"
+                    value={idStr}
+                    checked={form.pay === idStr}
+                    onChange={() => setForm({ ...form, pay: idStr })}
+                  />
+                  {icon(pm.ten_phuong_thuc)}
+                  <span>{pm.ten_phuong_thuc}</span>
+                </label>
+              );
+            })}
+
           </div>
 
           {/* Submit */}
