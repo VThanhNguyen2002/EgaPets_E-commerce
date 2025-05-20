@@ -4,43 +4,38 @@ import { setCookie, getCookie, removeCookie } from "@/utils/cookie";
 import { saveToLocalStorage, getFromLocalStorage } from "@/utils/storage";
 
 interface AuthState {
-  token       : string | null;
-  username    : string | null;
-  khachHangId : number | null;
-  isLoggedIn  : boolean;
-
-  /* ⇢ login nhận thêm id */
-  login  : (token: string, username: string, id: number) => void;
-  logout : () => void;
+  token: string | null;
+  username: string | null;
+  role: string | null;
+  isLoggedIn: boolean;
+  login : (tk: string, user: string, role: string) => void;
+  logout: () => void;
 }
 
 export const useAuthStore = create<AuthState>()((set) => {
-  const tokenLS       = getCookie("token") ?? null;
-  const usernameLS    = getCookie("username") ??
-                        getFromLocalStorage("user") ?? null;
-
-  const khachHangIdLS = Number(getCookie("khachHangId") ?? "") || null;
-  
+  const tokenLS    = getCookie("token") ?? null;
+  const usernameLS = getCookie("username") ?? null;
+  const roleLS     = getCookie("role") ?? null;
 
   return {
-    token       : tokenLS,
-    username    : usernameLS,
-    khachHangId : khachHangIdLS,
-    isLoggedIn  : !!tokenLS,
+    token: tokenLS,
+    username: usernameLS,
+    role: roleLS,
+    isLoggedIn: !!tokenLS,
 
-    login(token, username, khId) {
-      setCookie("token",        token,       7);
-      setCookie("username",     username,    7);
-      setCookie("khachHangId",  String(khId), 7);  // ✅ dùng tên chuẩn
-      saveToLocalStorage("user", username);
-    
-      set({ token, username, khachHangId: khId, isLoggedIn: true });
+    login(token, username, role) {
+      ["token","username","role"].forEach(removeCookie);   // xoá cookie cũ
+      setCookie("token", token, 7);
+      setCookie("username", username, 7);
+      setCookie("role", role, 7);
+
+      set({ token, username, role, isLoggedIn: true });
     },
-    
+
     logout() {
-      ["token", "username", "khachHangId"].forEach(removeCookie); // ✅ đồng bộ xoá
+      ["token","username","role"].forEach(removeCookie);
       localStorage.removeItem("user");
-      set({ token: null, username: null, khachHangId: null, isLoggedIn: false });
+      set({ token:null, username:null, role:null, isLoggedIn:false });
     }
   };
 });

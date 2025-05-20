@@ -16,7 +16,7 @@ import styles from "./CheckoutPage.module.css";
 export default function CheckoutPage() {
   const { state }  = useLocation() as { state?: { total: number } };
   const { cartItems, clearLocal } = useCartStore();
-  const { khachHangId } = useAuthStore();
+  const khachHangId = useAuthStore(s => s.username);
 
   /* ───────────────── UI state ───────────────── */
   const [form, setForm] = useState({
@@ -44,7 +44,7 @@ export default function CheckoutPage() {
     if(step!=="form") return;
 
     await submit({
-      customerId: khachHangId ?? null,
+      customerId: khachHangId ? +khachHangId : null,
       guestInfo : { hoTen: form.name, phone: form.phone, email: form.email },
       items     : cartItems.map(i => ({
         id: i.san_pham_id, qty: i.so_luong,
@@ -116,9 +116,12 @@ export default function CheckoutPage() {
           <h3 className={styles.subHeading}>Phương thức thanh toán</h3>
           <div className={styles.paymentMethod}>
             {methods.map(pm => {
-              const idStr = String(pm.id); // 👈 ép kiểu thành chuỗi
+              const idStr = String(pm.id);
               return (
-                <label key={pm.id} className={styles.paymentOption}>
+                <label
+                  key={pm.id}
+                  className={`${styles.paymentOption} ${form.pay === idStr ? styles.active : ""}`}
+                >
                   <input
                     type="radio"
                     name="pay"
@@ -126,13 +129,13 @@ export default function CheckoutPage() {
                     checked={form.pay === idStr}
                     onChange={() => setForm({ ...form, pay: idStr })}
                   />
-                  {icon(pm.ten_phuong_thuc)}
-                  <span>{pm.ten_phuong_thuc}</span>
+                  <div className={styles.paymentIcon}>{icon(pm.ten_phuong_thuc)}</div>
+                  <span className={styles.paymentLabel}>{pm.ten_phuong_thuc}</span>
                 </label>
               );
             })}
-
           </div>
+
 
           {/* Submit */}
           <button className={styles.orderBtn}>Hoàn tất đơn hàng</button>

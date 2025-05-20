@@ -23,7 +23,7 @@ export async function fetchNewestProducts(limit = 7): Promise<Product[]> {
 }
 
 /* chi tiết */
-export async function fetchProductById(id: number): Promise<Product> {
+export async function fetchProductById(id: number | string) {
   const res = await api.get(`/product/${id}`);
   return (res.data?.data ?? res.data) as Product;
 }

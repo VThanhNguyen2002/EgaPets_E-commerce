@@ -1,8 +1,13 @@
 // src/hooks/useCartActions.ts
-import { useCartStore } from '../store/cartStore';
+import { useCartStore } from "@/store/cartStore";
 
 export const useCartActions = () => {
-  const { addToCart, removeFromCart, updateQuantity, clearCart } = useCartStore();
+  const {
+    add:          addToCart,
+    remove:       removeFromCart,
+    updateQty:    updateQuantity,
+    clearLocal:   clearCart,
+  } = useCartStore();
 
   const handleAddToCart = (product: {
     id: string;
@@ -12,9 +17,13 @@ export const useCartActions = () => {
     quantity?: number;
   }) => {
     addToCart({
-      ...product,
-      quantity: product.quantity || 1,
+      productId: +product.id, 
+      name:      product.name,
+      image:     product.image,
+      price:     product.price,
+      quantity:  product.quantity || 1,
     });
+    
   };
 
   return {

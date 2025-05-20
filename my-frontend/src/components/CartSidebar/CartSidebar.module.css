@@ -52,9 +52,24 @@
 .del {background:none;border:none;color:#fff;cursor:pointer}
 
 /* promo */
-.promoBox{display:flex;gap:8px;margin:12px 0; margin-top: 10px;}
-.promoBox input{flex:1;padding:8px 10px;border:none;border-radius:6px;background:#2a2a2a;color:#fff}
-.promoBox button{padding:8px 14px;border:none;border-radius:6px;background:#ff7750;color:#fff;font-weight:600;cursor:pointer}
+.promoBox {
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+.promoBox input {
+  width: 70%;
+  margin-right: 8px;
+}
+.promoBox button {
+  width: 30%;
+  margin: 0;
+}
+.footer .total {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
 .promoMsg{color:#41d89b;font-size:.85rem;margin-bottom:6px}
 
 /* footer */

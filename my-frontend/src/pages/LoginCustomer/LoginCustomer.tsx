@@ -39,7 +39,7 @@ export default function LoginCustomer() {
       if(data.role!=="KhachHang")
         return setErr("Tài khoản này không phải khách hàng!");
 
-      doLogin(data.token, data.username);
+      doLogin(data.token, data.username, data.khachHangId);
       toast.success("Đăng nhập thành công!");
       setTimeout(()=>nav("/"),1200);
     }catch(err:any){

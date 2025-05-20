@@ -9,15 +9,13 @@ import { Product } from "../../types/Product";
 import { fetchProductById } from "../../services/productService";
 
 const ChiTietSanPham = () => {
-  const { id } = useParams();
+  const { id } = useParams<{ id: string }>();
   const [product, setProduct] = useState<Product | null>(null);
 
   useEffect(() => {
-    if (id) {
-      fetchProductById(id)
-        .then((data) => setProduct(data))
-        .catch((err) => console.error("Error fetching product:", err));
-    }
+    if (id) fetchProductById(+id)
+            .then(setProduct)
+            .catch(console.error);
   }, [id]);
 
   if (!product) return <div className={styles.loading}>Đang tải sản phẩm...</div>;
