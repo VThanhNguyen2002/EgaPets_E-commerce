@@ -33,7 +33,7 @@ export default function LoginEmployee(){
         images:caps.map(c=>({pose:c.pose,base64:dataURLtoBase64(c.base64)}))
       };
       const {data} = await verifyFaceMulti(payload);
-      login(data.token, data.username);
+      login(data.token, data.username, data.role);
       toast.success("Đăng nhập thành công!");
       setTimeout(()=>nav("/"),1200);
     }catch(err:any){

@@ -1,16 +1,21 @@
 .dropdown {
+    min-width: 220px;
+    display: flex;
+    align-items: center;  /* căn giữa dọc cho nút */
     position: relative;
-}
-
+    z-index: 11;
+  }
 .dropdownButton {
     background-color: white;
     color: #8B0000;
-    padding: 8px 14px;
+    padding: 10px 22px;
     border: none;
     cursor: pointer;
     font-weight: bold;
     border-radius: 6px;
     transition: all 0.3s ease-in-out;
+    min-width: 200px;
+    font-size: 1.05rem;
 }
 
 .dropdownButton:hover {

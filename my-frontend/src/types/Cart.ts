@@ -12,8 +12,18 @@ export interface CartItem {
   }
   
   /** Payload khi add 1 item mới */
-  export interface AddCartDto {
-    productId : number;
-    quantity  : number;
+  // types/Cart.ts
+    export interface AddCartDto {
+      productId: number;
+      quantity : number;
+      name?    : string;
+      image?   : string;
+      price?   : number;
+    }
+
+
+  export interface CheckoutPayload {
+    customerId : number | null;
+    /* ... */
   }
   

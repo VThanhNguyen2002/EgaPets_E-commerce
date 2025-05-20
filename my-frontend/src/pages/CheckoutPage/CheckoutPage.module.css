@@ -4,12 +4,14 @@
   margin: 40px auto 80px;
   color: #fff;
 }
+
 .pageTitle {
   font-size: 1.5rem;
   font-weight: bold;
   margin-bottom: 12px;
   color: #ff7750;
 }
+
 .content {
   display: grid;
   grid-template-columns: 2fr 1fr;
@@ -34,12 +36,13 @@
   font-weight: 600;
 }
 .subHeading {
-  margin: 28px 0 14px;
+  margin: 28px 0 18px;
   font-size: 1.2rem;
   font-weight: 500;
+  text-align: center;
 }
 
-/* ------ Customer Fields ------ */
+/* Customer Fields */
 .customerFields {
   display: flex;
   flex-direction: column;
@@ -86,73 +89,133 @@
 
 /* ------ Payment Method ------ */
 .paymentMethod {
-  border: 1.5px solid #222;
-  border-radius: 14px;
-  padding: 24px 20px 8px;
-  margin-bottom: 28px;
+  border: 2.5px solid #a09b8f;      /* Màu border nhẹ classic vàng nhạt */
+  border-radius: 24px;
+  padding: 48px 30px 40px;
+  margin: 0 auto 40px;
   background: #181818;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 44px;                 /* spacing lớn hơn */
+  align-items: center;
+  box-shadow: 0 2px 24px #0005;
+  max-width: 520px;
+  min-width: 350px;
+  min-height: 520px;         /* thêm min-height để option dài ra */
+  justify-content: center;
+  transition: box-shadow 0.2s, border 0.18s;
 }
 .paymentOption {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 16px;
-  padding: 15px 16px;
-  margin-bottom: 8px;
-  border-radius: 10px;
-  border: 2px solid transparent;
-  background: #181818;
-  transition: border 0.18s, box-shadow 0.2s, background 0.22s;
+  gap: 14px;
+  padding: 16px 0;
+  min-height: 115px;
+  width: 100%;
   cursor: pointer;
-  min-height: 56px;
-  font-size: 1.05rem;
+  transition: background 0.18s, box-shadow 0.18s, border 0.17s;
+  border-radius: 13px;
+  border: 2px solid transparent;
+  background: transparent;
+  font-size: 1.17rem;
+  font-weight: 600;
 }
-.paymentOption:hover,
-.paymentOption:focus-visible {
-  border-color: #ff775099;
-  background: #191818;
+
+.paymentOption.active, .paymentOption:focus-visible, .paymentOption:hover {
+  border-color: #ff7750;
+  background: #23201f;
+  box-shadow: 0 4px 18px #ff4d0035;
 }
+
+.paymentOption input[type="radio"]:focus-visible + .paymentIcon {
+  outline: 2px dashed #ff7750;
+  outline-offset: 2px;
+}
+
+@media (max-width: 600px) {
+  .paymentMethod {
+    max-width: 98vw;
+    min-width: unset;
+    padding: 24px 5vw 20px;
+    min-height: 400px;
+    gap: 24px;
+  }
+}
+
+
 .paymentOption input[type="radio"] {
   accent-color: #ff4d00;
-  width: 20px;
-  height: 20px;
-  margin-right: 4px;
-  margin-left: 0;
+  width: 28px;
+  height: 28px;
+  margin-bottom: 8px;
 }
-.paymentOption span {
-  font-size: 1.08rem;
+.paymentIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 8px;
+  min-height: 30px;
+}
+.paymentLabel {
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: 0.01em;
   color: #fff;
-  font-weight: 500;
+  text-align: center;
 }
 
 /* ------ Order Button ------ */
 .orderBtn {
   width: 100%;
-  padding: 14px 0;
+  padding: 20px 0;
   background: #ff4d00;
   border: none;
-  border-radius: 8px;
+  border-radius: 11px;
   font-weight: 700;
+  font-size: 1.19rem;
   cursor: pointer;
   color: #fff;
-  font-size: 1rem;
-  margin-top: 12px;
+  margin-top: 18px;
+  box-shadow: 0 2px 12px #ff4d0045;
+  letter-spacing: 0.02em;
+  transition: background 0.18s, opacity 0.18s;
 }
 .orderBtn:hover {
-  opacity: 0.9;
+  background: #d63b00;
+  opacity: 0.96;
 }
+
+/* ---- BackLink mạnh nổi bật ---- */
 .backLink {
-  margin-top: 20px;
-  font-size: 0.93rem;
+  margin-top: 26px;
+  text-align: center;
 }
 .backLink a {
   color: #ff7750;
+  font-weight: 700;
+  font-size: 1.05rem;
+  padding: 10px 0;
+  display: inline-block;
+  background: #222;
+  border-radius: 9px;
+  border: 2px solid #ff7750;
+  width: 230px;
+  box-shadow: 0 2px 12px #ff775045;
+  margin: 0 auto;
+  transition: background 0.18s, color 0.18s;
 }
+.backLink a:hover {
+  background: #ff7750;
+  color: #fff;
+  border-color: #ff7750;
+}
+
 .err {
   color: #ff4d00;
-  font-size: 0.9rem;
+  font-size: 0.93rem;
+  margin-top: 10px;
+  text-align: center;
 }
 
 /* ------ Cart Summary ------ */
@@ -292,7 +355,6 @@
   }
 }
 
-/* QR MoMo modal, waiting/done screens giữ nguyên nếu dùng */
 .waiting{ text-align:center; padding:40px 0; }
 .waiting img{ max-width:230px; margin:24px auto; display:block; }
 .done{ text-align:center; padding:60px 0; }

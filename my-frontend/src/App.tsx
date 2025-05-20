@@ -1,5 +1,6 @@
 import "./App.css";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
+
 import { ToastContainer } from 'react-toastify';
 
 import ErrorBoundary from "./layouts/ErrorBoundary";
@@ -20,6 +21,10 @@ import { ErrorProvider } from "./context/ErrorContext";
 import RegisterCustomer from "@pages/RegisterCustomer/RegisterCustomer";
 import PaymentCallback from "@pages/PaymentCallback";
 import ProfilePage from "@pages/ProfilePage";
+import AdminLayout   from "@/layouts/AdminLayout";
+import AdminLogin    from "@/pages/AdminLogin";
+import ProductList   from "@/pages/AdminProducts/List";
+
 
 
 function App() {
@@ -30,6 +35,7 @@ function App() {
           <ToastContainer autoClose={2000} position="top-right" />
 
           <Routes>
+            
             <Route path="/" element={<HomePage />} />
             <Route path="*" element={<NotFoundPage />} />
             <Route path="/login" element={<LoginCustomer />} />
@@ -45,6 +51,16 @@ function App() {
             <Route path="/checkout" element={<CheckoutPage />} />
             <Route path="/payment/callback" element={<PaymentCallback />} />
             <Route path="/boloc" element={<BoLocSanPham />} />
+
+            <Route path="/admin">
+              <Route path="login" element={<AdminLogin />} />
+              {/* các route dưới đây bọc trong AdminLayout để yêu cầu token + role */}
+              <Route element={<AdminLayout />}>
+                <Route index element={<Navigate to="products" replace />} />
+                <Route path="products" element={<ProductList />} />
+                {/* sau này có thể thêm Users, Orders ... */}
+              </Route>
+            </Route>
           </Routes>
         </ErrorBoundary>
       </ErrorProvider>
