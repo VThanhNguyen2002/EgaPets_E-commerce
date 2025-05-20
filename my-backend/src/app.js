@@ -13,8 +13,8 @@ const app = express();
 
 app.use(
   cors({
-    origin: "http://localhost:5173",
-    credentials: false, // không gửi cookie
+    origin: process.env.FRONTEND_URL || "*",  // Lấy từ env hoặc cho phép mọi domain
+    credentials: false, // Nếu muốn FE dùng cookie, set true và check lại FE
   })
 );
 
