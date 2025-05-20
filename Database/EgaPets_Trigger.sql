@@ -147,3 +147,34 @@ BEGIN
     FROM GioHang g
     JOIN inserted i ON g.id = i.id;
 END
+
+
+/*─────────────────────────────────────*
+*  TRIGGER  :  tự tạo bản ghi profile  *
+*──────────────────────────────────────*/
+CREATE OR ALTER TRIGGER trg_User_AfterInsert
+ON dbo.Users
+AFTER  INSERT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    /* Khách hàng đăng ký qua FE  →  sinh profile mặc định   */
+    INSERT dbo.KhachHang (user_id, ho_ten, so_dien_thoai)
+    SELECT  id,
+            username,       -- tạm đặt họ-tên = username
+            ''              -- phone để trống → FE cho sửa
+    FROM   inserted
+    WHERE  role = N'KhachHang';
+
+    /* Nhân viên tạo bên back-office → sinh hồ sơ nhân viên  */
+    INSERT dbo.NhanVien (user_id, ho_ten, so_dien_thoai, chuc_vu, luong)
+    SELECT  id,
+            username,
+            '',
+            N'Nhân viên bán hàng',
+            NULL
+    FROM   inserted
+    WHERE  role = N'NhanVien';
+END;
+GO

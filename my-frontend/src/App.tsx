@@ -1,5 +1,5 @@
 import "./App.css";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import { ToastContainer } from 'react-toastify';
 
 import ErrorBoundary from "./layouts/ErrorBoundary";
@@ -18,11 +18,12 @@ import ResetPassword from "@pages/ResetPassword/ResetPassword";
 
 import { ErrorProvider } from "./context/ErrorContext";
 import RegisterCustomer from "@pages/RegisterCustomer/RegisterCustomer";
+import PaymentCallback from "@pages/PaymentCallback";
+import ProfilePage from "@pages/ProfilePage";
 
 
 function App() {
   return (
-    <Router>
       <ErrorProvider>
         <ErrorBoundary>
           <LoadingSpinner />
@@ -36,14 +37,17 @@ function App() {
             <Route path="/employee/login" element={<LoginEmployee />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password/:token" element={<ResetPassword />} />
+
+            <Route path="/profile" element={<ProfilePage/>}/>
+
             <Route path="/sanpham/:id" element={<ChiTietSanPham />} />
             <Route path="/cart" element={<CartPage />} />
             <Route path="/checkout" element={<CheckoutPage />} />
+            <Route path="/payment/callback" element={<PaymentCallback />} />
             <Route path="/boloc" element={<BoLocSanPham />} />
           </Routes>
         </ErrorBoundary>
       </ErrorProvider>
-    </Router>
   );
 }
 

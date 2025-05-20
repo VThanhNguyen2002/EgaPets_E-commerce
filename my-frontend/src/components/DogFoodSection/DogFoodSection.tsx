@@ -64,7 +64,7 @@ export default function DogFoodSection() {
         {loading ? (
             <p style={{gridColumn:"1/-1"}}>Đang tải…</p>
           ) : products.length ? (
-            products.map(renderCard)
+            products.slice(0,6).map(renderCard)
           ) : (
             <p style={{gridColumn:"1/-1"}}>Chưa có sản phẩm.</p>
           )

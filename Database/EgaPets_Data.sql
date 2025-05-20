@@ -611,7 +611,8 @@ GO
 -- Data PhuongThucThanhToan
 -- ─────────────────────────────────────────────────────────────────────────
 INSERT INTO PhuongThucThanhToan (ten_phuong_thuc) 
-VALUES 
+VALUES
+(N'Thanh toán khi giao hàng (COD)'),
 (N'Chuyển khoản Momo'),
 (N'Chuyển khoản Ngân hàng');
 GO

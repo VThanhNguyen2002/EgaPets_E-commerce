@@ -25,4 +25,17 @@ const poolPromise = new sql.ConnectionPool(dbConfig)
     process.exit(1);
   });
 
-module.exports = { sql, dbConfig, poolPromise };
+/* helper query dùng Promise */
+async function query(sqlString, params = []) {
+  const p = await poolPromise;
+  const req = p.request();
+  params.forEach(({ name, type, value }) => req.input(name, type, value));
+  const result = await req.query(sqlString);
+  return result.recordset;
+}
+
+function getPool() {
+  return poolPromise;
+}
+
+module.exports = { sql, dbConfig, poolPromise, query, getPool };

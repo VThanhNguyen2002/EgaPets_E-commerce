@@ -1,7 +1,5 @@
-// ✅ 2. src/modules/PaymentMethod/paymentMethod.service.js
-const db = require("../../shared/db");
+// src/modules/PaymentMethod/paymentMethod.service.js
+const { query } = require("../../shared/db/sql");
 
-exports.fetchAll = async () => {
-  const result = await db.query("SELECT id, ten_phuong_thuc FROM PhuongThucThanhToan");
-  return result.recordset;
-};
+exports.fetchAll = () =>
+  query("SELECT id, ten_phuong_thuc FROM PhuongThucThanhToan");

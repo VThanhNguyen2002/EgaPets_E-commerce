@@ -1,48 +1,46 @@
+// src/store/authStore.ts
 import { create } from "zustand";
-import { setCookie, getCookie, removeCookie }  from "@/utils/cookie";
+import { setCookie, getCookie, removeCookie } from "@/utils/cookie";
 import { saveToLocalStorage, getFromLocalStorage } from "@/utils/storage";
 
 interface AuthState {
-  /** JWT do backend trả về (hoặc null khi guest) */
-  token      : string | null;
-  /** tên hiển thị bên AuthButton */
-  username   : string | null;
-  /** tiện tra cứu nhanh */
-  isLoggedIn : boolean;
+  token       : string | null;
+  username    : string | null;
+  khachHangId : number | null;
+  isLoggedIn  : boolean;
 
-  /** lưu token + username (dùng sau khi login thành công) */
-  login  : (token: string, username: string) => void;
-  /** xoá token, xoá cache, reset state */
+  /* ⇢ login nhận thêm id */
+  login  : (token: string, username: string, id: number) => void;
   logout : () => void;
 }
 
 export const useAuthStore = create<AuthState>()((set) => {
-  /* ----- đọc lại từ cookie / localStorage khi load trang ----- */
-  const tokenLS    = getCookie("token")    || null;
-  const usernameLS = getCookie("username") ||
-                     getFromLocalStorage("user") || null;
+  const tokenLS       = getCookie("token") ?? null;
+  const usernameLS    = getCookie("username") ??
+                        getFromLocalStorage("user") ?? null;
+
+  const khachHangIdLS = Number(getCookie("khachHangId") ?? "") || null;
+  
 
   return {
-    token     : tokenLS,
-    username  : usernameLS,
-    isLoggedIn: !!tokenLS,
+    token       : tokenLS,
+    username    : usernameLS,
+    khachHangId : khachHangIdLS,
+    isLoggedIn  : !!tokenLS,
 
-    login(token, username) {
-      /* 1. lưu vào cookie (hiệu lực 7 ngày) */
-      setCookie("token",    token,    7);
-      setCookie("username", username, 7);
-      /* 2. để phòng trường hợp user xoá cookie → ta vẫn còn tên hiển thị */
+    login(token, username, khId) {
+      setCookie("token",        token,       7);
+      setCookie("username",     username,    7);
+      setCookie("khachHangId",  String(khId), 7);  // ✅ dùng tên chuẩn
       saveToLocalStorage("user", username);
-      /* 3. cập-nhật Zustand */
-      set({ token, username, isLoggedIn: true });
+    
+      set({ token, username, khachHangId: khId, isLoggedIn: true });
     },
-
+    
     logout() {
-      /* 1. xoá cookie + localStorage */
-      removeCookie("token");   removeCookie("username");
+      ["token", "username", "khachHangId"].forEach(removeCookie); // ✅ đồng bộ xoá
       localStorage.removeItem("user");
-      /* 2. reset Zustand */
-      set({ token:null, username:null, isLoggedIn:false });
-    },
+      set({ token: null, username: null, khachHangId: null, isLoggedIn: false });
+    }
   };
 });

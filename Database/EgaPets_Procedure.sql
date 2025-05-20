@@ -56,3 +56,31 @@ BEGIN
 END
 GO
 
+
+/*─────────────────────────────────────*
+*  PROC  :  cập-nhật profile khách     *
+*──────────────────────────────────────*/
+CREATE OR ALTER PROCEDURE usp_UpdateCustomerProfile
+  @KhId    INT,
+  @HoTen   NVARCHAR(255),
+  @Phone   NVARCHAR(15),
+  @DiaChi  NVARCHAR(255) = NULL,
+  @Tinh    NVARCHAR(100) = NULL,
+  @Huyen   NVARCHAR(100) = NULL,
+  @Xa      NVARCHAR(100) = NULL
+AS
+BEGIN
+  SET NOCOUNT ON;
+
+  UPDATE KhachHang
+  SET ho_ten        = @HoTen,
+      so_dien_thoai = @Phone,
+      dia_chi       = @DiaChi,
+      tinh_thanh    = @Tinh,
+      quan_huyen    = @Huyen,
+      phuong_xa     = @Xa
+  WHERE id = @KhId;
+END
+GO
+
+
