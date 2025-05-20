@@ -129,6 +129,21 @@ GO
 
 ALTER TABLE SanPham ADD img_url NVARCHAR(MAX);
 
+ALTER TABLE SanPham
+ALTER COLUMN thuong_hieu  NVARCHAR(100) NULL;
+ALTER TABLE SanPham
+ALTER COLUMN so_gram      INT           NULL;
+ALTER TABLE SanPham
+ALTER COLUMN nguon_goc    NVARCHAR(100) NULL;
+ALTER TABLE SanPham
+ALTER COLUMN han_su_dung  DATE          NULL;
+ALTER TABLE SanPham
+ALTER COLUMN so_luong     INT           NULL;
+
+ALTER TABLE SanPham ADD updated_at DATETIME NULL;
+ALTER TABLE SanPham ADD updated_by NVARCHAR(255) NULL;
+
+
 /* ─────────────────────────────────────────────
    BẢNG Ảnh Sản Phẩm – Cloudinary
    ───────────────────────────────────────────── */
@@ -268,16 +283,19 @@ GO
 -- ─────────────────────────────────────────────────────────────────────────
 CREATE TABLE LichSuSanPham (
     id INT IDENTITY(1,1) PRIMARY KEY,
-    san_pham_id       INT NOT NULL,
+    san_pham_id       INT NULL,
     hanh_dong         NVARCHAR(50) NOT NULL, 
     thoi_gian         DATETIME     NOT NULL DEFAULT GETDATE(),
     nhan_vien_login   NVARCHAR(255) NOT NULL, 
     noi_dung_thay_doi NVARCHAR(MAX) NULL,
 
-    CONSTRAINT FK_LichSuSanPham 
-        FOREIGN KEY (san_pham_id) REFERENCES SanPham(id) ON DELETE CASCADE
 );
 GO
+
+ALTER TABLE LichSuSanPham
+ADD CONSTRAINT FK_LichSuSanPham
+    FOREIGN KEY (san_pham_id) REFERENCES SanPham(id) ON DELETE SET NULL;
+
 
 -- ─────────────────────────────────────────────────────────────────────────
 -- BẢNG Chi Tiết Thanh Toán
