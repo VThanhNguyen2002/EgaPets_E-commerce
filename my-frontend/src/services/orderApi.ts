@@ -11,7 +11,8 @@ export interface CheckoutPayload {
     id: number; qty: number; price: number; discount: number;
   }[];
   discount  : number;
-  payMethod : number;                // 1 = MoMo
+  payMethod : number;
+  payMethodLabel?: string;
 }
 
 export async function createOrder(payload: CheckoutPayload) {
