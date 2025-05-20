@@ -298,6 +298,8 @@ CREATE TABLE ChiTietThanhToan (
 );
 GO
 
+
+
 -- ─────────────────────────────────────────────────────────────────────────
 -- BẢNG Dịch Vụ
 -- ─────────────────────────────────────────────────────────────────────────
@@ -435,3 +437,15 @@ SELECT TOP 1 reset_token
 FROM PasswordResets 
 ORDER BY id DESC;
 
+INSERT INTO Users(username, password_hash, role, email)
+VALUES (
+  N'demo1',
+  HASHBYTES('SHA2_256', CONVERT(VARCHAR, N'123456')),  -- mật khẩu thật là: 123456
+  N'KhachHang',
+  N'demo@egapets1.local'
+);
+
+DECLARE @uid INT = SCOPE_IDENTITY();
+
+INSERT INTO KhachHang(user_id, ho_ten, so_dien_thoai)
+VALUES (@uid, N'Khách demo1', N'123123123123');

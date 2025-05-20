@@ -15,18 +15,48 @@ async function fetchUserByUsername(username) {
   return rs.recordset[0];
 }
 
+/* ---------------- LOGIN ---------------- */
 async function login({ username, password }) {
-  const user = await fetchUserByUsername(username);
-  if (!user) return { code: 404, msg: 'Tài khoản không tồn tại. Vui lòng đăng ký!' };
+  const pool = await poolPromise;
 
-  const hashedInput = hashHex(password);
-  const storedHash  = Buffer.from(user.password_hash).toString('hex');
+  /* 1. Tìm user */
+  const { recordset:[user] } = await pool.request()
+    .input('u', sql.NVarChar, username)
+    .query('SELECT * FROM Users WHERE username = @u');
 
-  if (hashedInput !== storedHash) return { code: 401, msg: 'Vui lòng kiểm tra lại tài khoản và mật khẩu!' };
+  if (!user)
+    return { code: 404, msg: 'Tài khoản không tồn tại. Vui lòng đăng ký!' };
 
-  const token = sign({ id: user.id, role: user.role, username: user.username });
-  return { code: 200, data: { token, role: user.role, username: user.username } };
+  /* 2. So khớp mật khẩu */
+  const ok =
+    hashHex(password) === Buffer.from(user.password_hash).toString('hex');
+
+  if (!ok)
+    return { code: 401, msg: 'Vui lòng kiểm tra lại tài khoản và mật khẩu!' };
+
+  /* 3. Lấy khach_hang_id (nếu user là khách) */
+  let khachHangId = null;
+  if (user.role === 'KhachHang') {
+    const rs = await pool.request()
+      .input('uid', sql.Int, user.id)
+      .query('SELECT id FROM KhachHang WHERE user_id = @uid');
+    khachHangId = rs.recordset[0]?.id ?? null;   // có thể null nếu chưa có trigger
+  }
+
+  /* 4. Tạo JWT + trả về */
+  const token = sign({
+    id   : user.id,
+    role : user.role,
+    username: user.username,
+    khachHangId,           // <-- thêm vào payload
+  });
+
+  return {
+    code : 200,
+    data : { token, role: user.role, username: user.username, khachHangId },
+  };
 }
+
 
 async function register({ username, password, email, role }) {
   const pool = await poolPromise;

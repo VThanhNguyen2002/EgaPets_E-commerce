@@ -106,8 +106,8 @@ export const useCartStore = create<CartState>()(
             cartItems: [
               ...s.cartItems,
               {
-                id           : Date.now(),
-                san_pham_id  : p.id,
+                id           : Date.now(),           // lineId
+                san_pham_id  : p.id,                 // ✅ INT đúng chuẩn BE
                 ten_san_pham : p.ten_san_pham,
                 ma_sp        : p.ma_sp ?? "",
                 thumb        : p.thumb ?? null,
@@ -115,7 +115,7 @@ export const useCartStore = create<CartState>()(
                 don_gia      : p.finalPrice,
                 gia          : p.finalPrice,
                 loai         : p.loai,
-                giam_gia: p.giam_gia ?? 0,
+                giam_gia     : p.giam_gia ?? 0,
               }
             ]
           }));

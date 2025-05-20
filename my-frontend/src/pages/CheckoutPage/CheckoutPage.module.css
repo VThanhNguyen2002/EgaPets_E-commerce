@@ -18,6 +18,7 @@
 @media (max-width: 940px) {
   .content {
     grid-template-columns: 1fr;
+    gap: 22px;
   }
 }
 
@@ -37,39 +38,96 @@
   font-size: 1.2rem;
   font-weight: 500;
 }
-.form input,
-.form select {
-  width: 100%;
-  padding: 12px 14px;
-  margin-bottom: 20px;
-  background: #1e1e1e;
-  border: 1px solid #444;
-  border-radius: 6px;
-  color: #eee;
-  font-size: 0.95rem;
+
+/* ------ Customer Fields ------ */
+.customerFields {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  margin-bottom: 28px;
 }
-.row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+.customerFields input,
+.customerFields select {
+  width: 100%;
+  padding: 13px 16px;
+  background: #1e1e1e;
+  border: 1.3px solid #444;
+  border-radius: 7px;
+  color: #eee;
+  font-size: 1rem;
+  box-sizing: border-box;
+  outline: none;
+  transition: border 0.17s;
+}
+.customerFields input:focus,
+.customerFields select:focus {
+  border-color: #ff7750;
+  background: #232323;
+}
+.customerFields input::placeholder {
+  color: #bbb;
+  font-size: 1rem;
+  opacity: 1;
+}
+
+.selectRow {
+  display: flex;
   gap: 16px;
 }
-.paymentMethod {
-  border: 1px solid #333;
-  border-radius: 10px;
-  padding: 16px;
-  margin-bottom: 24px;
+.selectRow select {
+  flex: 1 1 0;
 }
-.paymentMethod label {
+@media (max-width: 700px) {
+  .selectRow {
+    flex-direction: column;
+    gap: 12px;
+  }
+}
+
+/* ------ Payment Method ------ */
+.paymentMethod {
+  border: 1.5px solid #222;
+  border-radius: 14px;
+  padding: 24px 20px 8px;
+  margin-bottom: 28px;
+  background: #181818;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.paymentOption {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 10px 0;
+  gap: 16px;
+  padding: 15px 16px;
+  margin-bottom: 8px;
+  border-radius: 10px;
+  border: 2px solid transparent;
+  background: #181818;
+  transition: border 0.18s, box-shadow 0.2s, background 0.22s;
   cursor: pointer;
-  font-size: 0.95rem;
+  min-height: 56px;
+  font-size: 1.05rem;
 }
-.paymentMethod input[type="radio"] {
+.paymentOption:hover,
+.paymentOption:focus-visible {
+  border-color: #ff775099;
+  background: #191818;
+}
+.paymentOption input[type="radio"] {
   accent-color: #ff4d00;
+  width: 20px;
+  height: 20px;
+  margin-right: 4px;
+  margin-left: 0;
 }
+.paymentOption span {
+  font-size: 1.08rem;
+  color: #fff;
+  font-weight: 500;
+}
+
+/* ------ Order Button ------ */
 .orderBtn {
   width: 100%;
   padding: 14px 0;
@@ -80,59 +138,96 @@
   cursor: pointer;
   color: #fff;
   font-size: 1rem;
+  margin-top: 12px;
 }
 .orderBtn:hover {
   opacity: 0.9;
 }
 .backLink {
   margin-top: 20px;
-  font-size: 0.9rem;
+  font-size: 0.93rem;
 }
 .backLink a {
   color: #ff7750;
 }
+.err {
+  color: #ff4d00;
+  font-size: 0.9rem;
+}
 
-/* SUMMARY */
+/* ------ Cart Summary ------ */
 .summary {
-  background: #141414;
-  padding: 28px 30px;
-  border-radius: 12px;
+  background: #181818;
+  padding: 28px 28px 22px;
+  border-radius: 14px;
   height: max-content;
+  min-width: 310px;
   position: sticky;
   top: 90px;
+  box-shadow: 0 4px 32px #0001;
 }
+
 .item {
   display: grid;
-  grid-template-columns: 64px 1fr auto;
+  grid-template-columns: 56px 1fr auto;
   align-items: center;
   gap: 14px;
   margin-bottom: 18px;
+  border-radius: 8px;
+  padding: 6px 0;
+  transition: background 0.15s;
 }
+.item:hover { background: #232222; }
 .left {
   position: relative;
+  width: 56px;
+  height: 56px;
+  flex-shrink: 0;
 }
 .left img {
-  width: 64px;
-  height: 64px;
+  width: 56px;
+  height: 56px;
   object-fit: cover;
-  border-radius: 8px;
+  border-radius: 7px;
+  border: 1px solid #222;
+  background: #fff;
 }
 .qty {
   position: absolute;
-  bottom: 4px;
-  right: 4px;
+  bottom: 2px;
+  left: 2px;
   background: #ff4d00;
-  padding: 0 6px;
-  font-size: 0.75rem;
-  border-radius: 4px;
+  color: #fff;
+  padding: 0 8px;
+  font-size: 0.8rem;
+  border-radius: 6px;
+  font-weight: 600;
+  border: 1px solid #fff2;
+  box-shadow: 0 2px 8px #ff4d0040;
+}
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
 }
 .title {
-  font-size: 0.9rem;
+  font-size: 1rem;
+  color: #fff;
+  font-weight: 500;
   line-height: 1.3;
+  word-break: break-word;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
-.summary b {
+.price {
   color: #ff7750;
+  font-weight: bold;
+  font-size: 1.1rem;
+  margin-left: 4px;
 }
+
 .couponRow {
   display: flex;
   gap: 8px;
@@ -164,9 +259,45 @@
 .totalRow {
   display: flex;
   justify-content: space-between;
-  font-size: 1.2rem;
-  font-weight: 600;
+  font-size: 1.22rem;
+  font-weight: 700;
+  margin-top: 16px;
+  margin-bottom: 0;
+  padding-top: 10px;
+  border-top: 1.2px solid #282828;
 }
+
 .totalRow strong {
   color: #ff7750;
+  font-size: 1.3rem;
+  font-weight: 800;
+  letter-spacing: 0.1px;
+}
+
+@media (max-width: 800px) {
+  .summary {
+    min-width: 0;
+    padding: 17px 7px;
+  }
+  .item {
+    grid-template-columns: 44px 1fr auto;
+    gap: 8px;
+  }
+  .left, .left img {
+    width: 44px; height: 44px;
+  }
+  .title {
+    max-width: 100px;
+    font-size: 0.93rem;
+  }
+}
+
+/* QR MoMo modal, waiting/done screens giữ nguyên nếu dùng */
+.waiting{ text-align:center; padding:40px 0; }
+.waiting img{ max-width:230px; margin:24px auto; display:block; }
+.done{ text-align:center; padding:60px 0; }
+.done h2{ margin:24px 0; color:#31b057; }
+.done a, .waiting .doneBtn{
+  background:#ff4d4f; color:#fff; padding:10px 24px;
+  border-radius:8px; display:inline-block; margin-top:16px;
 }

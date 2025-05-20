@@ -3,6 +3,8 @@ require('@jobs/cleanupCart');
 const express = require('express');
 const cors    = require('cors');
 const { poolPromise } = require('@shared/db/sql');
+const customerRoutes = require('@modules/Customer/customer.routes');
+
 const routes  = require('./routes');
 const swaggerRouter = require('./docs/swagger');
 
@@ -29,6 +31,8 @@ app.get('/health', async (_, res) => {
 
 /* Mount all routes */
 app.use('/api', routes);  // routes/index.js sẽ chứa sub‑router
+
+app.use("/api/customers", customerRoutes);
 
 app.use('/api-docs', swaggerRouter);
 
