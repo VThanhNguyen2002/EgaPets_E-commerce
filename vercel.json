@@ -1,44 +1,24 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "my-backend/server.js",
-      "use": "@vercel/node"
-    },
-    {
-      "src": "my-frontend/package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "dist"
-      }
-    }
-  ],
-  "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "my-backend/server.js"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "my-frontend/dist/$1"
-    }
-  ],
-  "env": {
-    "NODE_ENV": "production"
-  },
+  "buildCommand": "cd my-frontend && npm run build",
+  "outputDirectory": "my-frontend/dist",
+  "installCommand": "npm install --prefix my-backend && npm install --prefix my-frontend",
   "functions": {
-    "my-backend/server.js": {
+    "api/[...path].js": {
       "maxDuration": 30
     }
   },
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "/my-backend/server.js"
+      "destination": "/api/$1"
     },
     {
       "source": "/((?!api).*)",
-      "destination": "/my-frontend/dist/index.html"
+      "destination": "/index.html"
     }
-  ]
+  ],
+  "env": {
+    "NODE_ENV": "production"
+  }
 }
