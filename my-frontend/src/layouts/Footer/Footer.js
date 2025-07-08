@@ -5,9 +5,9 @@ import { HiMail } from "react-icons/hi";
 import { FaFacebookF, FaYoutube, FaTiktok, FaInstagram } from "react-icons/fa";
 import { SiZalo } from "react-icons/si";
 // Logo: 
-import logoEgaPets from "/src/assets/Logo.jpg";
+import logoEgaPets from "../../assets/Logo.jpg";
 // (đường dẫn tuỳ dự án của bạn)
-import logoMomo from "/src/assets/momo.jpg";
+import logoMomo from "../../assets/Momo.jpg";
 // ...và các logo thanh toán khác (Visa, MasterCard...), 
 // tuỳ bạn import nếu có
 const Footer = () => {
