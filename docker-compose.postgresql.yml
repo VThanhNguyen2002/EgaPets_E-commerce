@@ -1,0 +1,110 @@
+version: "3.9"
+services:
+  database:
+    image: postgres:15-alpine
+    container_name: db_postgresql
+    environment:
+      - POSTGRES_DB=egapets_db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=YourStrongPassw0rd
+      - POSTGRES_INITDB_ARGS=--encoding=UTF-8 --lc-collate=C --lc-ctype=C
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./Database/EgaPets_PostgreSQL.sql:/docker-entrypoint-initdb.d/01-schema.sql
+      - ./Database/EgaPets_PostgreSQL_Data.sql:/docker-entrypoint-initdb.d/02-data.sql
+      - ./Database/EgaPets_PostgreSQL_Roles.sql:/docker-entrypoint-initdb.d/03-roles.sql
+      - ./Database/EgaPets_PostgreSQL_Functions.sql:/docker-entrypoint-initdb.d/04-functions.sql
+      - ./Database/EgaPets_PostgreSQL_Triggers.sql:/docker-entrypoint-initdb.d/05-triggers.sql
+    networks:
+      - mynet
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  face-api:
+    build:
+      context: ./my-backend/src/face-api
+      dockerfile: Dockerfile  # Remove GPU for cloud deployment
+    container_name: face-api
+    ports:
+      - "5001:5000"
+    networks:
+      - mynet
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  my-backend:
+    build:
+      context: ./my-backend
+      dockerfile: Dockerfile.production
+    container_name: node_backend
+    environment:
+      - NODE_ENV=production
+      - DB_HOST=db_postgresql
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASSWORD=YourStrongPassw0rd
+      - DB_NAME=egapets_db
+      - DB_SSL=false
+      - FACE_SERVICE_URL=http://face-api:5000
+      - JWT_SECRET=egapets_super_secret_production
+      - FRONTEND_URL=http://localhost:5173
+    depends_on:
+      database:
+        condition: service_healthy
+      face-api:
+        condition: service_healthy
+    ports:
+      - "5000:5000"
+    networks:
+      - mynet
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  my-frontend:
+    build:
+      context: ./my-frontend
+      dockerfile: Dockerfile.production
+    container_name: react_frontend
+    environment:
+      - VITE_API_URL=http://localhost:5000
+      - VITE_FACE_API_URL=http://localhost:5001
+    depends_on:
+      my-backend:
+        condition: service_healthy
+    ports:
+      - "5173:5173"
+    networks:
+      - mynet
+
+  nginx:
+    image: nginx:alpine
+    container_name: nginx_proxy
+    volumes:
+      - ./nginx.postgresql.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - my-backend
+      - my-frontend
+      - face-api
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - mynet
+
+volumes:
+  postgres_data:
+
+networks:
+  mynet:
+    driver: bridge
