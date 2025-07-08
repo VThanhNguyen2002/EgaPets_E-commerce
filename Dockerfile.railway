@@ -13,15 +13,15 @@ WORKDIR /app
 FROM base AS backend-deps
 WORKDIR /app/my-backend
 COPY my-backend/package*.json ./
-# Use npm install with memory optimization flags
-RUN npm install --only=production --no-audit --no-fund --maxsockets 1 && npm cache clean --force
+# Use npm ci with memory optimization flags and fallback to npm install
+RUN (npm ci --only=production --no-audit --no-fund --maxsockets 1 || npm install --only=production --no-audit --no-fund --maxsockets 1) && npm cache clean --force
 
 # Frontend build stage
 FROM base AS frontend-build
 WORKDIR /app/my-frontend
 COPY my-frontend/package*.json ./
-# Use npm install with memory optimization flags
-RUN npm install --no-audit --no-fund --maxsockets 1
+# Use npm ci with memory optimization flags and fallback to npm install
+RUN (npm ci --no-audit --no-fund --maxsockets 1 || npm install --no-audit --no-fund --maxsockets 1)
 COPY my-frontend/ ./
 # Build with memory limit
 RUN NODE_OPTIONS="--max-old-space-size=1024" npm run build
