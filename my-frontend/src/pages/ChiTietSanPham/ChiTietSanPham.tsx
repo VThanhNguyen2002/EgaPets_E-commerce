@@ -5,6 +5,7 @@ import styles from "./ChiTietSanPham.module.css";
 import Header from '@/layouts/Header/Header';
 import Footer from '@/layouts/Footer/Footer';
 import { FaCartPlus } from "react-icons/fa";
+import SanPham1 from "../../assets/SanPham1.jpg";
 import { Product } from "../../types/Product";
 import { fetchProductById } from "../../services/productService";
 
@@ -26,7 +27,7 @@ const ChiTietSanPham = () => {
       <div className={styles.contentWrapper}>
         <div className={styles.imageWrapper}>
           <img
-            src={"/src/assets/SanPham1.jpg"}
+            src={SanPham1}
             alt={product.ten_san_pham}
             className={styles.mainImage}
           />

@@ -6,6 +6,7 @@ import Footer from "../../../layouts/Footer/Footer";
 import { Product } from "../../../types/Product";
 import { fetchAllProducts } from "../../../services/productService";
 import { Link } from "react-router-dom";
+import SanPham1 from "../../../assets/SanPham1.jpg";
 
 const BoLocSanPham = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -73,7 +74,7 @@ const BoLocSanPham = () => {
       <div className={styles.grid}>
         {filtered.map((p) => (
           <Link to={`/sanpham/${p.id}`} key={p.id} className={styles.card}>
-            <img src={"/src/assets/SanPham1.jpg"} alt={p.ten_san_pham} />
+            <img src={SanPham1} alt={p.ten_san_pham} />
             <h3>{p.ten_san_pham}</h3>
             <p>{p.gia_thanh.toLocaleString()}đ</p>
           </Link>

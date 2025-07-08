@@ -3,36 +3,43 @@ import styles from "./PetProductSection.module.css";
 import sharedStyles from "../common/SharedStyles.module.css";
 
 // Data giả cho các loại sản phẩm thú cưng
-const petProducts = [
+import ThucAnChoBoss from "../../assets/ThucAnChoBoss.jpg";
+import DoDungTiaLong from "../../assets/DoDungTiaLong.jpg";
+import NhaVeSinh from "../../assets/NhaVeSinh.jpg";
+import PhuKien from "../../assets/PhuKien.jpg";
+import DemGiuong from "../../assets/DemGiuong.jpg";
+import DungCuChaiLong from "../../assets/DungCuChaiLong.jpg";
+
+const categories = [
   {
     id: 1,
-    title: "Thức ăn cho boss",
-    image: "/src/assets/ThucAnChoBoss.jpg",
+    name: "Thức ăn cho Boss",
+    image: ThucAnChoBoss,
   },
   {
     id: 2,
-    title: "Đồ dùng tỉa lông",
-    image: "/src/assets/DoDungTiaLong.jpg",
+    name: "Đồ dùng tỉa lông",
+    image: DoDungTiaLong,
   },
   {
     id: 3,
-    title: "Nhà vệ sinh",
-    image: "/src/assets/NhaVeSinh.jpg",
+    name: "Nhà vệ sinh",
+    image: NhaVeSinh,
   },
   {
     id: 4,
-    title: "Phụ kiện",
-    image: "/src/assets/PhuKien.jpg",
+    name: "Phụ kiện",
+    image: PhuKien,
   },
   {
     id: 5,
-    title: "Đệm - Giường",
-    image: "/src/assets/DemGiuong.jpg",
+    name: "Đệm giường",
+    image: DemGiuong,
   },
   {
     id: 6,
-    title: "Dụng cụ chải lông",
-    image: "/src/assets/DungCuChaiLong.jpg",
+    name: "Dụng cụ chải lông",
+    image: DungCuChaiLong,
   },
 ];
 
@@ -41,10 +48,10 @@ const PetProductSection: React.FC = () => {
     <div className={styles.petProductSection}>
       <h2 className={sharedStyles.sectionTitle}>Sản phẩm cho thú cưng 🐾</h2>
       <div className={styles.circleContainer}>
-        {petProducts.map((item) => (
+        {categories.map((item) => (
           <div key={item.id} className={styles.circleItem}>
-            <img src={item.image} alt={item.title} className={styles.circleImage} />
-            <p>{item.title}</p>
+            <img src={item.image} alt={item.name} className={styles.circleImage} />
+            <p>{item.name}</p>
           </div>
         ))}
       </div>

@@ -7,6 +7,7 @@ import { Product }             from "../../types/Product";
 import ProductCard             from "../common/ProductCard/ProductCard";
 import QuickViewModal          from "../QuickViewModal/QuickViewModal";
 import CompareBar              from "../CompareBar/CompareBar";
+import IntroSanPhamMoi         from "../../assets/IntroSanPhamMoi.jpg";
 
 export default function NewProductsSection() {
   const [items, setItems]   = useState<Product[]>([]);
@@ -48,7 +49,7 @@ export default function NewProductsSection() {
         {/* banner trái */}
         <div className={styles.left}>
           <img
-            src="/src/assets/IntroSanPhamMoi.jpg"
+            src={IntroSanPhamMoi}
             className={styles.banner}
             alt="Banner sale"
           />

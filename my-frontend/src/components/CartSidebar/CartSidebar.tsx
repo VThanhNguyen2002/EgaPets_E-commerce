@@ -10,6 +10,8 @@ import { useCartStore } from "@/store/cartStore";
 import useProducts from "@/hooks/useProducts";
 import ProductCardMini from "@/components/ProductCardMini/ProductCardMini";
 import { formatCurrency } from "@/utils/formatCurrency";
+import emptyCartImage from "@/assets/empty-cart.jpg";
+import imgPlaceholder from "@/assets/img-placeholder.png";
 
 import styles from "./CartSidebar.module.css";
 
@@ -104,7 +106,7 @@ export default function CartSidebar({ isOpen, onClose }: { isOpen: boolean; onCl
 
         {cartItems.length === 0 ? (
           <div className={styles.empty}>
-            <img src="/src/assets/empty-cart.jpg" />
+            <img src={emptyCartImage} />
             <p>Giỏ hàng trống</p>
           </div>
         ) : (
@@ -113,7 +115,7 @@ export default function CartSidebar({ isOpen, onClose }: { isOpen: boolean; onCl
               <ul className={styles.list}>
                 {cartItems.map(it => (
                   <li key={it.id} className={styles.item}>
-                    <img src={it.thumb || "/src/assets/img-placeholder.png"} />
+                    <img src={it.thumb || imgPlaceholder} />
                     <div className={styles.info}>
                       <span className={styles.name}>{it.ten_san_pham}</span>
                       {it.ma_sp && <i className={styles.sku}>#{it.ma_sp}</i>}
