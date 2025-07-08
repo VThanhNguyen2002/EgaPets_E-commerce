@@ -12,21 +12,56 @@ EgaPets là một trang web thương mại điện tử chuyên cung cấp các 
 - 📄 Blog chăm sóc thú cưng
 
 ## Cài Đặt & Chạy Dự Án
+
+### Development (Local)
 1. Clone repository:
    ```sh
    git clone https://github.com/VThanhNguyen2002/EgaPets_E-commerce.git
    cd EgaPets_E-commerce
    ```
-2. Cài đặt frontend & backend:
+
+2. Cài đặt dependencies:
    ```sh
    cd my-frontend && npm install
    cd ../my-backend && npm install
    ```
-3. Chạy frontend & backend:
+
+3. Setup Database (PostgreSQL):
    ```sh
-   cd my-backend && node server.js
+   # Option 1: Docker (Recommended)
+   docker-compose -f docker-compose.postgresql.yml up -d database
+   
+   # Option 2: Local PostgreSQL
+   # Tạo database 'egapets_db' và chạy:
+   cd my-backend
+   npm run db:setup
+   ```
+
+4. Configure Environment:
+   ```sh
+   # Backend
+   cp my-backend/.env.postgresql.example my-backend/.env
+   # Cập nhật database credentials trong .env
+   
+   # Frontend
+   cp my-frontend/.env.example my-frontend/.env
+   ```
+
+5. Chạy ứng dụng:
+   ```sh
+   # Backend
+   cd my-backend && npm run dev
+   
+   # Frontend (terminal mới)
    cd my-frontend && npm run dev
    ```
+
+### Production Deployment
+Xem chi tiết trong [DEPLOYMENT.md](./DEPLOYMENT.md)
+
+- **Railway**: `railway up`
+- **Vercel**: `vercel --prod`
+- **Docker**: `docker-compose -f docker-compose.postgresql.yml up -d`
 
 ---
 
@@ -44,19 +79,64 @@ EgaPets is an e-commerce website specializing in pet products, especially for do
 - 📄 Pet care blog
 
 ## Installation & Running the Project
+
+### Development Setup
 1. Clone repository:
    ```sh
    git clone https://github.com/VThanhNguyen2002/EgaPets_E-commerce.git
    cd EgaPets_E-commerce
    ```
-2. Install frontend & backend dependencies:
+
+2. Install dependencies:
    ```sh
    cd my-frontend && npm install
    cd ../my-backend && npm install
    ```
-3. Run frontend & backend:
+
+3. Database Setup (PostgreSQL):
    ```sh
-   cd my-backend && node server.js
+   # Using Docker (Recommended)
+   docker-compose -f docker-compose.postgresql.yml up -d database
+   
+   # Setup database schema
+   cd my-backend
+   npm run db:setup
+   npm run test:db  # Test connection
+   ```
+
+4. Environment Configuration:
+   ```sh
+   # Copy and configure environment files
+   cp my-backend/.env.postgresql.example my-backend/.env
+   cp my-frontend/.env.example my-frontend/.env
+   ```
+
+5. Run the application:
+   ```sh
+   # Backend
+   cd my-backend && npm run dev
+   
+   # Frontend (new terminal)
    cd my-frontend && npm run dev
    ```
+
+### Production Deployment
+See detailed guide in [DEPLOYMENT.md](./DEPLOYMENT.md)
+
+**Supported Platforms:**
+- Railway (Full-stack with PostgreSQL)
+- Vercel (Frontend + Serverless Backend)
+- Docker (Self-hosted)
+
+**Quick Deploy:**
+```sh
+# Railway
+railway up
+
+# Vercel
+vercel --prod
+
+# Docker
+docker-compose -f docker-compose.postgresql.yml up -d
+```
 

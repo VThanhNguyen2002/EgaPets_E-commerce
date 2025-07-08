@@ -21,6 +21,9 @@ coverage/
 my-backend/.env
 my-backend/*.env
 my-backend/src/face-api/.env
+my-frontend/.env
+my-frontend/.env.local
+my-frontend/.env.production
 
 
 # ───────────────────────────────────────────────
@@ -31,6 +34,23 @@ my-backend/src/face-api/.env
 Thumbs.db
 
 # ───────────────────────────────────────────────
-# DOCKER
+# DOCKER & DEPLOYMENT
 # ───────────────────────────────────────────────
 docker-compose.override.yml
+.vercel
+.railway
+
+# ───────────────────────────────────────────────
+# DATABASE & UPLOADS
+# ───────────────────────────────────────────────
+my-backend/uploads/
+my-backend/logs/
+postgres_data/
+
+# ───────────────────────────────────────────────
+# BACKUP FOLDERS (Keep structure but ignore content)
+# ───────────────────────────────────────────────
+backup-current-codebase/*
+backup-develop-branch/*
+!backup-current-codebase/.gitkeep
+!backup-develop-branch/.gitkeep

@@ -10,9 +10,13 @@
     "@jobs": "src/jobs/"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
+    "test:coverage": "jest --coverage",
     "dev": "nodemon server.js",
-    "start": "node -r module-alias/register server.js"
+    "start": "node -r module-alias/register server.js",
+    "test:db": "node test-postgresql.js",
+    "db:setup": "node scripts/setup-postgresql.js",
+    "db:migrate": "node scripts/migrate-to-postgresql.js"
   },
   "keywords": [],
   "author": "",
@@ -30,6 +34,7 @@
     "module-alias": "^2.2.3",
     "mongoose": "^8.10.1",
     "mssql": "^11.0.1",
+    "pg": "^8.11.3",
     "multer": "^1.4.5-lts.2",
     "node-cron": "^3.0.3",
     "nodemailer": "^7.0.0",
@@ -39,6 +44,9 @@
     "yamljs": "^0.3.0"
   },
   "devDependencies": {
-    "nodemon": "^3.1.9"
+    "@types/jest": "^30.0.0",
+    "jest": "^30.0.4",
+    "nodemon": "^3.1.9",
+    "supertest": "^7.1.3"
   }
 }
