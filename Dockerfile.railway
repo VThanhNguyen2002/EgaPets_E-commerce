@@ -1,8 +1,10 @@
 # Multi-stage build for Railway deployment
 FROM node:18-alpine AS base
 
-# Install dependencies for PostgreSQL
-RUN apk add --no-cache postgresql-client curl
+# Install dependencies for PostgreSQL and set memory limits
+RUN apk add --no-cache postgresql-client curl && \
+    npm config set fund false && \
+    npm config set audit false
 
 # Set working directory
 WORKDIR /app
@@ -11,15 +13,18 @@ WORKDIR /app
 FROM base AS backend-deps
 WORKDIR /app/my-backend
 COPY my-backend/package*.json ./
-RUN npm ci --only=production && npm cache clean --force
+# Use npm install with memory optimization flags
+RUN npm install --only=production --no-audit --no-fund --maxsockets 1 && npm cache clean --force
 
 # Frontend build stage
 FROM base AS frontend-build
 WORKDIR /app/my-frontend
 COPY my-frontend/package*.json ./
-RUN npm ci
+# Use npm install with memory optimization flags
+RUN npm install --no-audit --no-fund --maxsockets 1
 COPY my-frontend/ ./
-RUN npm run build
+# Build with memory limit
+RUN NODE_OPTIONS="--max-old-space-size=1024" npm run build
 
 # Production stage
 FROM base AS production

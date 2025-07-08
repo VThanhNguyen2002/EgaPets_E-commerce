@@ -1,0 +1,77 @@
+# Node modules
+node_modules
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# IDE files
+.vscode
+.idea
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Git
+.git
+.gitignore
+
+# Documentation
+*.md
+README*
+
+# Test files
+**/__tests__/**
+**/*.test.js
+**/*.spec.js
+jest.config.js
+jest.setup.js
+
+# Development files
+my-frontend/src
+my-frontend/public
+my-frontend/index.html
+my-frontend/vite.config.ts
+my-frontend/tsconfig*.json
+my-frontend/eslint.config.js
+
+# Backend development files
+my-backend/src/__tests__
+my-backend/nodemon.json
+
+# Build artifacts (keep dist)
+!my-frontend/dist
+
+# Logs
+logs
+*.log
+
+# Backup folders
+backup-*
+
+# Docker files (except the one being used)
+Dockerfile
+Dockerfile.production
+docker-compose*.yml
+!Dockerfile.railway
+
+# Deployment files
+vercel.json
+.vercel
+.railway
+
+# Database files (keep for Railway)
+# Database/
+
+# Other
+.nojekyll
+*.docx
