@@ -1,8 +1,7 @@
 {
   "version": 2,
-  "buildCommand": "npm run build --prefix ./my-frontend",
+  "buildCommand": "cd my-backend && npm install && cd ../my-frontend && npm install && npm run build",
   "outputDirectory": "my-frontend/dist",
-  "installCommand": "npm install --prefix ./my-backend && npm install --prefix ./my-frontend",
   "functions": {
     "api/[...path].js": {
       "maxDuration": 30
