@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "buildCommand": "cd my-frontend && npm install && npm run build",
+  "buildCommand": "npm install --prefix my-frontend && npm run build --prefix my-frontend",
   "outputDirectory": "my-frontend/dist",
   "functions": {
     "api/[...path].js": {
