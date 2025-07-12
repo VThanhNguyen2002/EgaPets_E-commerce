@@ -16,7 +16,8 @@
     "start": "node -r module-alias/register server.js",
     "test:db": "node test-postgresql.js",
     "db:setup": "node scripts/setup-postgresql.js",
-    "db:migrate": "node scripts/migrate-to-postgresql.js"
+    "db:migrate": "node scripts/migrate-to-postgresql.js",
+    "db:setup-railway": "node scripts/setup-railway-db.js"
   },
   "keywords": [],
   "author": "",

@@ -10,9 +10,9 @@ const dbConfig = {
   database: process.env.DB_NAME,
   ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : false,
   // Connection pool settings
-  max: 20,
-  idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 2000,
+  max: 20, // Maximum number of clients in the pool
+  idleTimeoutMillis: 30000, // Close idle clients after 30 seconds
+  connectionTimeoutMillis: 2000, // Return an error after 2 seconds if connection could not be established
 };
 
 // Create connection pool
@@ -23,19 +23,18 @@ pool.on('error', (err) => {
   console.error('❌ PostgreSQL Pool Error:', err);
 });
 
-// Test connection and create poolPromise for backward compatibility
-const poolPromise = pool.connect()
+// Test connection on startup
+pool.connect()
   .then(client => {
     console.log("✅ PostgreSQL Database Connected");
     client.release();
-    return pool; // Return pool instead of client
   })
   .catch(err => {
     console.error("❌ PostgreSQL Database Connection Failed:", err);
     process.exit(1);
   });
 
-/* helper query function for PostgreSQL */
+/* helper query function */
 async function query(text, params = []) {
   const client = await pool.connect();
   try {
@@ -46,18 +45,9 @@ async function query(text, params = []) {
   }
 }
 
+/* Get pool instance */
 function getPool() {
   return pool;
 }
 
-// For backward compatibility, create sql object with common methods
-const sql = {
-  Int: 'INTEGER',
-  NVarChar: 'VARCHAR',
-  VarBinary: 'BYTEA',
-  Decimal: 'DECIMAL',
-  DateTime: 'TIMESTAMP',
-  Bit: 'BOOLEAN'
-};
-
-module.exports = { sql, dbConfig, poolPromise, query, getPool, pool };
+module.exports = { pool, dbConfig, query, getPool };

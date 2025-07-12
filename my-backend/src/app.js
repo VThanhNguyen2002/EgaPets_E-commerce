@@ -27,11 +27,13 @@ app.use(express.urlencoded({ extended: true }));
 /* Health‑check */
 app.get('/health', async (_, res) => {
   try {
-    const rs = await (await poolPromise)
-      .request().query('SELECT 1 AS ok');
-    res.json({ status: 'UP', db: !!rs });
-  } catch {
-    res.status(500).json({ status: 'DOWN' });
+    const client = await (await poolPromise).connect();
+    const result = await client.query('SELECT 1 AS ok');
+    client.release();
+    res.json({ status: 'UP', db: !!result.rows });
+  } catch (error) {
+    console.error('Health check failed:', error);
+    res.status(500).json({ status: 'DOWN', error: error.message });
   }
 });
 

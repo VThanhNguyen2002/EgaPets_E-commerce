@@ -37,6 +37,9 @@ WORKDIR /app
 COPY --from=backend-deps --chown=nextjs:nodejs /app/my-backend/node_modules ./my-backend/node_modules
 COPY --chown=nextjs:nodejs my-backend/ ./my-backend/
 
+# Make startup script executable
+RUN chmod +x my-backend/start-railway.sh
+
 # Copy frontend build
 COPY --from=frontend-build --chown=nextjs:nodejs /app/my-frontend/dist ./my-frontend/dist/
 
@@ -63,5 +66,5 @@ EXPOSE 3000
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
   CMD curl -f http://localhost:3000/health || exit 1
 
-# Start command
-CMD ["npm", "start"]
+# Start command with database setup
+CMD ["./start-railway.sh"]
