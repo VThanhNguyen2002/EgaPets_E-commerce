@@ -1,3 +1,4 @@
+require('dotenv').config();
 const { Pool } = require('pg');
 const fs = require('fs');
 const path = require('path');
@@ -44,10 +45,11 @@ async function testDatabase() {
     // Test sample data
     console.log('\n4. Testing sample data...');
     const sampleQueries = [
-      { name: 'Users', query: 'SELECT COUNT(*) as count FROM "Users"' },
-      { name: 'DanhMucSanPham', query: 'SELECT COUNT(*) as count FROM "DanhMucSanPham"' },
-      { name: 'SanPham', query: 'SELECT COUNT(*) as count FROM "SanPham"' },
-      { name: 'DichVu', query: 'SELECT COUNT(*) as count FROM "DichVu"' }
+      { name: 'users', query: 'SELECT COUNT(*) as count FROM users' },
+      { name: 'danhmucsanpham', query: 'SELECT COUNT(*) as count FROM danhmucsanpham' },
+      { name: 'sanpham', query: 'SELECT COUNT(*) as count FROM sanpham' },
+      { name: 'dichvu', query: 'SELECT COUNT(*) as count FROM dichvu' },
+      { name: 'phuongthucthanhtoan', query: 'SELECT COUNT(*) as count FROM phuongthucthanhtoan' }
     ];
     
     for (const { name, query } of sampleQueries) {

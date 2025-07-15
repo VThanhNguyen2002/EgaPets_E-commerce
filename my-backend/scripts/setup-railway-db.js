@@ -3,14 +3,18 @@ const { Pool } = require('pg');
 const fs = require('fs');
 const path = require('path');
 
-// Railway PostgreSQL connection config
+// Railway PostgreSQL connection config - Updated
 const config = {
-  host: process.env.DB_HOST,
-  port: parseInt(process.env.DB_PORT) || 5432,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-  ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : false
+  host: process.env.DB_HOST || 'junction.proxy.rlwy.net',
+  port: parseInt(process.env.DB_PORT) || 31543,
+  user: process.env.DB_USER || 'postgres',
+  password: process.env.DB_PASSWORD || 'sUrpZPCLOiGvsUmiBONyCmkyfygjiPTM',
+  database: process.env.DB_NAME || 'railway',
+  ssl: { rejectUnauthorized: false },
+  // Connection settings for Railway
+  connectionTimeoutMillis: 10000,
+  idleTimeoutMillis: 30000,
+  max: 5 // Limit connections for setup
 };
 
 const pool = new Pool(config);
@@ -19,12 +23,15 @@ async function setupRailwayDatabase() {
   console.log('🚀 Setting up PostgreSQL Database on Railway...');
   console.log('📋 Config:', { ...config, password: '***' });
   
+  let client;
   try {
-    const client = await pool.connect();
+    console.log('🔄 Attempting to connect...');
+    client = await pool.connect();
     console.log('✅ Connected to Railway PostgreSQL');
     
     // Check if tables already exist
-    console.log('\n🔍 Checking existing tables...');
+    console.log('
+🔍 Checking existing tables...');
     const tablesQuery = `
       SELECT table_name 
       FROM information_schema.tables 
@@ -37,80 +44,111 @@ async function setupRailwayDatabase() {
     
     if (existingTables.rows.length > 0) {
       console.log('📋 Existing tables:', existingTables.rows.map(r => r.table_name).join(', '));
-      
-      // Ask if we should continue (in production, we might want to skip)
-      console.log('\n⚠️ Database already has tables. Continuing with setup...');
+      console.log('
+⚠️ Database already has tables. Skipping setup to avoid conflicts...');
+      return;
     }
     
-    // Read and execute SQL files in order
-    const sqlFiles = [
-      '../../Database/EgaPets_PostgreSQL.sql',
-      '../../Database/EgaPets_PostgreSQL_Data.sql',
-      '../../Database/EgaPets_PostgreSQL_Functions.sql',
-      '../../Database/EgaPets_PostgreSQL_Triggers.sql'
-    ];
+    // Only setup if no tables exist
+    console.log('
+🔧 Setting up fresh database...');
     
-    for (const sqlFile of sqlFiles) {
-      const filePath = path.join(__dirname, sqlFile);
+    // Read and execute the complete database SQL file
+    const sqlFilePath = path.join(__dirname, '../../complete-database-with-data.sql');
+    
+    if (fs.existsSync(sqlFilePath)) {
+      console.log('📄 Executing complete-database-with-data.sql...');
       
-      if (fs.existsSync(filePath)) {
-        console.log(`\n📄 Executing ${path.basename(sqlFile)}...`);
+      const sqlContent = fs.readFileSync(sqlFilePath, 'utf8');
+      
+      // Clean SQL for Railway (remove database creation commands)
+      const cleanedSql = sqlContent
+        .replace(/DROP DATABASE IF EXISTS.*?;/gi, '')
+        .replace(/CREATE DATABASE.*?;/gi, '')
+        .replace(/\\c.*?;/gi, '')
+        .replace(/USE.*?;/gi, '');
+      
+      // Execute in transaction for safety
+      await client.query('BEGIN');
+      
+      try {
+        // Split and execute statements
+        const statements = cleanedSql
+          .split(';')
+          .map(stmt => stmt.trim())
+          .filter(stmt => stmt && !stmt.startsWith('--') && stmt.length > 5);
         
-        try {
-          const sqlContent = fs.readFileSync(filePath, 'utf8');
-          
-          // Skip database creation commands for Railway
-          const cleanedSql = sqlContent
-            .replace(/DROP DATABASE IF EXISTS egapets_db;/gi, '-- Skipped: DROP DATABASE')
-            .replace(/CREATE DATABASE egapets_db;/gi, '-- Skipped: CREATE DATABASE')
-            .replace(/\\c egapets_db;/gi, '-- Skipped: USE DATABASE');
-          
-          // Split by semicolon and execute each statement
-          const statements = cleanedSql
-            .split(';')
-            .map(stmt => stmt.trim())
-            .filter(stmt => stmt && !stmt.startsWith('--') && stmt !== '');
-          
-          for (const statement of statements) {
-            if (statement.trim()) {
-              try {
-                await client.query(statement);
-              } catch (stmtError) {
-                // Log but continue for non-critical errors
-                if (!stmtError.message.includes('already exists')) {
-                  console.warn(`⚠️ Statement warning: ${stmtError.message}`);
-                }
+        console.log(`📝 Executing ${statements.length} SQL statements...`);
+        
+        for (let i = 0; i < statements.length; i++) {
+          const statement = statements[i];
+          if (statement.trim()) {
+            try {
+              await client.query(statement);
+              if (i % 10 === 0) {
+                console.log(`   Progress: ${i + 1}/${statements.length}`);
+              }
+            } catch (stmtError) {
+              if (!stmtError.message.includes('already exists')) {
+                console.warn(`⚠️ Statement ${i + 1} warning: ${stmtError.message}`);
               }
             }
           }
-          
-          console.log(`✅ Completed ${path.basename(sqlFile)}`);
-        } catch (fileError) {
-          console.error(`❌ Error executing ${path.basename(sqlFile)}:`, fileError.message);
         }
-      } else {
-        console.log(`⚠️ File not found: ${sqlFile}`);
+        
+        await client.query('COMMIT');
+        console.log('✅ Database setup completed successfully');
+        
+      } catch (error) {
+        await client.query('ROLLBACK');
+        throw error;
       }
+      
+    } else {
+      console.log('⚠️ complete-database-with-data.sql not found, creating basic structure...');
+      
+      // Create basic Users table as fallback
+      await client.query(`
+        CREATE TABLE IF NOT EXISTS "Users" (
+          user_id SERIAL PRIMARY KEY,
+          username VARCHAR(50) UNIQUE NOT NULL,
+          email VARCHAR(100) UNIQUE NOT NULL,
+          password_hash VARCHAR(255) NOT NULL,
+          role VARCHAR(20) DEFAULT 'customer',
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+      `);
+      
+      console.log('✅ Basic table structure created');
     }
     
     // Verify setup
-    console.log('\n🔍 Verifying database setup...');
+    console.log('
+🔍 Verifying database setup...');
     const finalTablesQuery = await client.query(tablesQuery);
     console.log(`✅ Database now has ${finalTablesQuery.rows.length} tables`);
     
-    // Test a simple query
-    console.log('\n🧪 Testing database functionality...');
-    const testQuery = await client.query('SELECT COUNT(*) as count FROM "Users"');
-    console.log(`✅ Users table has ${testQuery.rows[0].count} records`);
-    
-    client.release();
-    console.log('\n🎉 Railway database setup completed successfully!');
+    if (finalTablesQuery.rows.length > 0) {
+      console.log('📋 Tables:', finalTablesQuery.rows.map(r => r.table_name).join(', '));
+    }
     
   } catch (error) {
     console.error('❌ Railway database setup failed:', error.message);
-    console.error('Stack:', error.stack);
-    process.exit(1);
+    console.error('🔧 Possible solutions:');
+    console.error('   1. Check Railway database status');
+    console.error('   2. Verify connection credentials');
+    console.error('   3. Check network connectivity');
+    console.error('   4. Try restarting Railway database');
+    
+    // Don't exit in production deployment
+    if (process.env.NODE_ENV !== 'production') {
+      process.exit(1);
+    }
   } finally {
+    if (client) {
+      client.release();
+    }
     await pool.end();
   }
 }

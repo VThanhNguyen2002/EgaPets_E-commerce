@@ -27,13 +27,30 @@ app.use(express.urlencoded({ extended: true }));
 /* Health‑check */
 app.get('/health', async (_, res) => {
   try {
+    console.log('🔍 Health check - Testing database connection...');
     const client = await (await poolPromise).connect();
     const result = await client.query('SELECT 1 AS ok');
     client.release();
-    res.json({ status: 'UP', db: !!result.rows });
+    console.log('✅ Health check - Database connection successful');
+    res.json({ 
+      status: 'UP', 
+      db: !!result.rows,
+      timestamp: new Date().toISOString(),
+      environment: process.env.NODE_ENV || 'development'
+    });
   } catch (error) {
-    console.error('Health check failed:', error);
-    res.status(500).json({ status: 'DOWN', error: error.message });
+    console.error('❌ Health check failed:', error.message);
+    console.error('📋 Database config:', {
+      host: process.env.DB_HOST,
+      port: process.env.DB_PORT,
+      database: process.env.DB_NAME,
+      ssl: process.env.DB_SSL
+    });
+    res.status(500).json({ 
+      status: 'DOWN', 
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
   }
 });
 

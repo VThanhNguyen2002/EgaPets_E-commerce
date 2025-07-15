@@ -1,8 +1,29 @@
 const router = require('express').Router();
 
+// API Info endpoint
+router.get('/', (req, res) => {
+  res.json({
+    message: 'EgaPets API Server',
+    version: '1.0.0',
+    status: 'running',
+    endpoints: {
+      auth: '/api/auth',
+      products: '/api/products',
+      categories: '/api/categories',
+      services: '/api/services',
+      cart: '/api/cart',
+      orders: '/api/orders',
+      payments: '/api/payments',
+      'payment-methods': '/api/payment-methods'
+    }
+  });
+});
+
 router.use('/auth',    require('../modules/Auth/authRoutes'));
 router.use('/face',    require('../modules/Faceid/faceID.routes'));
-router.use('/product', require('../modules/Product/product.routes'));
+router.use('/products', require('../modules/Product/product.routes'));
+router.use('/categories', require('../modules/Category/category.routes'));
+router.use('/services', require('../modules/Service/service.routes'));
 router.use('/cart',    require('../modules/Cart/cart.routes'));
 
 router.use("/orders", require("../modules/Order/order.routes"));
